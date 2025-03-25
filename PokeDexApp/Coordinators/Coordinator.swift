@@ -27,5 +27,22 @@ class ApplicationCoordinator: Coordinator {
     }
     
     func start() {
+        let pokeDexListCoordinator = PokeDexCoordinator(navigationController: navigationController)
+        pokeDexListCoordinator.start()
+        window.makeKeyAndVisible()
+    }
+}
+
+class PokeDexCoordinator: Coordinator {
+    var childCoordinators: [Coordinator] = []
+    var navigationController: UINavigationController
+    
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+    func start() {
+        let pokeDexListVC = PokeDexListVC(viewModel: PokeDexListVM())
+        navigationController.pushViewController(pokeDexListVC, animated: true)
     }
 }
