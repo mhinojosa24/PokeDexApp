@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  PokeDexListVC.swift
 //  PokeDexApp
 //
 //  Created by Maximo Hinojosa on 3/25/25.
@@ -7,13 +7,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class PokeDexListVC: UIViewController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .systemPink
     }
-
-
 }
 
