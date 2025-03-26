@@ -6,16 +6,8 @@
 //
 
 // MARK: - Pokemon Detail
-struct PokemonDetail: Decodable, Hashable {
+struct PokemonDetail: Decodable {
     let id: Int
     let name: String
     let sprites: Sprites
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static func == (lhs: PokemonDetail, rhs: PokemonDetail) -> Bool {
-        return lhs.id == rhs.id
-    }
 }

@@ -17,7 +17,9 @@ class PokeDexCoordinator: Coordinator {
     }
     
     func start() {
-        let pokeDexListVC = PokeDexListVC(viewModel: PokeDexListVM())
+        let service = PokemonService(client: NetworkClient())
+        let viewModel = PokeDexListVM(service: service)
+        let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
         navigationController.pushViewController(pokeDexListVC, animated: true)
     }
 }

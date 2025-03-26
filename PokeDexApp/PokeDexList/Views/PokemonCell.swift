@@ -11,7 +11,7 @@ import UIKit
 // MARK: - Pokemon Cell
 class PokemonCell: UICollectionViewCell {
     struct UIModel: Hashable {
-        let thunmbnail: URL
+        let thunmbnail: String
         let name: String
         let pokedexNumber: Int
         
@@ -46,6 +46,7 @@ class PokemonCell: UICollectionViewCell {
     
     lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [thumbnailImageView, nameLabel, numberLabel])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 5
         stackView.alignment = .center
@@ -72,5 +73,9 @@ class PokemonCell: UICollectionViewCell {
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
+    }
+    
+    func configure(with model: UIModel) {
+        nameLabel.text = model.name
     }
 }

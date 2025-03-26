@@ -8,5 +8,5 @@
 import UIKit
 
 
-class PokeDexDiffableDataSource: UICollectionViewDiffableDataSource<Section, PokemonDetail> {}
+class PokeDexDiffableDataSource: UICollectionViewDiffableDataSource<Section, PokemonCell.UIModel> {}
 

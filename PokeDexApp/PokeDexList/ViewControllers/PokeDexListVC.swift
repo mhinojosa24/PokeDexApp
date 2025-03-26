@@ -28,6 +28,7 @@ class PokeDexListVC: UIViewController {
     
     private var viewModel: PokemonVM
     private var dataSource: PokeDexDiffableDataSource!
+    private var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
     
     init(viewModel: PokemonVM) {
         self.viewModel = viewModel
@@ -42,6 +43,9 @@ class PokeDexListVC: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupLayouts()
+        setupPublishers()
+        setupObservers()
+        populateCollectionView()
     }
     
     private func setupNavigationBar() {
@@ -66,8 +70,35 @@ class PokeDexListVC: UIViewController {
     private func setupObservers() {
         dataSource = PokeDexDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, model in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.identifier, for: indexPath) as? PokemonCell else { return UICollectionViewCell() }
+            cell.configure(with: model)
             return cell
         })
+    }
+    
+    private func setupPublishers() {
+        viewModel.publisher = { [weak self] pokemons in
+            guard let self = self else { return }
+            self.applySnapshot(with: pokemons)
+        }
+    }
+    
+    private func applySnapshot(with pokemons: [PokemonCell.UIModel]) {
+        guard dataSource != nil else { return }
+        if snapshot.sectionIdentifiers.isEmpty {
+            snapshot.appendSections([.main])
+        }
+        snapshot.appendItems(pokemons, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func populateCollectionView() {
+        Task {
+            do {
+                try await viewModel.populate()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
