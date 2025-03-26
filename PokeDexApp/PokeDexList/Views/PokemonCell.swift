@@ -11,7 +11,7 @@ import UIKit
 // MARK: - Pokemon Cell
 class PokemonCell: UICollectionViewCell {
     struct UIModel: Hashable {
-        let thunmbnail: String
+        let thumbnail: String
         let name: String
         let pokedexNumber: Int
         
@@ -67,6 +67,8 @@ class PokemonCell: UICollectionViewCell {
     
     private func setupLayouts() {
         contentView.addSubview(stackView)
+        layer.cornerRadius = 15
+        layer.masksToBounds = true
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
