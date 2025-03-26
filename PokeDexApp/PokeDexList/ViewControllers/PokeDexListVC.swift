@@ -27,6 +27,7 @@ class PokeDexListVC: UIViewController {
     }()
     
     private var viewModel: PokemonVM
+    private var dataSource: PokeDexDiffableDataSource!
     
     init(viewModel: PokemonVM) {
         self.viewModel = viewModel
@@ -60,6 +61,13 @@ class PokeDexListVC: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    private func setupObservers() {
+        dataSource = PokeDexDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, model in
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.identifier, for: indexPath) as? PokemonCell else { return UICollectionViewCell() }
+            return cell
+        })
     }
 }
 
