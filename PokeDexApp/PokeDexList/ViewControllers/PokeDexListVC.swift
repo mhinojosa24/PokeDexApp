@@ -8,6 +8,8 @@
 import UIKit
 
 class PokeDexListVC: UIViewController {
+    
+    
     private var viewModel: PokemonVM
     
     init(viewModel: PokemonVM) {

@@ -9,8 +9,6 @@ import Foundation
 
 
 // MARK: - API Client Protocol
-
-// NOTE: *protocol is the explanation of a class* APIClient just fetches data from an endpoint
 protocol APIClient {
     func fetchData(_ url: URL) async throws -> (Data, URLResponse)
     func parseHTTPResponse(response: (data: Data, response: URLResponse)) throws -> Data

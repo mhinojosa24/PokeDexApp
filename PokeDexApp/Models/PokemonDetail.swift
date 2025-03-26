@@ -5,7 +5,7 @@
 //  Created by Maximo Hinojosa on 3/25/25.
 //
 
-// MARK: - Pokemon
+// MARK: - Pokemon Detail
 struct PokemonDetail: Decodable, Hashable {
     let id: Int
     let name: String
