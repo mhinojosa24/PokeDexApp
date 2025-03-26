@@ -11,8 +11,9 @@ class PokeDexListVC: UIViewController {
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.bounces = false
+        collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.identifier)
         return collectionView
     }()
     
