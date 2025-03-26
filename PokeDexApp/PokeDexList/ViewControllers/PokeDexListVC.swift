@@ -8,7 +8,22 @@
 import UIKit
 
 class PokeDexListVC: UIViewController {
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .white
+        tableView.bounces = false
+        return tableView
+    }()
     
+    lazy var searchController: UISearchController = {
+        let searchVC = UISearchController(searchResultsController: nil)
+        searchVC.hidesNavigationBarDuringPresentation = false
+        searchVC.obscuresBackgroundDuringPresentation = false
+        searchVC.searchBar.placeholder = "Name or number"
+        searchVC.searchBar.overrideUserInterfaceStyle = .light
+        return searchVC
+    }()
     
     private var viewModel: PokemonVM
     
@@ -23,7 +38,27 @@ class PokeDexListVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemPink
+        setupNavigationBar()
+        setupLayouts()
+    }
+    
+    private func setupNavigationBar() {
+        title = "PokéDex"
+        view.backgroundColor = .white
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationController?.navigationBar.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
+    
+    private func setupLayouts() {
+        view .addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
