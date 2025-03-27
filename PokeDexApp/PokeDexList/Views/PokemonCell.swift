@@ -64,6 +64,12 @@ class PokemonCell: UICollectionViewCell {
         setupLayouts()
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // NOTE: Cancelling the task is important to avoid image flickering when reusing cells.
+        thumbnailImageView.currentTask?.cancel() // shout to josh for the tip
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

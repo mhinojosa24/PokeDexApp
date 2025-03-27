@@ -55,7 +55,7 @@ class PokeDexListVM: PokemonVM {
             for await pokemonDetail in group {
                 if let detail = pokemonDetail {
                     pokemonDetailList.append(detail)
-                    pokemonInfoList.append(PokemonCell.UIModel(thumbnail: detail.sprites.other?.officialArtwork?.frontDefault ?? "", name: detail.name, pokedexNumber: detail.id))
+                    pokemonInfoList.append(PokemonCell.UIModel(thumbnail: detail.sprites.other?.officialArtwork.frontDefault ?? "", name: detail.name, pokedexNumber: detail.id))
                 }
             }
             pokemonInfoList.sort { $0.pokedexNumber < $1.pokedexNumber }

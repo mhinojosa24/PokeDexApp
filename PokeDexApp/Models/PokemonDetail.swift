@@ -22,7 +22,7 @@ struct Sprite: Decodable {
 
 // MARK: - Other
 struct Other: Decodable {
-    let officialArtwork: OfficialArtwork?
+    let officialArtwork: OfficialArtwork
     
     enum CodingKeys: String, CodingKey {
         case officialArtwork = "official-artwork"
