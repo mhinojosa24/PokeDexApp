@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 // MARK: - Pokemon Cell
 class PokemonCell: UICollectionViewCell {
     struct UIModel: Hashable {
@@ -24,8 +23,9 @@ class PokemonCell: UICollectionViewCell {
         }
     }
     
-    lazy var thumbnailImageView: UIImageView = {
-        let imageView = UIImageView()
+    lazy var thumbnailImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
@@ -34,6 +34,7 @@ class PokemonCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .medium)
         label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
     
@@ -41,11 +42,12 @@ class PokemonCell: UICollectionViewCell {
         let label = UILabel()
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
+        label.numberOfLines = 0
         return label
     }()
     
     lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [thumbnailImageView, nameLabel, numberLabel])
+        let stackView = UIStackView(arrangedSubviews: [thumbnailImageView, UIView(), nameLabel, numberLabel])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 5
@@ -58,6 +60,7 @@ class PokemonCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.backgroundColor = #colorLiteral(red: 0.9206994176, green: 0.7358378768, blue: 0.7089307904, alpha: 1)
         setupLayouts()
     }
     
@@ -70,14 +73,18 @@ class PokemonCell: UICollectionViewCell {
         layer.cornerRadius = 15
         layer.masksToBounds = true
         NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            thumbnailImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.65),
+            thumbnailImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.65)
         ])
     }
     
     func configure(with model: UIModel) {
+        thumbnailImageView.imageURLString = model.thumbnail
         nameLabel.text = model.name
+        numberLabel.text = model.pokedexNumber.description
     }
 }

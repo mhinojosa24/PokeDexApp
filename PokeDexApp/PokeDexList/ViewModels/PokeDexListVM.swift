@@ -5,7 +5,7 @@
 //  Created by Maximo Hinojosa on 3/25/25.
 //
 
-
+import Foundation
 protocol PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)? { get set }
     func populate() async throws
@@ -55,10 +55,12 @@ class PokeDexListVM: PokemonVM {
             for await pokemonDetail in group {
                 if let detail = pokemonDetail {
                     pokemonDetailList.append(detail)
-                    pokemonInfoList.append(PokemonCell.UIModel(thunmbnail: detail.sprites.frontDefault ?? "", name: detail.name, pokedexNumber: detail.id))
+                    pokemonInfoList.append(PokemonCell.UIModel(thumbnail: detail.sprites.other?.officialArtwork?.frontDefault ?? "", name: detail.name, pokedexNumber: detail.id))
                 }
             }
+            pokemonInfoList.sort { $0.pokedexNumber < $1.pokedexNumber }
             self.pokemonInfoList = pokemonInfoList // Triggers the publisher
+            
         }
     }
 }

@@ -114,7 +114,7 @@ class PokeDexListVC: UIViewController {
         // Add padding
         item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         // 2 columns
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(2.5/6))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.5/5)) // 2/7
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
         // Section
         let section = NSCollectionLayoutSection(group: group)

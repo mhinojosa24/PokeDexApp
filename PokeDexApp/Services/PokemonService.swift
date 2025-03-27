@@ -27,7 +27,7 @@ class PokemonService {
     }
     
     func fetchPokemons() async throws -> Response {
-        let urlString = "https://pokeapi.co/api/v2/pokemon?offset=21&limit=21"
+        let urlString = "https://pokeapi.co/api/v2/pokemon?limit=1025"
         return try await fetchPokemonsHelper(from: urlString)
     }
     
