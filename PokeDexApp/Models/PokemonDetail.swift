@@ -12,6 +12,7 @@ struct PokemonDetail: Decodable {
     let sprites: Sprite // Thumbnail image
     let stats: [Stat] // Stats info of pokemon
     let types: [PokemonType] // Type of pokemon
+    let weight: Int // Weight of pokemon
 }
 
 // MARK: - Sprite
