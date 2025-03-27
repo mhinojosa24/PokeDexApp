@@ -11,8 +11,6 @@ import UIKit
 /// `CustomImageView` is a subclass of `UIImageView` that provides a convenient way to asynchronously load and cache images from a URL.
 /// It integrates with an `ImageCacheManager` to efficiently manage image downloads and caching, reducing network usage and improving performance.
 class CustomImageView: UIImageView {
-    private let imageManager: ImageCacheManager
-    
     var imageURLString: String? {
         didSet {
             // Check if the new URL is different from the old URL to avoid redundant image loading.
@@ -25,10 +23,8 @@ class CustomImageView: UIImageView {
     
     var currentTask: Task<Void, Never>?
     
-    init(frame: CGRect = .zero, imageURLString: String? = nil, imageManager: ImageCacheManager = .shared) {
-        self.imageManager = imageManager
+    init(frame: CGRect = .zero, imageURLString: String? = nil) {
         self.imageURLString = imageURLString
-        
         super.init(frame: frame)
         update()
     }
@@ -47,7 +43,7 @@ class CustomImageView: UIImageView {
         }
         // Use the image manager to load the image asynchronously.
         currentTask = Task {
-            self.image = await imageManager.load(url)
+            self.image = await ImageCacheManager.shared.load(url)
         }
     }
 }
