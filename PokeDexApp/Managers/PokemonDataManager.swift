@@ -107,4 +107,19 @@ class PokemonDataManager {
                                   types: types,
                                   weight: pokemonDetail.weight)
     }
+    
+    /// Checks if the context container has any stored objects.
+    /// - Returns: `true` if the context container has stored objects, otherwise `false`.
+    func hasStoredObjects() -> Bool {
+        var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
+        fetchDescriptor.fetchLimit = 1
+
+        do {
+            let results = try context.fetch(fetchDescriptor)
+            return !results.isEmpty
+        } catch {
+            print("Failed to fetch PokemonDetails: \(error)")
+            return false
+        }
+    }
 }
