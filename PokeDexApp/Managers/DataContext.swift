@@ -24,6 +24,7 @@ protocol DataContextProtocol {
 /// deleting, and fetching data from the model container.
 class DataContext: DataContextProtocol {
     private let container: ModelContainer
+    private let context: ModelContext
 
     /// Initializes a new instance of `DataContext`.
     /// This initializer sets up the model container with the schema for `PokemonDetailModel`.
@@ -32,15 +33,16 @@ class DataContext: DataContextProtocol {
             let schema = Schema([ PokemonDetailModel.self ])
             let modelConfiguration = ModelConfiguration(schema: schema)
             container = try ModelContainer(for: schema, configurations: [modelConfiguration])
+            context = ModelContext(container)
         } catch {
             fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
         }
     }
-
-    /// Provides the current model context.
-    private var context: ModelContext {
-        return ModelContext(container)
-    }
+//
+//    /// Provides the current model context.
+//    private var context: ModelContext {
+//        return ModelContext(container)
+//    }
 
     /// Saves the current state of the model context.
     /// - Throws: An error if the save operation fails.
@@ -53,39 +55,17 @@ class DataContext: DataContextProtocol {
     /// - Parameter object: The `PokemonDetailModel` object to be inserted or updated.
     /// - Throws: An error if the insert or update operation fails.
     func insert(_ object: PokemonDetailModel) throws {
-        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
-            predicate: #Predicate<PokemonDetailModel> { $0.id == object.id },
-            sortBy: []
-        )
-        
-        do {
-            if let existingItem = try fetch(fetchDescriptor).first {
-                existingItem.update(from: object)
-            } else {
-                context.insert(object)
-            }
-            try save()
-        } catch {
-            throw error
-        }
+        context.insert(object)
+        try save()
     }
     
     /// Deletes a specific `PokemonDetailModel` object from the model context.
     /// - Parameter object: The `PokemonDetailModel` object to be deleted.
     /// - Throws: An error if the delete operation fails.
     func delete(_ object: PokemonDetailModel) throws {
-        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
-            predicate: #Predicate<PokemonDetailModel> { $0.id == object.id },
-            sortBy: []
-        )
-                
         do {
-            if let existingItem = try fetch(fetchDescriptor).first {
-                context.delete(existingItem)
-                try save()
-            } else {
-                throw NSError(domain: "Object not found, nothing to delete.", code: 0)
-            }
+            context.delete(object)
+            try save()
         } catch {
             print("Failed to delete object: \(error.localizedDescription)")
             throw error
@@ -97,6 +77,7 @@ class DataContext: DataContextProtocol {
     func deleteAll() throws {
         do {
             try context.delete(model: PokemonDetailModel.self)
+            try save()
         } catch {
             throw NSError(domain: "Failed to delete all objects", code: 0)
         }
