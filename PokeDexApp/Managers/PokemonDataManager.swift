@@ -8,38 +8,36 @@
 import Foundation
 import SwiftData
 
-enum FetchDescriptorType {
-    case all
-    case limit(Int)
-    case byID(Int)
-    
-    func fetchDescriptor() -> FetchDescriptor<PokemonDetailModel> {
-            switch self {
-            case .all:
-                return FetchDescriptor<PokemonDetailModel>(
-                    predicate: nil,
-                    sortBy: [SortDescriptor(\.id, order: .forward)]
-                )
-            case .limit(let limit):
-                var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
-                fetchDescriptor.fetchLimit = limit
-                return fetchDescriptor
-            case .byID(let id):
-                return FetchDescriptor<PokemonDetailModel>(
-                    predicate: #Predicate { $0.id == id },
-                    sortBy: []
-                )
-        }
-    }
-}
-
 /// `PokemonDataManager` is a singleton class responsible for managing Pokemon data.
 /// It provides methods to save, fetch, and clear `PokemonDetailModel` objects.
 class PokemonDataManager {
+    enum FetchDescriptorType {
+        case all
+        case limit(Int)
+        case byID(Int)
+        
+        func fetchDescriptor() -> FetchDescriptor<PokemonDetailModel> {
+                switch self {
+                case .all:
+                    return FetchDescriptor<PokemonDetailModel>(
+                        predicate: nil,
+                        sortBy: [SortDescriptor(\.id, order: .forward)]
+                    )
+                case .limit(let limit):
+                    var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
+                    fetchDescriptor.fetchLimit = limit
+                    return fetchDescriptor
+                case .byID(let id):
+                    return FetchDescriptor<PokemonDetailModel>(
+                        predicate: #Predicate { $0.id == id },
+                        sortBy: []
+                    )
+            }
+        }
+    }
+    
     static let shared = PokemonDataManager(context: DataContext())
     private let context: DataContextProtocol
-    
-    
 
     /// Initializes a new instance of `PokemonDataManager` with the given context.
     /// - Parameter context: The data context conforming to `DataContextProtocol`.
