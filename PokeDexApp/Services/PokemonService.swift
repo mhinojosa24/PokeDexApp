@@ -8,14 +8,21 @@
 import UIKit
 
 
-// MARK: - Pokemon Service
+/// `PokemonService` is a class responsible for fetching Pokemon data from the PokeAPI.
+/// It uses an `APIClient` to perform network requests and handles parsing and saving
+/// the fetched data.
 class PokemonService {
     private let client: APIClient
     
+    /// Initializes a new instance of `PokemonService` with the given API client.
+   /// - Parameter client: The API client used to perform network requests.
     init(client: APIClient) {
         self.client = client
     }
     
+    /// Fetches a list of Pokemons from the given URL string.
+    /// - Parameter urlString: The URL string to fetch the list of Pokemons from.
+    /// - Throws: An error if the URL is invalid or the network request fails.
     func fetchPokemons(from urlString: String) async throws {
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=1025") else {
             throw URLError(.badURL)
@@ -31,6 +38,9 @@ class PokemonService {
         }
     }
     
+    /// Fetches the details of each Pokemon from the given response.
+    /// - Parameter response: The response containing the list of Pokemons.
+    /// - Throws: An error if the network request or parsing fails.
     fileprivate func fetchPokemonDetails(from response: Response) async throws {
         let dataManager = PokemonDataManager.shared
         await withTaskGroup(of: PokemonDetail?.self) { [weak self] group in
@@ -49,6 +59,10 @@ class PokemonService {
         }
     }
     
+    /// Adds a task to the task group to fetch the details of a single Pokemon.
+    /// - Parameters:
+    ///   - taskGroup: The task group to add the task to.
+    ///   - pokemon: The Pokemon to fetch the details for.
     fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetail?>, for pokemon: Pokemon) {
         taskGroup.addTask {
             do {
