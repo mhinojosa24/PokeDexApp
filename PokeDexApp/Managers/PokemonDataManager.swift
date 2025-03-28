@@ -8,11 +8,38 @@
 import Foundation
 import SwiftData
 
+enum FetchDescriptorType {
+    case all
+    case limit(Int)
+    case byID(Int)
+    
+    func fetchDescriptor() -> FetchDescriptor<PokemonDetailModel> {
+            switch self {
+            case .all:
+                return FetchDescriptor<PokemonDetailModel>(
+                    predicate: nil,
+                    sortBy: [SortDescriptor(\.id, order: .forward)]
+                )
+            case .limit(let limit):
+                var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
+                fetchDescriptor.fetchLimit = limit
+                return fetchDescriptor
+            case .byID(let id):
+                return FetchDescriptor<PokemonDetailModel>(
+                    predicate: #Predicate { $0.id == id },
+                    sortBy: []
+                )
+        }
+    }
+}
+
 /// `PokemonDataManager` is a singleton class responsible for managing Pokemon data.
 /// It provides methods to save, fetch, and clear `PokemonDetailModel` objects.
 class PokemonDataManager {
     static let shared = PokemonDataManager(context: DataContext())
     private let context: DataContextProtocol
+    
+    
 
     /// Initializes a new instance of `PokemonDataManager` with the given context.
     /// - Parameter context: The data context conforming to `DataContextProtocol`.
@@ -23,9 +50,16 @@ class PokemonDataManager {
     /// Saves a `PokemonDetail` object to the data context.
     /// - Parameter detail: The `PokemonDetail` object to be saved.
     func savePokemonDetail(_ detail: PokemonDetail) {
+        let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
+        let fetchDescriptor = getFetchDescriptor(.byID(detail.id))
+        
         do {
-            let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
-            try context.insert(modelDetail)
+            let existingItems = try context.fetch(fetchDescriptor)
+            if let existingItem = existingItems.first {
+                existingItem.update(modelDetail)
+            } else {
+                try context.insert(modelDetail)
+            }
         } catch {
             print("Failed to save PokemonDetail")
             print("Error: \(error.localizedDescription)")
@@ -36,11 +70,7 @@ class PokemonDataManager {
     /// - Parameter id: The ID of the `PokemonDetailModel` to be fetched.
     /// - Returns: The `PokemonDetailModel` object if found, otherwise `nil`.
     func getPokemonDetail(by id: Int) -> PokemonDetailModel? {
-        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
-            predicate: #Predicate<PokemonDetailModel> { $0.id == id },
-            sortBy: []
-        )
-        
+        let fetchDescriptor = getFetchDescriptor(.byID(id))
         do {
             return try context.fetch(fetchDescriptor).first
         } catch {
@@ -52,11 +82,7 @@ class PokemonDataManager {
     /// Fetches all `PokemonDetailModel` objects.
     /// - Returns: An array of `PokemonDetailModel` objects.
     func getAllPokemonDetails() -> [PokemonDetailModel] {
-        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
-            predicate: nil,
-            sortBy: [.init(\.id)]
-        )
-        
+        let fetchDescriptor = getFetchDescriptor(.all)
         do {
             return try context.fetch(fetchDescriptor)
         } catch {
@@ -88,7 +114,7 @@ class PokemonDataManager {
                                                    effort: $0.effort)
         }
         
-        let types = pokemonDetail.types.map { PokemonTypeModel(name: $0.name ?? "", iconURL: $0.url ?? "") }
+        let types = pokemonDetail.types.map { PokemonTypeModel(name: $0.type.name, iconURL: $0.type.url) }
         
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
@@ -101,14 +127,16 @@ class PokemonDataManager {
     /// Checks if the context container has any stored objects.
     /// - Returns: `true` if the context container has stored objects, otherwise `false`.
     func hasStoredItems() -> Bool {
-        var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
-        fetchDescriptor.fetchLimit = 1
-
+        let fetchDescriptor = getFetchDescriptor(.limit(1))
         do {
             return try !context.fetch(fetchDescriptor).isEmpty
         } catch {
             print("Failed to fetch PokemonDetails: \(error)")
             return false
         }
+    }
+    
+    fileprivate func getFetchDescriptor(_ type: FetchDescriptorType) -> FetchDescriptor<PokemonDetailModel> {
+        return type.fetchDescriptor()
     }
 }
