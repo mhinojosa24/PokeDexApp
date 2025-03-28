@@ -10,8 +10,8 @@ import Foundation
 
 // MARK: - API Client Protocol
 protocol APIClient {
-    func fetchData(_ url: URL) async throws -> (Data, URLResponse)
-    func parseHTTPResponse(response: (data: Data, response: URLResponse)) throws -> Data
+    func fetchData(_ url: URL) async throws -> (data: Data, response: URLResponse)
+    func parseHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data
 }
 
 // MARK: - Network Client
@@ -44,13 +44,13 @@ class NetworkClient: APIClient {
     ///     It returns a `Result<Data, Error>`:
     ///     - `.success(Data)`: Contains the fetched `Data` if the request is successful.
     ///     - `.failure(Error)`: Contains an `Error` if there is an issue with the network request or fetching data.
-    func fetchData(_ url: URL) async throws -> (Data, URLResponse) {
+    func fetchData(_ url: URL) async throws -> (data: Data, response: URLResponse) {
         return try await URLSession.shared.data(from: url)
     }
     
-    func parseHTTPResponse(response: (data: Data, response: URLResponse)) throws -> Data {
-        guard let httpResponse = response.response as? HTTPURLResponse else {
-            throw NetworkClient.HTTPError.invalidResponse(response.data)
+    func parseHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data {
+        guard let httpResponse = dataTaskResult.response as? HTTPURLResponse else {
+            throw NetworkClient.HTTPError.invalidResponse(dataTaskResult.data)
         }
         
         let statusCodeMapping: [Int: NetworkClient.HTTPError] = [
@@ -60,14 +60,13 @@ class NetworkClient: APIClient {
         ]
         
         if (200..<300).contains(httpResponse.statusCode) {
-            return response.data
+            return dataTaskResult.data
         }
         
         if let error = statusCodeMapping[httpResponse.statusCode] {
             throw error
         } else {
-            throw NetworkClient.HTTPError
-                .http(response: httpResponse, data: response.data)
+            throw NetworkClient.HTTPError.http(response: httpResponse, data: dataTaskResult.data)
         }
     }
 }

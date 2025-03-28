@@ -16,29 +16,48 @@ class PokemonService {
         self.client = client
     }
     
-    private func fetchPokemonsHelper(from urlString: String) async throws -> Response {
-        guard let url = URL(string: urlString) else {
+    func fetchPokemons(from urlString: String) async throws {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=1025") else {
             throw URLError(.badURL)
         }
-        let parsedResponse = try client.parseHTTPResponse(
-            response: try await client.fetchData(url)
-        )
-        return try JSONDecoder().decode(Response.self, from: parsedResponse)
-    }
-    
-    func fetchPokemons() async throws -> Response {
-        let urlString = "https://pokeapi.co/api/v2/pokemon?limit=1025"
-        return try await fetchPokemonsHelper(from: urlString)
-    }
-    
-    func fetchPokemonDetail(_ urlString: String) async throws -> PokemonDetail {
-        guard let url = URL(string: urlString) else {
-            throw URLError(.badURL)
+        
+        do {
+            let dataTaskResult = try await client.fetchData(url)
+            let parsedResult = try client.parseHTTPResponse(with: dataTaskResult)
+            let response = try JSONDecoder().decode(Response.self, from: parsedResult)
+            try await fetchPokemonDetails(from: response)
+        } catch {
+            throw error
         }
-        let parsedResponse = try client.parseHTTPResponse(
-            response: try await client.fetchData(url)
-        )
-        return try JSONDecoder()
-            .decode(PokemonDetail.self, from: parsedResponse)
+    }
+    
+    fileprivate func fetchPokemonDetails(from response: Response) async throws {
+        let dataManager = PokemonDataManager.shared
+        await withTaskGroup(of: PokemonDetail?.self) { [weak self] group in
+            guard let self = self else { return }
+            
+            response.results.forEach { [weak self] pokemon in
+                guard let self = self else { return }
+                self.handleTaskGroup(with: &group, for: pokemon)
+            }
+            
+            for await pokemonDetail in group {
+                if let detail = pokemonDetail {
+                    dataManager.savePokemonDetail(detail)
+                }
+            }
+        }
+    }
+    
+    fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetail?>, for pokemon: Pokemon) {
+        taskGroup.addTask {
+            do {
+                guard let url = URL(string: pokemon.url) else { throw URLError(.badURL) }
+                let parsedResponse = try self.client.parseHTTPResponse(with: try await self.client.fetchData(url))
+                return try JSONDecoder().decode(PokemonDetail.self, from: parsedResponse)
+            } catch {
+                return nil
+            }
+        }
     }
 }
