@@ -8,7 +8,7 @@
 import SwiftData
 
 @Model
-class PokemonDetailModel: PersistentModel {
+class PokemonDetailModel {
     @Attribute(.unique) var id: Int
     var name: String
     var sprite: SpriteModel
@@ -30,7 +30,7 @@ class PokemonDetailModel: PersistentModel {
         self.weight = weight
     }
     
-    func update(from object: PokemonDetailModel) {
+    func update(_ object: PokemonDetailModel) {
         self.name = object.name
         self.sprite = object.sprite
         self.stats = object.stats
