@@ -26,9 +26,11 @@ class PokeDexCoordinator: Coordinator {
     
     /// Starts the PokeDex coordinator by initializing and pushing the PokeDex list view controller.
     func start() {
-        let service = PokemonService(client: NetworkClient())
-        let viewModel = PokeDexListVM(inventory: pokeDexInventory)
-        let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
-        navigationController.pushViewController(pokeDexListVC, animated: true)
+        DispatchQueue.main.async {
+            let viewModel = PokeDexListVM(inventory: self.pokeDexInventory)
+            let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
+            self.navigationController.viewControllers = self.navigationController.viewControllers.filter { !($0 is SplashVC) }
+            self.navigationController.setViewControllers([pokeDexListVC], animated: true)
+        }
     }
 }
