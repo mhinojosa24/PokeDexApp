@@ -9,9 +9,11 @@ import UIKit
 
 
 class SplashVC: UIViewController {
+    var delegate: SplashDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
+        delegate?.didLoadSplash()
     }
 }
