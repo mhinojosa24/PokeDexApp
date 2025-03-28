@@ -5,8 +5,8 @@
 //  Created by Maximo Hinojosa on 3/27/25.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 /// `PokemonDataManager` is a singleton class responsible for managing Pokemon data.
 /// It provides methods to save, fetch, and clear `PokemonDetailModel` objects.
@@ -23,13 +23,12 @@ class PokemonDataManager {
     /// Saves a `PokemonDetail` object to the data context.
     /// - Parameter detail: The `PokemonDetail` object to be saved.
     func savePokemonDetail(_ detail: PokemonDetail) {
-        let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
-        context.insert(modelDetail)
-        
         do {
-            try context.save()
+            let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
+            try context.insert(modelDetail)
         } catch {
-            print("Failed to save PokemonDetail: \(error)")
+            print("Failed to save PokemonDetail")
+            print("Error: \(error.localizedDescription)")
         }
     }
 
@@ -37,7 +36,7 @@ class PokemonDataManager {
     /// - Parameter id: The ID of the `PokemonDetailModel` to be fetched.
     /// - Returns: The `PokemonDetailModel` object if found, otherwise `nil`.
     func getPokemonDetail(by id: Int) -> PokemonDetailModel? {
-        var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
+        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
             predicate: #Predicate<PokemonDetailModel> { $0.id == id },
             sortBy: []
         )
@@ -45,7 +44,7 @@ class PokemonDataManager {
         do {
             return try context.fetch(fetchDescriptor).first
         } catch {
-            print("Failed to fetch PokemonDetail: \(error)")
+            print("Failed to fetch PokemonDetail: \(error.localizedDescription)")
             return nil
         }
     }
@@ -53,7 +52,7 @@ class PokemonDataManager {
     /// Fetches all `PokemonDetailModel` objects.
     /// - Returns: An array of `PokemonDetailModel` objects.
     func getAllPokemonDetails() -> [PokemonDetailModel] {
-        var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
+        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
             predicate: nil,
             sortBy: [.init(\.id)]
         )
@@ -61,26 +60,17 @@ class PokemonDataManager {
         do {
             return try context.fetch(fetchDescriptor)
         } catch {
-            print("Failed to fetch PokemonDetails: \(error)")
+            print("Failed to fetch PokemonDetails: \(error.localizedDescription)")
             return []
         }
     }
 
     /// Clears all `PokemonDetailModel` objects from the data context.
-    func clearAllPokemonDetails() {
-        var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
-            predicate: nil,
-            sortBy: []
-        )
-        
+    func clearPokeDexInventory() {
         do {
-            let pokemonDetails = try context.fetch(fetchDescriptor)
-            for detail in pokemonDetails {
-                context.delete(detail)
-            }
-            try context.save()
+            try context.deleteAll()
         } catch {
-            print("Failed to clear PokemonDetails: \(error)")
+            print("error: \(error.localizedDescription)")
         }
     }
     
@@ -110,13 +100,12 @@ class PokemonDataManager {
     
     /// Checks if the context container has any stored objects.
     /// - Returns: `true` if the context container has stored objects, otherwise `false`.
-    func hasStoredObjects() -> Bool {
+    func hasStoredItems() -> Bool {
         var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
         fetchDescriptor.fetchLimit = 1
 
         do {
-            let results = try context.fetch(fetchDescriptor)
-            return !results.isEmpty
+            return try !context.fetch(fetchDescriptor).isEmpty
         } catch {
             print("Failed to fetch PokemonDetails: \(error)")
             return false

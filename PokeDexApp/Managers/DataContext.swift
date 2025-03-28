@@ -5,6 +5,7 @@
 //  Created by Maximo Hinojosa on 3/27/25.
 //
 
+import Foundation
 import SwiftData
 
 /// `DataContextProtocol` is a protocol that defines the methods required for interacting
@@ -12,9 +13,10 @@ import SwiftData
 /// data from the model context.
 protocol DataContextProtocol {
     func save() throws
-    func insert<T: PokemonDetailModel>(_ object: T)
-    func delete<T: PokemonDetailModel>(_ object: T)
-    func fetch<T: PokemonDetailModel>(_ fetchDescriptor: FetchDescriptor<T>) throws -> [T]
+    func insert(_ object: PokemonDetailModel) throws
+    func delete(_ object: PokemonDetailModel) throws
+    func deleteAll() throws
+    func fetch(_ fetchDescriptor: FetchDescriptor<PokemonDetailModel>) throws -> [PokemonDetailModel]
 }
 
 /// `DataContext` is a class that conforms to the `DataContextProtocol` and provides
@@ -46,23 +48,65 @@ class DataContext: DataContextProtocol {
         try context.save()
     }
 
-    /// Inserts a new object into the model context.
-    /// - Parameter object: The object to be inserted.
-    func insert<T: PokemonDetailModel>(_ object: T) {
-        context.insert(object)
+    /// Inserts a new `PokemonDetailModel` object into the model context.
+    /// If an object with the same ID already exists, it updates the existing object.
+    /// - Parameter object: The `PokemonDetailModel` object to be inserted or updated.
+    /// - Throws: An error if the insert or update operation fails.
+    func insert(_ object: PokemonDetailModel) throws {
+        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
+            predicate: #Predicate<PokemonDetailModel> { $0.id == object.id },
+            sortBy: []
+        )
+        
+        do {
+            if let existingItem = try fetch(fetchDescriptor).first {
+                existingItem.update(from: object)
+            } else {
+                context.insert(object)
+            }
+            try save()
+        } catch {
+            throw error
+        }
     }
     
-    /// Deletes an object from the model context.
-    /// - Parameter object: The object to be deleted.
-    func delete<T: PokemonDetailModel>(_ object: T) {
-        context.delete(object)
+    /// Deletes a specific `PokemonDetailModel` object from the model context.
+    /// - Parameter object: The `PokemonDetailModel` object to be deleted.
+    /// - Throws: An error if the delete operation fails.
+    func delete(_ object: PokemonDetailModel) throws {
+        let fetchDescriptor = FetchDescriptor<PokemonDetailModel>(
+            predicate: #Predicate<PokemonDetailModel> { $0.id == object.id },
+            sortBy: []
+        )
+                
+        do {
+            if let existingItem = try fetch(fetchDescriptor).first {
+                context.delete(existingItem)
+                try save()
+            } else {
+                throw NSError(domain: "Object not found, nothing to delete.", code: 0)
+            }
+        } catch {
+            print("Failed to delete object: \(error.localizedDescription)")
+            throw error
+        }
+    }
+    
+    /// Deletes all objects of type `PokemonDetailModel` from the model context.
+    /// - Throws: An error if the delete operation fails.
+    func deleteAll() throws {
+        do {
+            try context.delete(model: PokemonDetailModel.self)
+        } catch {
+            throw NSError(domain: "Failed to delete all objects", code: 0)
+        }
     }
 
     /// Fetches objects from the model context based on the provided fetch descriptor.
     /// - Parameter fetchDescriptor: The descriptor that specifies the fetch request.
     /// - Returns: An array of objects that match the fetch request.
     /// - Throws: An error if the fetch operation fails.
-    func fetch<T: PokemonDetailModel>(_ fetchDescriptor: FetchDescriptor<T>) throws -> [T] {
+    func fetch(_ fetchDescriptor: FetchDescriptor<PokemonDetailModel>) throws -> [PokemonDetailModel] {
         return try context.fetch(fetchDescriptor)
     }
 }
