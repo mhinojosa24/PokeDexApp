@@ -31,8 +31,8 @@ class SplashCoordinator: Coordinator {
         navigationController.pushViewController(splashVC, animated: true)
     }
     
-    private func showPokeDexList(with inventory: [PokemonDetailModel]) {
-        let pokeDexCoordinator = PokeDexCoordinator(navigationController: navigationController, pokeDexInventory: inventory)
+    private func showPokeDexList() {
+        let pokeDexCoordinator = PokeDexCoordinator(navigationController: navigationController)
         pokeDexCoordinator.start()
     }
 }
@@ -41,15 +41,13 @@ extension SplashCoordinator: SplashDelegate {
     func didLoadSplash() {
         let dataManager = PokemonDataManager.shared
         if dataManager.hasStoredItems() {
-            let pokedexInventory = dataManager.getAllPokemonDetails()
-            showPokeDexList(with: pokedexInventory)
+            showPokeDexList()
         } else {
             Task {
                 do {
                     let service = PokemonService(client: NetworkClient())
                     try await service.fetchPokemons()
-                    let inventory = dataManager.getAllPokemonDetails()
-                    showPokeDexList(with: inventory)
+                    showPokeDexList()
                 } catch {
                     print(error.localizedDescription)
                 }

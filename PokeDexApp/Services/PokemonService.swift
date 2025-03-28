@@ -55,7 +55,6 @@ class PokemonService {
                     dataManager.savePokemonDetail(detail)
                 }
             }
-            print(dataManager.getAllPokemonDetails().first)
         }
     }
     

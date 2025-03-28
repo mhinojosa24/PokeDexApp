@@ -38,12 +38,7 @@ class DataContext: DataContextProtocol {
             fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
         }
     }
-//
-//    /// Provides the current model context.
-//    private var context: ModelContext {
-//        return ModelContext(container)
-//    }
-
+    
     /// Saves the current state of the model context.
     /// - Throws: An error if the save operation fails.
     func save() throws {
@@ -62,6 +57,8 @@ class DataContext: DataContextProtocol {
     /// Deletes a specific `PokemonDetailModel` object from the model context.
     /// - Parameter object: The `PokemonDetailModel` object to be deleted.
     /// - Throws: An error if the delete operation fails.
+    ///
+    // TODO: -  check if item exist before deleting
     func delete(_ object: PokemonDetailModel) throws {
         do {
             context.delete(object)

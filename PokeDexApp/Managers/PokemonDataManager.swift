@@ -79,14 +79,9 @@ class PokemonDataManager {
 
     /// Fetches all `PokemonDetailModel` objects.
     /// - Returns: An array of `PokemonDetailModel` objects.
-    func getAllPokemonDetails() -> [PokemonDetailModel] {
+    func getAllPokemonDetails() throws -> [PokemonDetailModel] {
         let fetchDescriptor = getFetchDescriptor(.all)
-        do {
-            return try context.fetch(fetchDescriptor)
-        } catch {
-            print("Failed to fetch PokemonDetails: \(error.localizedDescription)")
-            return []
-        }
+        return try context.fetch(fetchDescriptor)
     }
 
     /// Clears all `PokemonDetailModel` objects from the data context.

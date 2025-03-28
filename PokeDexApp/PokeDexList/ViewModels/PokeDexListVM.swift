@@ -14,7 +14,6 @@ protocol PokemonVM {
 
 class PokeDexListVM: PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)?
-    private let inventory: [PokemonDetailModel]
     private(set) var pokemonDetailList: [PokemonDetail] = []
     
     private var pokemonInfoList: [PokemonCell.UIModel] = [] {
@@ -23,16 +22,10 @@ class PokeDexListVM: PokemonVM {
         }
     }
     
-    init(inventory: [PokemonDetailModel]) {
-        self.inventory = inventory
-    }
-    
     func populate() async throws {
         do {
-            // TODO: fetch all pokemon locally
-            // TODO: map `PokemonDetailModel` => `PokemonCell.UIModel`
-            // TODo: sort them?
-            // TODO: assign fetched pokemons to `pokemonDetailList`
+            let inventory = try PokemonDataManager.shared.getAllPokemonDetails()
+            pokemonInfoList = inventory.map({ PokemonCell.UIModel(thumbnail: $0.sprite.officialArtwork, name: $0.name, pokedexNumber: $0.id) })
         } catch {
             throw error
         }
