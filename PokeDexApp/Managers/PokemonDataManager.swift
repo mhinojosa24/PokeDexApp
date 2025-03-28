@@ -25,6 +25,7 @@ class PokemonDataManager {
     func savePokemonDetail(_ detail: PokemonDetail) {
         let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
         context.insert(modelDetail)
+        
         do {
             try context.save()
         } catch {
@@ -86,7 +87,7 @@ class PokemonDataManager {
     /// Converts a `PokemonDetail` object to a `PokemonDetailModel` object.
     /// - Parameter pokemonDetail: The `PokemonDetail` object to be converted.
     /// - Returns: The corresponding `PokemonDetailModel` object.
-    private func pokemonDetailModelFactory(pokemonDetail: PokemonDetail) -> PokemonDetailModel {
+    func pokemonDetailModelFactory(pokemonDetail: PokemonDetail) -> PokemonDetailModel {
         let officialArtwork = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? ""
         let showdownGifURL = pokemonDetail.sprites.showdown?.frontDefault ?? ""
         
