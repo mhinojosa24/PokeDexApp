@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol SplashDelegate {
+    func didLoadSplash()
+}
+
 /// `SplashCoordinator` is responsible for managing the navigation flow during the splash screen.
 /// It checks if there are stored Pokemon details and navigates accordingly.
 class SplashCoordinator: Coordinator {
@@ -22,20 +26,31 @@ class SplashCoordinator: Coordinator {
     
     /// Starts the splash coordinator by checking for stored Pokemon details and navigating accordingly.
     func start() {
-        if dataManager.hasStoredObjects() {
-            let pokemonDetailModels = dataManager.getAllPokemonDetails()
-            let pokeDexListCoordinator = PokeDexCoordinator(navigationController: navigationController, pokeDexInventory: pokemonDetailModels)
-            pokeDexListCoordinator.start()
+        let splashVC = SplashVC()
+        splashVC.delegate = self
+        navigationController.pushViewController(splashVC, animated: true)
+    }
+    
+    private func showPokeDexList(with inventory: [PokemonDetailModel]) {
+        let pokeDexCoordinator = PokeDexCoordinator(navigationController: navigationController, pokeDexInventory: inventory)
+        pokeDexCoordinator.start()
+    }
+}
+
+extension SplashCoordinator: SplashDelegate {
+    func didLoadSplash() {
+        let dataManager = PokemonDataManager.shared
+        if dataManager.hasStoredItems() {
+            let pokedexInventory = dataManager.getAllPokemonDetails()
+            showPokeDexList(with: pokedexInventory)
         } else {
             Task {
-                let service = PokemonService(client: NetworkClient())
                 do {
+                    let service = PokemonService(client: NetworkClient())
                     try await service.fetchPokemons()
-                    let pokedexInventory = dataManager.getAllPokemonDetails()
-                    let pokeDexListCoordinator = PokeDexCoordinator(navigationController: navigationController, pokeDexInventory: pokedexInventory)
-                    pokeDexListCoordinator.start()
+                    let inventory = dataManager.getAllPokemonDetails()
+                    showPokeDexList(with: inventory)
                 } catch {
-                    // TODO: return error to coordinator to present error
                     print(error.localizedDescription)
                 }
             }
