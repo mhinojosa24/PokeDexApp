@@ -29,38 +29,12 @@ class PokeDexListVM: PokemonVM {
     
     func populate() async throws {
         do {
-            let response = try await service.fetchPokemons()
-            await fetchPokemonDetails(response)
+            // TODO: fetch all pokemon locally
+            // TODO: map `PokemonDetailModel` => `PokemonCell.UIModel`
+            // TODo: sort them?
+            // TODO: assign fetched pokemons to `pokemonDetailList`
         } catch {
             throw error
-        }
-    }
-    
-    private func fetchPokemonDetails(_ fromResponse: Response) async {
-        await withTaskGroup(of: PokemonDetail?.self) { [weak self] group in
-            guard let self = self else { return }
-            
-            fromResponse.results.forEach { pokemon in
-                group.addTask {
-                    do {
-                        return try await self.service.fetchPokemonDetail(pokemon.url)
-                    } catch {
-                        print(error.localizedDescription)
-                        return nil
-                    }
-                }
-            }
-            
-            var pokemonInfoList: [PokemonCell.UIModel] = []
-            for await pokemonDetail in group {
-                if let detail = pokemonDetail {
-                    pokemonDetailList.append(detail)
-                    pokemonInfoList.append(PokemonCell.UIModel(thumbnail: detail.sprites.other?.officialArtwork.frontDefault ?? "", name: detail.name, pokedexNumber: detail.id))
-                }
-            }
-            pokemonInfoList.sort { $0.pokedexNumber < $1.pokedexNumber }
-            self.pokemonInfoList = pokemonInfoList // Triggers the publisher
-            
         }
     }
 }
