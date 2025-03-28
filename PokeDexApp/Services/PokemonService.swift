@@ -20,10 +20,9 @@ class PokemonService {
         self.client = client
     }
     
-    /// Fetches a list of Pokemons from the given URL string.
-    /// - Parameter urlString: The URL string to fetch the list of Pokemons from.
+    /// Fetches a list of Pokemons
     /// - Throws: An error if the URL is invalid or the network request fails.
-    func fetchPokemons(from urlString: String) async throws {
+    func fetchPokemons() async throws {
         guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=1025") else {
             throw URLError(.badURL)
         }

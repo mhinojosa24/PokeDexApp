@@ -14,7 +14,7 @@ protocol PokemonVM {
 
 class PokeDexListVM: PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)?
-    private let service: PokemonService
+    private let inventory: [PokemonDetailModel]
     private(set) var pokemonDetailList: [PokemonDetail] = []
     
     private var pokemonInfoList: [PokemonCell.UIModel] = [] {
@@ -23,8 +23,8 @@ class PokeDexListVM: PokemonVM {
         }
     }
     
-    init(service: PokemonService) {
-        self.service = service
+    init(inventory: [PokemonDetailModel]) {
+        self.inventory = inventory
     }
     
     func populate() async throws {

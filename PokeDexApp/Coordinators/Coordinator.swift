@@ -27,8 +27,9 @@ class ApplicationCoordinator: Coordinator {
     }
     
     func start() {
-        let pokeDexListCoordinator = PokeDexCoordinator(navigationController: navigationController)
-        pokeDexListCoordinator.start()
+        let splashCoordinator = SplashCoordinator(navigationController: navigationController)
+        splashCoordinator.start()
         window.makeKeyAndVisible()
     }
 }
+
