@@ -6,6 +6,7 @@
 //
 
 // MARK: - Pokemon Detail
+// TODO: rename all struct response
 struct PokemonDetail: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
@@ -50,13 +51,13 @@ struct ShowDown: Decodable {
 
 // MARK: - Pokemon Type
 struct PokemonType: Decodable {
-    let name: String?
-    let url: String? // Make call to endpoint to get pokemo type detail
+    let type: TypeDetail
 }
 
 // MARK: - Pokemon Type Detail
 struct TypeDetail: Decodable {
-    let sprites: [TypeSprite]
+    let name: String
+    let url: String // call endpoint to download icon
 }
 
 // MARK: - Type Sprite
