@@ -25,7 +25,11 @@ class PokeDexListVM: PokemonVM {
     func populate() async throws {
         do {
             let inventory = try PokemonDataManager.shared.getAllPokemonDetails()
-            pokemonInfoList = inventory.map({ PokemonCell.UIModel(thumbnail: $0.sprite.officialArtwork, name: $0.name, pokedexNumber: $0.id) })
+            pokemonInfoList = inventory.map({ PokemonCell.UIModel(thumbnail: $0.sprite.officialArtwork,
+                                                                  name: $0.name,
+                                                                  pokedexNumber: $0.id,
+                                                                  colorType: .customColor($0.species.color))
+            })
         } catch {
             throw error
         }
