@@ -29,10 +29,11 @@ class PokemonService {
         
         do {
             let dataTaskResult = try await client.fetchData(url)
-            let parsedResult = try client.parseHTTPResponse(with: dataTaskResult)
+            let parsedResult = try client.validateHTTPResponse(with: dataTaskResult)
             let response = try JSONDecoder().decode(Response.self, from: parsedResult)
             try await fetchPokemonDetails(from: response)
         } catch {
+            print(error.localizedDescription)
             throw error
         }
     }
@@ -66,8 +67,17 @@ class PokemonService {
         taskGroup.addTask {
             do {
                 guard let url = URL(string: pokemon.url) else { throw URLError(.badURL) }
-                let parsedResponse = try self.client.parseHTTPResponse(with: try await self.client.fetchData(url))
-                return try JSONDecoder().decode(PokemonDetail.self, from: parsedResponse)
+                let parsedResponse = try self.client.validateHTTPResponse(with: try await self.client.fetchData(url))
+                var pokemonDetail = try JSONDecoder().decode(PokemonDetail.self, from: parsedResponse)
+                
+                guard let speciesURL = URL(string: pokemonDetail.species.url) else { throw URLError(.badURL) }
+                let speciesResponseData = try await self.client.fetchData(speciesURL)
+                let parsedSpeciesResponse = try self.client.validateHTTPResponse(with: speciesResponseData)
+                
+                let speciesDetailResponse = try JSONDecoder().decode(SpeciesDetail.self, from: parsedSpeciesResponse)
+
+                pokemonDetail.species.color = speciesDetailResponse.color
+                return pokemonDetail
             } catch {
                 return nil
             }
