@@ -10,10 +10,25 @@
 struct PokemonDetail: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
+    var species: Species // Species info
     let sprites: Sprite // Thumbnail image
     let stats: [Stat] // Stats info of pokemon
     let types: [PokemonType] // Type of pokemon
     let weight: Int // Weight of pokemon
+}
+
+struct Species: Decodable {
+    let name: String
+    let url: String
+    var color: Color?
+}
+
+struct SpeciesDetail: Decodable {
+    let color: Color
+}
+
+struct Color: Decodable {
+    let name: String
 }
 
 // MARK: - Sprite
