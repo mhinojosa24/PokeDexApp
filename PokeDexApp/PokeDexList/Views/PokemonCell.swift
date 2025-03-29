@@ -13,6 +13,7 @@ class PokemonCell: UICollectionViewCell {
         let thumbnail: String
         let name: String
         let pokedexNumber: Int
+        let colorType: ColorType
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(pokedexNumber)
@@ -60,7 +61,6 @@ class PokemonCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = #colorLiteral(red: 0.9206994176, green: 0.7358378768, blue: 0.7089307904, alpha: 1)
         setupLayouts()
     }
     
@@ -93,5 +93,6 @@ class PokemonCell: UICollectionViewCell {
         thumbnailImageView.imageURLString = model.thumbnail
         nameLabel.text = model.name
         numberLabel.text = model.pokedexNumber.description
+        contentView.backgroundColor = model.colorType.color
     }
 }
