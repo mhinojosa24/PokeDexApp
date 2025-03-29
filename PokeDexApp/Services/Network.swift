@@ -11,7 +11,7 @@ import Foundation
 // MARK: - API Client Protocol
 protocol APIClient {
     func fetchData(_ url: URL) async throws -> (data: Data, response: URLResponse)
-    func parseHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data
+    func validateHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data
 }
 
 // MARK: - Network Client
@@ -48,7 +48,7 @@ class NetworkClient: APIClient {
         return try await URLSession.shared.data(from: url)
     }
     
-    func parseHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data {
+    func validateHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data {
         guard let httpResponse = dataTaskResult.response as? HTTPURLResponse else {
             throw NetworkClient.HTTPError.invalidResponse(dataTaskResult.data)
         }
