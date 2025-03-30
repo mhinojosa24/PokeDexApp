@@ -39,7 +39,6 @@ class SplashCoordinator: Coordinator {
 
 extension SplashCoordinator: SplashDelegate {
     func didLoadSplash() {
-        let dataManager = PokemonDataManager.shared
         if dataManager.hasStoredItems() {
             showPokeDexList()
         } else {
