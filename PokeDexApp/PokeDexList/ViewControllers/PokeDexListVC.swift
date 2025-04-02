@@ -49,21 +49,11 @@ class PokeDexListVC: UIViewController {
     
     private func setupNavigationBar() {
         view.backgroundColor = .white
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundEffect = UIBlurEffect(style: .light)
-        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
-        
+        navigationController?.configureNavigationBarAppearance()
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.title = "PokéDex"
         navigationItem.largeTitleDisplayMode = .automatic
-        navigationItem.hidesSearchBarWhenScrolling = false
-        navigationItem.searchController = searchController
-        
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
     
     private func setupLayouts() {
@@ -117,7 +107,7 @@ class PokeDexListVC: UIViewController {
         // Add padding
         item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         // 2 columns
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.5/5)) // 2/7
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.35/5)) // 2/7
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
         // Section
         let section = NSCollectionLayoutSection(group: group)
