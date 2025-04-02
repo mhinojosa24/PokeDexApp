@@ -8,17 +8,36 @@
 import Foundation
 import UIKit
 
+
 /// `ImageCacheManager` is a singleton class responsible for managing image caching and retrieval in the application.
 /// It leverages `NSCache` to cache images in memory and an `APIClient` for fetching images from the network when not available in the cache.
 final class ImageCacheManager {
-    static let shared = ImageCacheManager(client: NetworkClient())
+    // MARK: - Error Handling
+    /// Enum to handle errors related to image loading and caching operations.
+    enum LoadError: Error {
+        case imageConversionFailed
+        case networkError(String)
+
+        var localizedDescription: String {
+            switch self {
+            case .imageConversionFailed:
+                return "Failed to convert data to UIImage"
+            case .networkError(let message):
+                return "Network error: \(message)"
+            }
+        }
+    }
+
     
+    static let shared = ImageCacheManager(client: NetworkClient())
+
     private let cache: NSCache<NSString, UIImage>
     private let client: APIClient
     private let cacheExpiryInterval: TimeInterval = 86400 // 24 hours in seconds
     private var cacheTimeStamps: [NSString: Date]
     private let cacheQueue = DispatchQueue(label: "com.pokedexapp.imagecache", attributes: .concurrent)
 
+    
     private init(client: APIClient, cache: NSCache<NSString, UIImage> = NSCache<NSString, UIImage>()) {
         self.client = client
         self.cache = cache
@@ -30,69 +49,85 @@ final class ImageCacheManager {
         // Schedules regular cache clearing.
         scheduleRegularCacheClearing()
     }
-    
-    /// Loads an image from a given URL, either from the cache or by fetching it from the network if not cached.
-    /// - Parameters:
-    ///   - imageURL: The `NSURL` of the image to load.
-    ///   - completion: A completion handler that returns an optional `UIImage`.
+
+    /// Loads an image from the cache or fetches it from the network if not available in the cache.
+    /// - Parameter imageURL: The URL of the image to load.
+    /// - Throws: `LoadError` if image conversion fails or network fetching fails.
+    /// - Returns: The loaded `UIImage` if successful, otherwise `nil`.
     func load(_ imageURL: URL) async throws -> UIImage? {
         let urlString = NSString(string: imageURL.absoluteString)
-        
-        var shouldFetch = false
-        cacheQueue.sync {
-            shouldFetch = cache.object(forKey: urlString) == nil || isCacheExpired(forKey: urlString)
-        }
-        
-        if !shouldFetch {
-            return cache.object(forKey: urlString)
+
+        // Check if image is already cached and still valid
+        if let cachedImage = getCachedImage(forKey: urlString) {
+            return cachedImage
         }
 
         do {
-            let (data, _) = try await client.fetchData(imageURL.absoluteURL)
+            let (data, _) = try await client.fetchData(imageURL)
             guard let image = UIImage(data: data) else {
-                throw NSError(domain: "ImageConversionError", code: 1001, userInfo: [NSLocalizedDescriptionKey: "Failed to convert data to UIImage"])
-            }
-            
-            cacheQueue.async(flags: .barrier) { [weak self, urlString = String(urlString)] in
-                guard let self = self else { return }
-                self.cache.setObject(image, forKey: NSString(string: urlString))
-                self.cacheTimeStamps[NSString(string: urlString)] = Date()
+                throw LoadError.imageConversionFailed // Handle image conversion failure
             }
 
+            storeImageInCache(image, forKey: urlString)
             return image
         } catch {
-            throw NSError(domain: "NetworkError", code: 1002, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
+            throw LoadError.networkError(error.localizedDescription) // Handle network errors
         }
     }
     
-    /// Clears the cache to free up memory.
-    @objc func clearCache() {
-        cache.removeAllObjects()
-        cacheTimeStamps.removeAll()
+    /// Retrieves an image from the cache if available and not expired.
+    /// - Parameter key: The key associated with the cached image.
+    /// - Returns: The cached `UIImage` if available and valid, otherwise `nil`.
+    private func getCachedImage(forKey key: NSString) -> UIImage? {
+        cacheQueue.sync {
+            guard let image = cache.object(forKey: key), !isCacheExpired(forKey: key) else {
+                return nil
+            }
+            return image
+        }
+    }
+
+    /// Stores an image in the cache with the given key.
+    /// - Parameter image: The image to store.
+    /// - Parameter key: The key to associate the image with in the cache.
+    private func storeImageInCache(_ image: UIImage, forKey key: NSString) {
+        cacheQueue.async(flags: .barrier) { [weak self] in
+            guard let self = self else { return }
+            self.cache.setObject(image, forKey: key)
+            self.cacheTimeStamps[key] = Date() // Store the timestamp for cache expiry management
+        }
     }
     
-    /// Clears the cache based on a custom expiry policy.
+    /// Clears all cached images and timestamps to free up memory.
+    @objc func clearCache() {
+        cache.removeAllObjects() // Remove all cached images
+        cacheTimeStamps.removeAll() // Clear the timestamps for cache expiry
+    }
+    
+    /// Clears images from the cache that have exceeded the expiry time.
     @objc private func clearCacheOnExpiry() {
         let now = Date()
         for (key, timestamp) in cacheTimeStamps {
             if now.timeIntervalSince(timestamp) > cacheExpiryInterval {
-                cache.removeObject(forKey: key)
-                cacheTimeStamps.removeValue(forKey: key)
+                cache.removeObject(forKey: key) // Remove expired images from cache
+                cacheTimeStamps.removeValue(forKey: key) // Remove the corresponding timestamp
             }
         }
     }
     
-    /// Checks if the cache is expired for a given key.
+    /// Checks if the cached image associated with the given key has expired.
+    /// - Parameter key: The key associated with the cached image.
+    /// - Returns: `true` if the cache is expired, otherwise `false`.
     private func isCacheExpired(forKey key: NSString) -> Bool {
         guard let timestamp = cacheTimeStamps[key] else {
             return false
         }
-        let expired = Date().timeIntervalSince(timestamp) > cacheExpiryInterval
+        let expired = Date().timeIntervalSince(timestamp) > cacheExpiryInterval // Determine if the cache is expired
         return expired
     }
     
-    /// Schedules regular cache clearing.
+    /// Schedules a regular cache clearing operation to remove expired images daily.
     private func scheduleRegularCacheClearing() {
-        Timer.scheduledTimer(timeInterval: 86400, target: self, selector: #selector(clearCacheOnExpiry), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 86400, target: self, selector: #selector(clearCacheOnExpiry), userInfo: nil, repeats: true) // Schedule daily cache clearing
     }
 }
