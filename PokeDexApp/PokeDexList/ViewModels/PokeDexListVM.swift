@@ -10,6 +10,8 @@ protocol PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)? { get set }
     var filterPublisher: (([PokemonCell.UIModel]) -> Void)? { get set }
     func populate() async throws
+    func filterPokemon(by searchText: String)
+    func getPokemonInfo(by id: Int) async throws -> PokemonDetailModel?
 }
 
 
@@ -51,5 +53,13 @@ class PokeDexListVM: PokemonVM {
         }
         
         filterPublisher?(filteredPokemon)
+    }
+    
+    func getPokemonInfo(by id: Int) async throws -> PokemonDetailModel? {
+        do {
+            return try PokemonDataManager.shared.getPokemonDetail(by: id)
+        } catch {
+            throw error
+        }
     }
 }

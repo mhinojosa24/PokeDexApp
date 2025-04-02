@@ -145,7 +145,14 @@ class PokeDexListVC: UIViewController {
 extension PokeDexListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let item = dataSource.itemIdentifier(for: indexPath) {
-            delegate?.didSelectPokemon()
+            Task {
+                do {
+                    guard let pokemonDetail = try await viewModel.getPokemonInfo(by: item.pokedexNumber) else { return }
+                    delegate?.didSelectPokemon(pokemonDetail)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
         }
     }
 }
@@ -154,8 +161,6 @@ extension PokeDexListVC: UICollectionViewDelegate {
 extension PokeDexListVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
-        if let viewModel = viewModel as? PokeDexListVM {
-            viewModel.filterPokemon(by: text)
-        }
+        viewModel.filterPokemon(by: text)
     }
 }
