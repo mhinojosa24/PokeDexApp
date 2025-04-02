@@ -30,6 +30,7 @@ class PokeDexListVC: UIViewController {
     private var viewModel: PokemonVM
     private var dataSource: PokeDexDiffableDataSource!
     private var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
+    var delegate: PokeDexDelegate?
     
     init(viewModel: PokemonVM) {
         self.viewModel = viewModel
@@ -144,7 +145,7 @@ class PokeDexListVC: UIViewController {
 extension PokeDexListVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let item = dataSource.itemIdentifier(for: indexPath) {
-            print(item)
+            delegate?.didSelectPokemon()
         }
     }
 }
