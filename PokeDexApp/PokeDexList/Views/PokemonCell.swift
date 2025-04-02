@@ -34,7 +34,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = .black
+        label.textColor = #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1)
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -43,7 +43,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var numberLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = .black
+        label.textColor = #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1)
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -94,7 +94,8 @@ class PokemonCell: UICollectionViewCell {
     func configure(with model: UIModel) {
         thumbnailImageView.imageURLString = model.thumbnail
         nameLabel.text = model.name
-        numberLabel.text = model.pokedexNumber.description
+        let formattedNumber = String(format: "#%03d", model.pokedexNumber)
+        numberLabel.text = formattedNumber
         contentView.backgroundColor = model.colorType.color
     }
 }
