@@ -60,12 +60,11 @@ class PokeDexListVC: UIViewController {
     }
     
     private func setupLayouts() {
-        view.addSubview(collectionView)
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 17),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -17),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        collectionView.constrain(to: view, edges: [
+            .top(20),
+            .leading(17),
+            .trailing(17),
+            .bottom(0)
         ])
     }
     

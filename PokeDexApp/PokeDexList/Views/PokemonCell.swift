@@ -78,16 +78,20 @@ class PokemonCell: UICollectionViewCell {
     }
     
     private func setupLayouts() {
-        contentView.addSubview(stackView)
         layer.cornerRadius = 15
         layer.masksToBounds = true
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            thumbnailImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.75),
-            thumbnailImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.75)
+        // Stack View
+        stackView.constrain(to: contentView, edges: [
+            .top(12),
+            .leading(0),
+            .trailing(0),
+            .bottom(10)
+        ])
+        
+        // Thumbnail Image View
+        thumbnailImageView.constrain(to: stackView, edges: [
+            .heightMultiplier(0.75),
+            .widthMultiplier(0.75)
         ])
     }
     
