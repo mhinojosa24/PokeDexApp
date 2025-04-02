@@ -67,7 +67,7 @@ class PokemonCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         // NOTE: Cancelling the task is important to avoid image flickering when reusing cells.
-        thumbnailImageView.image = nil
+        thumbnailImageView.image = UIImage(systemName: "photo.fill")
         thumbnailImageView.currentTask?.cancel() // shout to josh for the tip
     }
     
