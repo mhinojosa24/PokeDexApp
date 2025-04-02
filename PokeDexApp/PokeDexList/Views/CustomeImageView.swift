@@ -17,7 +17,9 @@ class CustomImageView: UIImageView {
             guard oldValue != imageURLString else {
                 return
             }
-            update()
+            Task {
+                await update()
+            }
         }
     }
     
@@ -26,7 +28,9 @@ class CustomImageView: UIImageView {
     init(frame: CGRect = .zero, imageURLString: String? = nil) {
         self.imageURLString = imageURLString
         super.init(frame: frame)
-        update()
+        Task {
+            await update()
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -36,15 +40,18 @@ class CustomImageView: UIImageView {
     /// Loads an image from the `imageURL` asynchronously using the `ImageCacheManager` and sets it to the image view.
     /// If the `imageURL` is `nil` or the image fails to load, no image is set.
     @MainActor
-    private func update() {
-        guard let urlString = imageURLString, let url = URL(string: urlString) as? NSURL else {
-            self.image = .init(systemName: "photo.fill")
+    private func update() async {
+        guard let urlString = imageURLString, let url = URL(string: urlString) else {
+            self.image = UIImage(systemName: "photo.fill")
             return
         }
-        // Use the image manager to load the image asynchronously.
+        
         currentTask = Task {
-            self.image = await ImageCacheManager.shared.load(url)
+            do {
+                self.image = try await ImageCacheManager.shared.load(url)
+            } catch {
+                self.image = UIImage(systemName: "photo.fill")
+            }
         }
     }
 }
-
