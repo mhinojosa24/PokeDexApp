@@ -28,7 +28,6 @@ final class ImageCacheManager {
         }
     }
 
-    
     static let shared = ImageCacheManager(client: NetworkClient())
 
     private let cache: NSCache<NSString, UIImage>
