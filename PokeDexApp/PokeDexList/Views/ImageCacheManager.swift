@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 /// `ImageCacheManager` is a singleton class responsible for managing image caching and retrieval in the application.
 /// It leverages `NSCache` to cache images in memory and an `APIClient` for fetching images from the network when not available in the cache.
 final class ImageCacheManager {
@@ -18,7 +17,8 @@ final class ImageCacheManager {
     private let client: APIClient
     private let cacheExpiryInterval: TimeInterval = 86400 // 24 hours in seconds
     private var cacheTimeStamps: [NSString: Date]
-    
+    private let cacheQueue = DispatchQueue(label: "com.pokedexapp.imagecache", attributes: .concurrent)
+
     private init(client: APIClient, cache: NSCache<NSString, UIImage> = NSCache<NSString, UIImage>()) {
         self.client = client
         self.cache = cache
@@ -35,25 +35,33 @@ final class ImageCacheManager {
     /// - Parameters:
     ///   - imageURL: The `NSURL` of the image to load.
     ///   - completion: A completion handler that returns an optional `UIImage`.
-    func load(_ imageURL: NSURL) async -> UIImage? {
-        let urlString = NSString(string: imageURL.absoluteString ?? "")
-        if let cachedImage = cache.object(forKey: urlString), !isCacheExpired(forKey: urlString) {
-            return cachedImage
+    func load(_ imageURL: URL) async throws -> UIImage? {
+        let urlString = NSString(string: imageURL.absoluteString)
+        
+        var shouldFetch = false
+        cacheQueue.sync {
+            shouldFetch = cache.object(forKey: urlString) == nil || isCacheExpired(forKey: urlString)
         }
         
+        if !shouldFetch {
+            return cache.object(forKey: urlString)
+        }
+
         do {
-            let (data, _) = try await client.fetchData(imageURL as URL)
-            if let image = UIImage(data: data) {
-                cache.setObject(image, forKey: urlString)
-                cacheTimeStamps[urlString] = Date()
-                return image
-            } else {
-                print("Failed to create UIImage from data")
-                return nil
+            let (data, _) = try await client.fetchData(imageURL.absoluteURL)
+            guard let image = UIImage(data: data) else {
+                throw NSError(domain: "ImageConversionError", code: 1001, userInfo: [NSLocalizedDescriptionKey: "Failed to convert data to UIImage"])
             }
+            
+            cacheQueue.async(flags: .barrier) { [weak self, urlString = String(urlString)] in
+                guard let self = self else { return }
+                self.cache.setObject(image, forKey: NSString(string: urlString))
+                self.cacheTimeStamps[NSString(string: urlString)] = Date()
+            }
+
+            return image
         } catch {
-            print(error.localizedDescription)
-            return nil
+            throw NSError(domain: "NetworkError", code: 1002, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])
         }
     }
     
@@ -76,8 +84,11 @@ final class ImageCacheManager {
     
     /// Checks if the cache is expired for a given key.
     private func isCacheExpired(forKey key: NSString) -> Bool {
-        guard let timestamp = cacheTimeStamps[key] else { return false }
-        return Date().timeIntervalSince(timestamp) > cacheExpiryInterval
+        guard let timestamp = cacheTimeStamps[key] else {
+            return false
+        }
+        let expired = Date().timeIntervalSince(timestamp) > cacheExpiryInterval
+        return expired
     }
     
     /// Schedules regular cache clearing.
@@ -85,4 +96,3 @@ final class ImageCacheManager {
         Timer.scheduledTimer(timeInterval: 86400, target: self, selector: #selector(clearCacheOnExpiry), userInfo: nil, repeats: true)
     }
 }
-
