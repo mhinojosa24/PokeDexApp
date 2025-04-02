@@ -31,7 +31,7 @@ enum ColorType {
             case "red":
                 return UIColor.systemRed.withAlphaComponent(0.25)
             case "white":
-                return UIColor.white.withAlphaComponent(0.25)
+                return UIColor.lightGray.withAlphaComponent(0.25)
             case "yellow":
                 return UIColor.systemYellow.withAlphaComponent(0.25)
             default:
