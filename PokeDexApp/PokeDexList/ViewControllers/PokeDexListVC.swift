@@ -19,7 +19,6 @@ class PokeDexListVC: UIViewController {
     
     lazy var searchController: UISearchController = {
         let searchVC = UISearchController(searchResultsController: nil)
-        searchVC.hidesNavigationBarDuringPresentation = false
         searchVC.obscuresBackgroundDuringPresentation = false
         searchVC.searchBar.placeholder = "Name or number"
         searchVC.searchBar.overrideUserInterfaceStyle = .light
@@ -49,16 +48,20 @@ class PokeDexListVC: UIViewController {
     }
     
     private func setupNavigationBar() {
-        title = "PokéDex"
         view.backgroundColor = .white
-        navigationController?.navigationBar.prefersLargeTitles = true
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundEffect = UIBlurEffect(style: .light)
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.black]
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        
+        navigationItem.title = "PokéDex"
+        navigationItem.largeTitleDisplayMode = .automatic
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.searchController = searchController
         
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
     }
@@ -66,7 +69,7 @@ class PokeDexListVC: UIViewController {
     private func setupLayouts() {
         view.addSubview(collectionView)
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 17),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 20),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 17),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -17),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
