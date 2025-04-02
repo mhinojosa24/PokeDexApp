@@ -67,14 +67,9 @@ class PokemonDataManager {
     /// Fetches a `PokemonDetailModel` object by its ID.
     /// - Parameter id: The ID of the `PokemonDetailModel` to be fetched.
     /// - Returns: The `PokemonDetailModel` object if found, otherwise `nil`.
-    func getPokemonDetail(by id: Int) -> PokemonDetailModel? {
+    func getPokemonDetail(by id: Int) throws -> PokemonDetailModel? {
         let fetchDescriptor = getFetchDescriptor(.byID(id))
-        do {
-            return try context.fetch(fetchDescriptor).first
-        } catch {
-            print("Failed to fetch PokemonDetail: \(error.localizedDescription)")
-            return nil
-        }
+        return try context.fetch(fetchDescriptor).first
     }
 
     /// Fetches all `PokemonDetailModel` objects.
