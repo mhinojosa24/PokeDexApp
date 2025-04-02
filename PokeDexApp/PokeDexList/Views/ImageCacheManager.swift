@@ -57,7 +57,7 @@ final class ImageCacheManager {
         let urlString = NSString(string: imageURL.absoluteString)
 
         // Check if image is already cached and still valid
-        if let cachedImage = getCachedImage(forKey: urlString) {
+        if let cachedImage = await getCachedImage(forKey: urlString) {
             return cachedImage
         }
 
@@ -77,12 +77,17 @@ final class ImageCacheManager {
     /// Retrieves an image from the cache if available and not expired.
     /// - Parameter key: The key associated with the cached image.
     /// - Returns: The cached `UIImage` if available and valid, otherwise `nil`.
-    private func getCachedImage(forKey key: NSString) -> UIImage? {
-        cacheQueue.sync {
-            guard let image = cache.object(forKey: key), !isCacheExpired(forKey: key) else {
-                return nil
+    private func getCachedImage(forKey key: NSString) async -> UIImage? {
+        await withCheckedContinuation { continuation in
+            cacheQueue.async { [weak self] in
+            // TODO: fix this warning issue with self
+                guard let self = self else { return }
+                if let image = self.cache.object(forKey: key), !self.isCacheExpired(forKey: key) {
+                    continuation.resume(returning: image)
+                } else {
+                    continuation.resume(returning: nil)
+                }
             }
-            return image
         }
     }
 
