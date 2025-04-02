@@ -49,7 +49,7 @@ class PokeDexListVC: UIViewController {
     
     private func setupNavigationBar() {
         view.backgroundColor = .white
-        navigationController?.configureNavigationBarAppearance()
+        navigationController?.configureNavigationBarAppearance(titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1), largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1))
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.title = "PokéDex"
