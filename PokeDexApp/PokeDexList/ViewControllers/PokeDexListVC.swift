@@ -13,12 +13,14 @@ class PokeDexListVC: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .white
+        collectionView.delegate = self
         collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.identifier)
         return collectionView
     }()
     
     lazy var searchController: UISearchController = {
         let searchVC = UISearchController(searchResultsController: nil)
+        searchVC.searchResultsUpdater = self
         searchVC.obscuresBackgroundDuringPresentation = false
         searchVC.searchBar.placeholder = "Name or number"
         searchVC.searchBar.overrideUserInterfaceStyle = .light
@@ -79,15 +81,38 @@ class PokeDexListVC: UIViewController {
             guard let self = self else { return }
             self.applySnapshot(with: pokemons)
         }
+        
+        viewModel.filterPublisher = { [weak self] pokemons in
+            guard let self = self else { return }
+            self.applyFilter(with: pokemons)
+        }
     }
+    
     
     private func applySnapshot(with pokemons: [PokemonCell.UIModel]) {
         guard dataSource != nil else { return }
-        if snapshot.sectionIdentifiers.isEmpty {
-            snapshot.appendSections([.main])
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if self.snapshot.sectionIdentifiers.isEmpty {
+                self.snapshot.appendSections([.main])
+            }
+            self.snapshot.appendItems(pokemons, toSection: .main)
+            self.dataSource.apply(self.snapshot, animatingDifferences: true)
         }
-        snapshot.appendItems(pokemons, toSection: .main)
-        dataSource.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func applyFilter(with pokemons: [PokemonCell.UIModel]) {
+        guard dataSource != nil else { return }
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            var newSnapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
+            newSnapshot.appendSections([.main])
+            newSnapshot.appendItems(pokemons, toSection: .main)
+            self.dataSource.apply(newSnapshot, animatingDifferences: true)
+        }
+        
     }
     
     private func populateCollectionView() {
@@ -115,3 +140,21 @@ class PokeDexListVC: UIViewController {
     }
 }
 
+
+extension PokeDexListVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let item = dataSource.itemIdentifier(for: indexPath) {
+            print(item)
+        }
+    }
+}
+
+
+extension PokeDexListVC: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = searchController.searchBar.text else { return }
+        if let viewModel = viewModel as? PokeDexListVM {
+            viewModel.filterPokemon(by: text)
+        }
+    }
+}

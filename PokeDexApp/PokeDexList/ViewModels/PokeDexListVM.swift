@@ -8,12 +8,14 @@
 import Foundation
 protocol PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)? { get set }
+    var filterPublisher: (([PokemonCell.UIModel]) -> Void)? { get set }
     func populate() async throws
 }
 
 
 class PokeDexListVM: PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)?
+    var filterPublisher: (([PokemonCell.UIModel]) -> Void)?
     private(set) var pokemonDetailList: [PokemonDetail] = []
     
     private var pokemonInfoList: [PokemonCell.UIModel] = [] {
@@ -33,5 +35,21 @@ class PokeDexListVM: PokemonVM {
         } catch {
             throw error
         }
+    }
+    
+    // This method filters the Pokémon based on the search query
+    func filterPokemon(by searchText: String) {
+        guard !searchText.isEmpty else {
+            filterPublisher?(pokemonInfoList) // If search text is empty, return all data
+            return
+        }
+        
+        let filteredPokemon = pokemonInfoList.filter { model in
+            // Check if the search text matches name or pokedex number
+            return model.name.lowercased().hasPrefix(searchText.lowercased()) ||
+            String(model.pokedexNumber).hasPrefix(searchText)
+        }
+        
+        filterPublisher?(filteredPokemon)
     }
 }
