@@ -33,7 +33,8 @@ class PokemonCell: UICollectionViewCell {
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.font = .systemFont(ofSize: 15, weight: .bold)
+        label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -41,7 +42,8 @@ class PokemonCell: UICollectionViewCell {
     
     lazy var numberLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 12, weight: .regular)
+        label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.textColor = .black
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -84,8 +86,8 @@ class PokemonCell: UICollectionViewCell {
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
-            thumbnailImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.65),
-            thumbnailImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.65)
+            thumbnailImageView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.75),
+            thumbnailImageView.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.75)
         ])
     }
     
