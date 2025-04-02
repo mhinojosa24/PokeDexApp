@@ -7,10 +7,10 @@
 
 class PokemonDetailVM {
     
-//    var pokemon: Pokemon
+    var pokemonDetails: PokemonDetailModel
     
-    init() {
-//        self.pokemon = pokemon
+    init(pokemonDetails: PokemonDetailModel) {
+        self.pokemonDetails = pokemonDetails
     }
 }
 

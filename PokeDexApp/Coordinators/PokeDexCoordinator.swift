@@ -8,7 +8,7 @@
 import UIKit
 
 protocol PokeDexDelegate {
-    func didSelectPokemon()
+    func didSelectPokemon(_ pokemonDetails: PokemonDetailModel)
 }
 
 /// `PokeDexCoordinator` is responsible for managing the navigation flow for the PokeDex feature.
@@ -36,15 +36,15 @@ class PokeDexCoordinator: Coordinator {
         }
     }
     
-    func showDetails() {
-        let viewModel = PokemonDetailVM()
+    func showDetails(with pokemonDetails: PokemonDetailModel) {
+        let viewModel = PokemonDetailVM(pokemonDetails: pokemonDetails)
         let pokemonDetailVC = PokemonDetailVC(viewModel: viewModel)
         navigationController.pushViewController(pokemonDetailVC, animated: true)
     }
 }
 
 extension PokeDexCoordinator: PokeDexDelegate {
-    func didSelectPokemon() {
-        showDetails()
+    func didSelectPokemon(_ pokemonDetails: PokemonDetailModel) {
+        showDetails(with: pokemonDetails)
     }
 }
