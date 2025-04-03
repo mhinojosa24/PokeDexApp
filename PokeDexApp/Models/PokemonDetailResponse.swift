@@ -1,5 +1,5 @@
 //
-//  PokemonDetail.swift
+//  PokemonDetailResponse.swift
 //  PokeDexApp
 //
 //  Created by Maximo Hinojosa on 3/25/25.
@@ -7,7 +7,7 @@
 
 // MARK: - Pokemon Detail
 // TODO: rename all struct response
-struct PokemonDetail: Decodable {
+struct PokemonDetailResponse: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
     var species: Species // Species info
@@ -17,16 +17,19 @@ struct PokemonDetail: Decodable {
     let weight: Int // Weight of pokemon
 }
 
+// MARK: - Species
 struct Species: Decodable {
     let name: String
     let url: String
     var color: Color?
 }
 
+// MARK: - Species Detail
 struct SpeciesDetail: Decodable {
     let color: Color
 }
 
+// MARK: - Color
 struct Color: Decodable {
     let name: String
 }
@@ -35,6 +38,10 @@ struct Color: Decodable {
 struct Sprite: Decodable {
     let other: Other?
     let showdown: ShowDown? // GIF url object
+    
+    var gifURL: String? {
+            return showdown?.frontDefault
+        }
 }
 
 // MARK: - Other
