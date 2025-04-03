@@ -43,7 +43,7 @@ class PokemonService {
     /// - Throws: An error if the network request or parsing fails.
     fileprivate func fetchPokemonDetails(from response: Response) async throws {
         let dataManager = PokemonDataManager.shared
-        await withTaskGroup(of: PokemonDetail?.self) { [weak self] group in
+        await withTaskGroup(of: PokemonDetailResponse?.self) { [weak self] group in
             guard let self = self else { return }
             
             response.results.forEach { [weak self] pokemon in
@@ -63,18 +63,18 @@ class PokemonService {
     /// - Parameters:
     ///   - taskGroup: The task group to add the task to.
     ///   - pokemon: The Pokemon to fetch the details for.
-    fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetail?>, for pokemon: Pokemon) {
+    fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetailResponse?>, for pokemon: Pokemon) {
         taskGroup.addTask {
             do {
                 guard let url = URL(string: pokemon.url) else { throw URLError(.badURL) }
                 let parsedResponse = try self.client.validateHTTPResponse(with: try await self.client.fetchData(url))
-                var pokemonDetail = try JSONDecoder().decode(PokemonDetail.self, from: parsedResponse)
+                var pokemonDetail = try JSONDecoder().decode(PokemonDetailResponse.self, from: parsedResponse)
                 
                 guard let speciesURL = URL(string: pokemonDetail.species.url) else { throw URLError(.badURL) }
                 let speciesResponseData = try await self.client.fetchData(speciesURL)
                 let parsedSpeciesResponse = try self.client.validateHTTPResponse(with: speciesResponseData)
                 
-                let speciesDetailResponse = try JSONDecoder().decode(SpeciesDetail.self, from: parsedSpeciesResponse)
+                let speciesDetailResponse = try JSONDecoder().decode(SpeciesDetailResponse.self, from: parsedSpeciesResponse)
 
                 pokemonDetail.species.color = speciesDetailResponse.color
                 return pokemonDetail
