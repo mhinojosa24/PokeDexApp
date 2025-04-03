@@ -47,7 +47,7 @@ class PokemonDataManager {
 
     /// Saves a `PokemonDetail` object to the data context.
     /// - Parameter detail: The `PokemonDetail` object to be saved.
-    func savePokemonDetail(_ detail: PokemonDetail) {
+    func savePokemonDetail(_ detail: PokemonDetailResponse) {
         let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
         let fetchDescriptor = getFetchDescriptor(.byID(detail.id))
         
@@ -91,7 +91,7 @@ class PokemonDataManager {
     /// Converts a `PokemonDetail` object to a `PokemonDetailModel` object.
     /// - Parameter pokemonDetail: The `PokemonDetail` object to be converted.
     /// - Returns: The corresponding `PokemonDetailModel` object.
-    func pokemonDetailModelFactory(pokemonDetail: PokemonDetail) -> PokemonDetailModel {
+    func pokemonDetailModelFactory(pokemonDetail: PokemonDetailResponse) -> PokemonDetailModel {
         let officialArtwork = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? ""
         let showdownGifURL = pokemonDetail.sprites.showdown?.frontDefault ?? ""
         
