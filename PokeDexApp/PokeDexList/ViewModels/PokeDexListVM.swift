@@ -18,7 +18,7 @@ protocol PokemonVM {
 class PokeDexListVM: PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)?
     var filterPublisher: (([PokemonCell.UIModel]) -> Void)?
-    private(set) var pokemonDetailList: [PokemonDetail] = []
+    private(set) var pokemonDetailList: [PokemonDetailResponse] = []
     
     private var pokemonInfoList: [PokemonCell.UIModel] = [] {
         didSet {
