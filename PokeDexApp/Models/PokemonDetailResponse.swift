@@ -10,34 +10,54 @@
 struct PokemonDetailResponse: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
-    var species: Species // Species info
-    let sprites: Sprite // Thumbnail image
-    let stats: [Stat] // Stats info of pokemon
-    let types: [PokemonType] // Type of pokemon
+    var species: SpeciesResponse // Species info
+    let sprites: SpriteResponse // Thumbnail image
+    let stats: [StatResponse] // Stats info of pokemon
+    let types: [PokemonTypeResponse] // Type of pokemon
     let weight: Int // Weight of pokemon
 }
 
 // MARK: - Species
-struct Species: Decodable {
+struct SpeciesResponse: Decodable {
     let name: String
     let url: String
-    var color: Color?
+    var detail: SpeciesDetailResponse?
 }
 
 // MARK: - Species Detail
-struct SpeciesDetail: Decodable {
-    let color: Color
+struct SpeciesDetailResponse: Decodable {
+    let color: ColorResponse
+    var flavorTextEntries: [FlavorTextResponse]?
+
+    enum CodingKeys: String, CodingKey {
+        case color
+        case flavorTextEntries = "flavor_text_entries"
+    }
 }
 
 // MARK: - Color
-struct Color: Decodable {
+struct ColorResponse: Decodable {
+    var name: String
+}
+
+struct FlavorTextResponse: Decodable {
+    let flavorText: String
+    let version: VersionResponse
+    
+    enum CodingKeys: String, CodingKey {
+        case flavorText = "flavor_text"
+        case version
+    }
+}
+
+struct VersionResponse: Decodable {
     let name: String
 }
 
 // MARK: - Sprite
-struct Sprite: Decodable {
-    let other: Other?
-    let showdown: ShowDown? // GIF url object
+struct SpriteResponse: Decodable {
+    let other: OtherResponse?
+    let showdown: ShowDownResponse? // GIF url object
     
     var gifURL: String? {
             return showdown?.frontDefault
@@ -45,8 +65,8 @@ struct Sprite: Decodable {
 }
 
 // MARK: - Other
-struct Other: Decodable {
-    let officialArtwork: OfficialArtwork
+struct OtherResponse: Decodable {
+    let officialArtwork: OfficialArtworkResponse
     
     enum CodingKeys: String, CodingKey {
         case officialArtwork = "official-artwork"
@@ -54,7 +74,7 @@ struct Other: Decodable {
 }
 
 // MARK: - OfficialArtwork
-struct OfficialArtwork: Decodable {
+struct OfficialArtworkResponse: Decodable {
     let frontDefault: String
     
     enum CodingKeys: String, CodingKey {
@@ -63,7 +83,7 @@ struct OfficialArtwork: Decodable {
 }
 
 // MARK: - ShowDown
-struct ShowDown: Decodable {
+struct ShowDownResponse: Decodable {
     let frontDefault: String
     
     enum CodingKeys: String, CodingKey {
@@ -71,20 +91,39 @@ struct ShowDown: Decodable {
     }
 }
 
-// MARK: - Pokemon Type
-struct PokemonType: Decodable {
-    let type: TypeDetail
+// MARK: - Pokemon Type Response
+struct PokemonTypeResponse: Decodable {
+    var type: TypeResponse
 }
 
 // MARK: - Pokemon Type Detail
-struct TypeDetail: Decodable {
+struct TypeResponse: Decodable {
     let name: String
     let url: String // call endpoint to download icon
+    var typeDetail: TypeDetailResponse?
+}
+
+struct TypeDetailResponse: Decodable {
+    let damageRelations: DamageRelationResponse
+    let sprites: TypeSpriteResponse
+    
+    enum CodingKeys: String, CodingKey {
+        case damageRelations = "damage_relations"
+        case sprites
+    }
+}
+
+struct DamageRelationResponse: Decodable {
+    let doubleDamageFrom: [TypeResponse]
+    
+    enum CodingKeys: String, CodingKey {
+        case doubleDamageFrom = "double_damage_from"
+    }
 }
 
 // MARK: - Type Sprite
-struct TypeSprite: Decodable {
-    let generationIII: Colosseum
+struct TypeSpriteResponse: Decodable {
+    let generationIII: ColosseumResponse
     
     enum CodingKeys: String, CodingKey {
         case generationIII = "generation-iii"
@@ -92,7 +131,7 @@ struct TypeSprite: Decodable {
 }
 
 // MARK: - Colosseum
-struct Colosseum: Decodable {
+struct ColosseumResponse: Decodable {
     let nameIcon: String // url string for pokemon species icon
     
     enum CodingKeys: String, CodingKey {
@@ -101,10 +140,10 @@ struct Colosseum: Decodable {
 }
 
 // MARK: - Stat
-struct Stat: Decodable {
+struct StatResponse: Decodable {
     let baseStat: Int
     let effort: Int
-    let stat: StatDetail
+    let stat: StatDetailResponse
     
     enum CodingKeys: String, CodingKey {
         case baseStat = "base_stat"
@@ -114,7 +153,7 @@ struct Stat: Decodable {
 }
 
 // MARK: - Stat Detail
-struct StatDetail: Decodable {
+struct StatDetailResponse: Decodable {
     let name: String
 }
 

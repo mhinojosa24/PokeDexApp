@@ -12,54 +12,44 @@ class PokemonDetailModel {
     @Attribute(.unique) var id: Int
     var name: String
     var sprite: SpriteModel
-    var species: SpeciesModel
+    var themeColor: String
+    var flavorDescription: String
     var stats: [StatModel]
-    var types: [PokemonTypeModel]
     var weight: Int
     
     init(id: Int,
          name: String,
-         species: SpeciesModel,
          sprite: SpriteModel,
+         themeColor: String,
+         flavorDescription: String,
          stats: [StatModel],
-         types: [PokemonTypeModel],
          weight: Int) {
         self.id = id
         self.name = name
-        self.species = species
         self.sprite = sprite
+        self.themeColor = themeColor
+        self.flavorDescription = flavorDescription
         self.stats = stats
-        self.types = types
         self.weight = weight
     }
     
     func update(_ object: PokemonDetailModel) {
         self.name = object.name
         self.sprite = object.sprite
+        self.themeColor = object.themeColor
+        self.flavorDescription = object.flavorDescription
         self.stats = object.stats
-        self.types = object.types
         self.weight = object.weight
     }
 }
 
 @Model
-class SpeciesModel {
-    var name: String
-    var color: String
-    
-    init(name: String, color: String) {
-        self.name = name
-        self.color = color
-    }
-}
-
-@Model
 class SpriteModel {
-    var officialArtwork: String
+    var artwork: String
     var showdownGifURL: String
     
     init(officialArtwork: String, showdownGifURL: String) {
-        self.officialArtwork = officialArtwork
+        self.artwork = officialArtwork
         self.showdownGifURL = showdownGifURL
     }
 }
