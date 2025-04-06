@@ -94,24 +94,21 @@ class PokemonDataManager {
     func pokemonDetailModelFactory(pokemonDetail: PokemonDetailResponse) -> PokemonDetailModel {
         let officialArtwork = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? ""
         let showdownGifURL = pokemonDetail.sprites.showdown?.frontDefault ?? ""
-        
-        let species = SpeciesModel(name: pokemonDetail.species.name, color: pokemonDetail.species.color?.name ?? "")
-        
-        let sprite = SpriteModel(officialArtwork: officialArtwork, showdownGifURL: showdownGifURL)
+        let themeColor = pokemonDetail.species.detail?.color.name ?? ""
+        let flavorDescription = pokemonDetail.species.detail?.flavorTextEntries?.first(where: { $0.version.name == "ruby" })?.flavorText ?? ""
+        let sprite = SpriteModel(officialArtwork: officialArtwork,
+                                 showdownGifURL: showdownGifURL)
         
         let stats = pokemonDetail.stats.map { StatModel(name: $0.stat.name,
                                                    baseStat: $0.baseStat,
                                                    effort: $0.effort)
         }
-        
-        let types = pokemonDetail.types.map { PokemonTypeModel(name: $0.type.name, iconURL: $0.type.url) }
-
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
-                                  species: species,
                                   sprite: sprite,
+                                  themeColor: themeColor,
+                                  flavorDescription: flavorDescription,
                                   stats: stats,
-                                  types: types,
                                   weight: pokemonDetail.weight)
     }
     

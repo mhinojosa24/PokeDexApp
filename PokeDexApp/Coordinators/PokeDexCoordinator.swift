@@ -37,7 +37,7 @@ class PokeDexCoordinator: Coordinator {
     }
     
     func showDetails(with pokemonDetails: PokemonDetailModel) {
-        let viewModel = PokemonDetailVM(pokemonDetails: pokemonDetails)
+        let viewModel = PokeDexDetailVM(pokemonDetails)
         let pokemonDetailVC = PokemonDetailVC(viewModel: viewModel)
         navigationController.pushViewController(pokemonDetailVC, animated: true)
     }
