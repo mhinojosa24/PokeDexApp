@@ -37,6 +37,12 @@ class NetworkClient: APIClient {
         }
     }
     
+    private let session: URLSession
+
+    init(session: URLSession = .shared) {
+        self.session = session
+    }
+    
     /// Fetches data from a given URL asynchronously using `URLSession`.
     /// - Parameters:
     ///   - url: The `URL` from which data needs to be fetched.
@@ -45,7 +51,7 @@ class NetworkClient: APIClient {
     ///     - `.success(Data)`: Contains the fetched `Data` if the request is successful.
     ///     - `.failure(Error)`: Contains an `Error` if there is an issue with the network request or fetching data.
     func fetchData(_ url: URL) async throws -> (data: Data, response: URLResponse) {
-        return try await URLSession.shared.data(from: url)
+        return try await session.data(from: url)
     }
     
     func validateHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data {
