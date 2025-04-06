@@ -23,17 +23,13 @@ class PokemonService {
     /// Fetches a list of Pokemons
     /// - Throws: An error if the URL is invalid or the network request fails.
     func fetchPokemons() async throws {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=1025") else {
-            throw URLError(.badURL)
-        }
-        
         do {
+            let url = try self.url(from: "https://pokeapi.co/api/v2/pokemon?offset=0&limit=50")
             let dataTaskResult = try await client.fetchData(url)
             let parsedResult = try client.validateHTTPResponse(with: dataTaskResult)
             let response = try JSONDecoder().decode(Response.self, from: parsedResult)
             try await fetchPokemonDetails(from: response)
         } catch {
-            print(error.localizedDescription)
             throw error
         }
     }
@@ -43,9 +39,7 @@ class PokemonService {
     /// - Throws: An error if the network request or parsing fails.
     fileprivate func fetchPokemonDetails(from response: Response) async throws {
         let dataManager = PokemonDataManager.shared
-        await withTaskGroup(of: PokemonDetailResponse?.self) { [weak self] group in
-            guard let self = self else { return }
-            
+        await withTaskGroup(of: PokemonDetailResponse?.self) { group in
             response.results.forEach { [weak self] pokemon in
                 guard let self = self else { return }
                 self.handleTaskGroup(with: &group, for: pokemon)
@@ -66,21 +60,30 @@ class PokemonService {
     fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetailResponse?>, for pokemon: Pokemon) {
         taskGroup.addTask {
             do {
-                guard let url = URL(string: pokemon.url) else { throw URLError(.badURL) }
-                let parsedResponse = try self.client.validateHTTPResponse(with: try await self.client.fetchData(url))
-                var pokemonDetail = try JSONDecoder().decode(PokemonDetailResponse.self, from: parsedResponse)
-                
-                guard let speciesURL = URL(string: pokemonDetail.species.url) else { throw URLError(.badURL) }
-                let speciesResponseData = try await self.client.fetchData(speciesURL)
-                let parsedSpeciesResponse = try self.client.validateHTTPResponse(with: speciesResponseData)
-                
-                let speciesDetailResponse = try JSONDecoder().decode(SpeciesDetailResponse.self, from: parsedSpeciesResponse)
-
-                pokemonDetail.species.color = speciesDetailResponse.color
-                return pokemonDetail
+                return try await self.fetchPokemonDetail(for: pokemon)
             } catch {
+                print("Failed to fetch: \(error.localizedDescription)")
                 return nil
             }
         }
+    }
+    
+    fileprivate func fetchPokemonDetail(for pokemon: Pokemon) async throws -> PokemonDetailResponse {
+        let detailURL = try url(from: pokemon.url)
+        let detailData = try await client.fetchData(detailURL)
+        let detailParsed = try client.validateHTTPResponse(with: detailData)
+        var detail = try JSONDecoder().decode(PokemonDetailResponse.self, from: detailParsed)
+
+        let speciesURL = try url(from: detail.species.url)
+        let speciesData = try await client.fetchData(speciesURL)
+        let speciesParsed = try client.validateHTTPResponse(with: speciesData)
+        detail.species.detail = try JSONDecoder().decode(SpeciesDetailResponse.self, from: speciesParsed)
+
+        return detail
+    }
+    
+    fileprivate func url(from string: String) throws -> URL {
+        guard let url = URL(string: string) else { throw URLError(.badURL) }
+        return url
     }
 }
