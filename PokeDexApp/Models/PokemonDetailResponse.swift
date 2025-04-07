@@ -101,6 +101,7 @@ struct TypeResponse: Decodable {
     var typeDetail: TypeDetailResponse?
 }
 
+// MARK: - Type Detail Response
 struct TypeDetailResponse: Decodable {
     let damageRelations: DamageRelationResponse
     let sprites: TypeSpriteResponse
