@@ -12,6 +12,7 @@ import Foundation
 protocol APIClient {
     func fetchData(_ url: URL) async throws -> (data: Data, response: URLResponse)
     func validateHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data
+    func fetch<T: Decodable>(url: URL, as type: T.Type) async throws -> T
 }
 
 // MARK: - Network Client
@@ -74,5 +75,14 @@ class NetworkClient: APIClient {
         } else {
             throw NetworkClient.HTTPError.http(response: httpResponse, data: dataTaskResult.data)
         }
+    }
+    
+    /// Generic fetch function to decode any Decodable type.
+    ///  The fetch<T: Decodable>(url:as:) method lets you fetch and decode any model in one call.
+    ///  HTTP errors are mapped and thrown consistently, reducing redundancy in your service code.
+    func fetch<T: Decodable>(url: URL, as type: T.Type) async throws -> T {
+        let dataTaskResult = try await fetchData(url)
+        let validData = try validateHTTPResponse(with: dataTaskResult)
+        return try JSONDecoder().decode(T.self, from: validData)
     }
 }
