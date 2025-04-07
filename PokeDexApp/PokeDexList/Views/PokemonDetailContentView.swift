@@ -32,8 +32,7 @@ class PokemonDetailContentView: UIView {
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             pokemonImageView,
-            nameLabel,
-            typeStackView,
+            nameAndTypesStackView,
             descriptionLabel,
             weaknessTitleLabel,
             weaknessStackView,
@@ -53,6 +52,14 @@ class PokemonDetailContentView: UIView {
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }()
+    
+    private lazy var nameAndTypesStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [nameLabel, UIView(), typeStackView])
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
     
     private lazy var nameLabel: UILabel = {
@@ -76,7 +83,7 @@ class PokemonDetailContentView: UIView {
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textAlignment = .center
+        label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -207,7 +214,7 @@ class PokemonDetailContentView: UIView {
         let label = PaddingLabel()
         label.text = text
         label.font = .systemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .white
+        label.textColor = .black
         label.backgroundColor = backgroundColor
         label.textAlignment = .center
         label.layer.cornerRadius = 12
