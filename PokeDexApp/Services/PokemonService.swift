@@ -57,14 +57,15 @@ class PokemonService {
     /// Fetches weaknesses for a given Pokémon detail by querying each type's details.
     fileprivate func fetchWeaknesses(for detail: PokemonDetailResponse) async throws -> [String] {
         var weaknesses = Set<String>()
-        
         try await withThrowingTaskGroup(of: [String].self) { group in
             for pokemonType in detail.types {
                 group.addTask { [weak self] in
                     guard let self = self else { return [] }
                     let typeURL = try self.url(from: pokemonType.type.url)
+                    
                     // Fetch the type detail which includes damage relations
                     let typeDetail = try await self.client.fetch(url: typeURL, as: TypeDetailResponse.self)
+                    
                     // Extract the types that deal double damage (i.e., weaknesses)
                     return typeDetail.damageRelations.doubleDamageFrom.compactMap { $0.name }
                 }
@@ -94,7 +95,6 @@ class PokemonService {
         
         // Update detail weaknesses
         detail.weaknessTypes = weaknesses
-        
         return detail
     }
     
