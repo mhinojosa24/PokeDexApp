@@ -24,20 +24,26 @@ extension UIView {
     /// - Parameters:
     ///   - superview: The parent view to constrain to.
     ///   - edges: A list of edges to pin with corresponding insets.
-    func constrain(to superview: UIView, edges: [Edge]) {
+    ///   - useSafeArea: A Boolean value indicating whether to use the safe area layout guide.
+    func constrain(to superview: UIView, edges: [Edge], useSafeArea: Bool = false) {
         translatesAutoresizingMaskIntoConstraints = false
         superview.addSubview(self)
-
+        
+        let topAnchorReference: NSLayoutYAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.topAnchor : superview.topAnchor
+        let bottomAnchorReference: NSLayoutYAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.bottomAnchor : superview.bottomAnchor
+        let leadingAnchorReference: NSLayoutXAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.leadingAnchor : superview.leadingAnchor
+        let trailingAnchorReference: NSLayoutXAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.trailingAnchor : superview.trailingAnchor
+        
         for edge in edges {
             switch edge {
             case .top(let inset):
-                topAnchor.constraint(equalTo: superview.topAnchor, constant: inset).isActive = true
+                topAnchor.constraint(equalTo: topAnchorReference, constant: inset).isActive = true
             case .leading(let inset):
-                leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: inset).isActive = true
+                leadingAnchor.constraint(equalTo: leadingAnchorReference, constant: inset).isActive = true
             case .trailing(let inset):
-                trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -inset).isActive = true
+                trailingAnchor.constraint(equalTo: trailingAnchorReference, constant: -inset).isActive = true
             case .bottom(let inset):
-                bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: -inset).isActive = true
+                bottomAnchor.constraint(equalTo: bottomAnchorReference, constant: -inset).isActive = true
             case .width(let value):
                 widthAnchor.constraint(equalToConstant: value).isActive = true
             case .height(let value):
