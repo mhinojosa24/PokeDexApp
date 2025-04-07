@@ -9,5 +9,5 @@
 // MARK: - Response
 struct Response: Decodable {
     let next: String?
-    let results: [Pokemon]
+    let results: [PokemonResponse]
 }

@@ -1,12 +1,12 @@
 //
-//  Pokemon.swift
+//  PokemonResponse.swift
 //  PokeDexApp
 //
 //  Created by Maximo Hinojosa on 3/25/25.
 //
 
-// MARK: - Pokemon
-struct Pokemon: Decodable {
+// MARK: - PokemonResponse
+struct PokemonResponse: Decodable {
     let name: String
     let url: String
 }

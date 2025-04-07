@@ -25,19 +25,19 @@ class PokemonDetailView: UIView {
     }()
     
     private lazy var contentStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [pokemonImageView, nameLabel, typeStackView, descriptionLabel, weaknessTitleLabel, weaknessStackView, evolutionTitleLabel, evolutionStackView])
+        let stackView = UIStackView(arrangedSubviews: [pokemonGifView, nameLabel, typeStackView, descriptionLabel, weaknessTitleLabel, weaknessStackView, evolutionTitleLabel, evolutionStackView])
         stackView.axis = .vertical
         stackView.spacing = 16
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    private lazy var pokemonImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
+    private lazy var pokemonGifView: SDAnimatedImageView = {
+        let sdAnimatedImageView = SDAnimatedImageView()
+        sdAnimatedImageView.contentMode = .scaleAspectFit
+        sdAnimatedImageView.clipsToBounds = true
+        sdAnimatedImageView.translatesAutoresizingMaskIntoConstraints = false
+        return sdAnimatedImageView
     }()
     
     private lazy var nameLabel: UILabel = {
@@ -113,14 +113,6 @@ class PokemonDetailView: UIView {
     private func setupView() {
         addSubview(scrollView)
         scrollView.addSubview(contentStackView)
-        contentStackView.addArrangedSubview(pokemonImageView)
-        contentStackView.addArrangedSubview(nameLabel)
-        contentStackView.addArrangedSubview(typeStackView)
-        contentStackView.addArrangedSubview(descriptionLabel)
-        contentStackView.addArrangedSubview(weaknessTitleLabel)
-        contentStackView.addArrangedSubview(weaknessStackView)
-        contentStackView.addArrangedSubview(evolutionTitleLabel)
-        contentStackView.addArrangedSubview(evolutionStackView)
         
         setupConstraints()
     }
@@ -140,8 +132,12 @@ class PokemonDetailView: UIView {
             .bottom(0)
         ])
         
-        pokemonImageView.constrain(to: self, edges: [
+        pokemonGifView.constrain(to: self, edges: [
             .height(200)
         ])
+    }
+    
+    private func configure() {
+//        pokemonGifView.image = SDAnimatedImage(data: <#T##Data#>)
     }
 }

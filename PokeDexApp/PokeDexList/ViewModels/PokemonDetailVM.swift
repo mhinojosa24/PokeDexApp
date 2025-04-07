@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PokemonDetailVM {
-    func getPokemonDetails()
+    func getPokemonDetails() -> PokemonDetailView.UIModel?
 }
     
 
@@ -20,13 +20,13 @@ class PokeDexDetailVM: PokemonDetailVM {
         self.pokemonDetails = pokemonDetails
     }
     
-    func getPokemonDetails()  {
-//        let gifURL = URL(string: pokemonDetails.sprite.showdownGifURL)!
-//        return PokemonDetailView.UIModel(pokemonGifURL: gifURL,
-//                                  name: pokemonDetails.name,
-//                                  description: pokemonDetails.flavorDescription,
-//                                  types: pokemonDetails.types.compactMap({ $0.iconURL }),
-//                                  weaknesses: pokemonDetails.sprite.evolutionURLS)
+    func getPokemonDetails() -> PokemonDetailView.UIModel? {
+        guard let gifURL = URL(string: pokemonDetails.sprite.showdownGifURL) else { return nil }
+        return PokemonDetailView.UIModel(pokemonGifURL: gifURL,
+                                         name: pokemonDetails.name,
+                                         description: pokemonDetails.flavorDescription,
+                                         types: [],
+                                         weaknesses: [])
     }
 }
 

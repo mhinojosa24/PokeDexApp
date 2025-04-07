@@ -8,7 +8,7 @@
 import UIKit
 
 
-/// `PokemonService` is a class responsible for fetching Pokemon data from the PokeAPI.
+/// `PokemonService` is a class responsible for fetching PokemonResponse data from the PokeAPI.
 /// It uses an `APIClient` to perform network requests and handles parsing and saving
 /// the fetched data.
 class PokemonService {
@@ -34,7 +34,7 @@ class PokemonService {
         }
     }
     
-    /// Fetches the details of each Pokemon from the given response.
+    /// Fetches the details of each PokemonResponse from the given response.
     /// - Parameter response: The response containing the list of Pokemons.
     /// - Throws: An error if the network request or parsing fails.
     fileprivate func fetchPokemonDetails(from response: Response) async throws {
@@ -53,11 +53,11 @@ class PokemonService {
         }
     }
     
-    /// Adds a task to the task group to fetch the details of a single Pokemon.
+    /// Adds a task to the task group to fetch the details of a single PokemonResponse.
     /// - Parameters:
     ///   - taskGroup: The task group to add the task to.
-    ///   - pokemon: The Pokemon to fetch the details for.
-    fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetailResponse?>, for pokemon: Pokemon) {
+    ///   - pokemon: The PokemonResponse to fetch the details for.
+    fileprivate func handleTaskGroup(with taskGroup: inout TaskGroup<PokemonDetailResponse?>, for pokemon: PokemonResponse) {
         taskGroup.addTask {
             do {
                 return try await self.fetchPokemonDetail(for: pokemon)
@@ -68,12 +68,12 @@ class PokemonService {
         }
     }
     
-    fileprivate func fetchPokemonDetail(for pokemon: Pokemon) async throws -> PokemonDetailResponse {
+    fileprivate func fetchPokemonDetail(for pokemon: PokemonResponse) async throws -> PokemonDetailResponse {
         let detailURL = try url(from: pokemon.url)
         let detailData = try await client.fetchData(detailURL)
         let detailParsed = try client.validateHTTPResponse(with: detailData)
         var detail = try JSONDecoder().decode(PokemonDetailResponse.self, from: detailParsed)
-
+        
         let speciesURL = try url(from: detail.species.url)
         let speciesData = try await client.fetchData(speciesURL)
         let speciesParsed = try client.validateHTTPResponse(with: speciesData)

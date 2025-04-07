@@ -6,7 +6,6 @@
 //
 
 // MARK: - Pokemon Detail
-// TODO: rename all struct response
 struct PokemonDetailResponse: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
@@ -17,14 +16,14 @@ struct PokemonDetailResponse: Decodable {
     let weight: Int // Weight of pokemon
 }
 
-// MARK: - Species
+// MARK: - Species Response
 struct SpeciesResponse: Decodable {
     let name: String
     let url: String
     var detail: SpeciesDetailResponse?
 }
 
-// MARK: - Species Detail
+// MARK: - Species Detail Response
 struct SpeciesDetailResponse: Decodable {
     let color: ColorResponse
     var flavorTextEntries: [FlavorTextResponse]?
@@ -35,11 +34,12 @@ struct SpeciesDetailResponse: Decodable {
     }
 }
 
-// MARK: - Color
+// MARK: - Color Response
 struct ColorResponse: Decodable {
     var name: String
 }
 
+// MARK: - Flavor Text Response
 struct FlavorTextResponse: Decodable {
     let flavorText: String
     let version: VersionResponse
@@ -50,30 +50,28 @@ struct FlavorTextResponse: Decodable {
     }
 }
 
+// MARK: - Version Response
 struct VersionResponse: Decodable {
     let name: String
 }
 
-// MARK: - Sprite
+// MARK: - Sprite Response
 struct SpriteResponse: Decodable {
     let other: OtherResponse?
-    let showdown: ShowDownResponse? // GIF url object
-    
-    var gifURL: String? {
-            return showdown?.frontDefault
-        }
 }
 
-// MARK: - Other
+// MARK: - Other Response
 struct OtherResponse: Decodable {
     let officialArtwork: OfficialArtworkResponse
+    let showdown: ShowDownResponse? // GIF url object
     
     enum CodingKeys: String, CodingKey {
         case officialArtwork = "official-artwork"
+        case showdown
     }
 }
 
-// MARK: - OfficialArtwork
+// MARK: - Official Artwork Response
 struct OfficialArtworkResponse: Decodable {
     let frontDefault: String
     
@@ -82,7 +80,7 @@ struct OfficialArtworkResponse: Decodable {
     }
 }
 
-// MARK: - ShowDown
+// MARK: - Show Down Response
 struct ShowDownResponse: Decodable {
     let frontDefault: String
     
@@ -96,10 +94,10 @@ struct PokemonTypeResponse: Decodable {
     var type: TypeResponse
 }
 
-// MARK: - Pokemon Type Detail
+// MARK: - Pokemon Type Detail Response
 struct TypeResponse: Decodable {
     let name: String
-    let url: String // call endpoint to download icon
+    let url: String
     var typeDetail: TypeDetailResponse?
 }
 
@@ -113,6 +111,7 @@ struct TypeDetailResponse: Decodable {
     }
 }
 
+// MARK: - Damage Relation Response
 struct DamageRelationResponse: Decodable {
     let doubleDamageFrom: [TypeResponse]
     
@@ -121,7 +120,7 @@ struct DamageRelationResponse: Decodable {
     }
 }
 
-// MARK: - Type Sprite
+// MARK: - Type Sprite Response
 struct TypeSpriteResponse: Decodable {
     let generationIII: ColosseumResponse
     
@@ -130,16 +129,16 @@ struct TypeSpriteResponse: Decodable {
     }
 }
 
-// MARK: - Colosseum
+// MARK: - Colosseum Response
 struct ColosseumResponse: Decodable {
-    let nameIcon: String // url string for pokemon species icon
+    let nameIcon: String
     
     enum CodingKeys: String, CodingKey {
         case nameIcon = "name_icon"
     }
 }
 
-// MARK: - Stat
+// MARK: - Stat Response
 struct StatResponse: Decodable {
     let baseStat: Int
     let effort: Int
@@ -152,7 +151,7 @@ struct StatResponse: Decodable {
     }
 }
 
-// MARK: - Stat Detail
+// MARK: - Stat Detail Response
 struct StatDetailResponse: Decodable {
     let name: String
 }
