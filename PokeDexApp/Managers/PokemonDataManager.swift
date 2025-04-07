@@ -103,12 +103,16 @@ class PokemonDataManager {
                                                    baseStat: $0.baseStat,
                                                    effort: $0.effort)
         }
+        
+        let types = pokemonDetail.types.map { $0.type.name }
+        
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
                                   sprite: sprite,
                                   themeColor: themeColor,
                                   flavorDescription: flavorDescription,
                                   stats: stats,
+                                  types: types,
                                   weight: pokemonDetail.weight)
     }
     
