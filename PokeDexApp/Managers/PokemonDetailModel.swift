@@ -15,6 +15,7 @@ class PokemonDetailModel {
     var themeColor: String
     var flavorDescription: String
     var stats: [StatModel]
+    var types: [String]
     var weight: Int
     
     init(id: Int,
@@ -23,6 +24,7 @@ class PokemonDetailModel {
          themeColor: String,
          flavorDescription: String,
          stats: [StatModel],
+         types: [String],
          weight: Int) {
         self.id = id
         self.name = name
@@ -30,6 +32,7 @@ class PokemonDetailModel {
         self.themeColor = themeColor
         self.flavorDescription = flavorDescription
         self.stats = stats
+        self.types = types
         self.weight = weight
     }
     
@@ -39,6 +42,7 @@ class PokemonDetailModel {
         self.themeColor = object.themeColor
         self.flavorDescription = object.flavorDescription
         self.stats = object.stats
+        self.types = object.types
         self.weight = object.weight
     }
 }
