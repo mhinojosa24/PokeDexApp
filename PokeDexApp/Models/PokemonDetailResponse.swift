@@ -14,6 +14,7 @@ struct PokemonDetailResponse: Decodable {
     let stats: [StatResponse] // Stats info of pokemon
     let types: [PokemonTypeResponse] // Type of pokemon
     let weight: Int // Weight of pokemon
+    var weaknessTypes: [String]?
 }
 
 // MARK: - Species Response
@@ -98,13 +99,12 @@ struct PokemonTypeResponse: Decodable {
 struct TypeResponse: Decodable {
     let name: String
     let url: String
-    var typeDetail: TypeDetailResponse?
 }
 
 // MARK: - Type Detail Response
 struct TypeDetailResponse: Decodable {
     let damageRelations: DamageRelationResponse
-    let sprites: TypeSpriteResponse
+    let sprites: SpriteTypeResponse?
     
     enum CodingKeys: String, CodingKey {
         case damageRelations = "damage_relations"
@@ -122,11 +122,20 @@ struct DamageRelationResponse: Decodable {
 }
 
 // MARK: - Type Sprite Response
-struct TypeSpriteResponse: Decodable {
-    let generationIII: ColosseumResponse
+struct SpriteTypeResponse: Decodable {
+    let generationIII: GenerationResponse?
     
     enum CodingKeys: String, CodingKey {
         case generationIII = "generation-iii"
+    }
+}
+
+// MARK: - Generation Response
+struct GenerationResponse: Decodable {
+    let colosseum: ColosseumResponse?
+    
+    enum CodingKeys: String, CodingKey {
+        case colosseum = "name_icon"
     }
 }
 
