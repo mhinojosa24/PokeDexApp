@@ -22,11 +22,11 @@ class PokeDexDetailVM: PokemonDetailVM {
     
     func getPokemonDetails() -> PokemonDetailContentView.UIModel? {
         return PokemonDetailContentView.UIModel(pokemonImageURLString: pokemonDetails.sprite.artwork,
-                                                backgroundImageColor: .customColor(pokemonDetails.themeColor),
+                                                backgroundImageColor: .pokemonTheme(pokemonDetails.themeColor),
                                                 name: pokemonDetails.name,
                                                 description: pokemonDetails.flavorDescription,
                                                 types: pokemonDetails.types,
-                                                weaknesses: [],
+                                                weaknesses: pokemonDetails.weaknesses,
                                                 evolutions: [])
     }
 }

@@ -16,6 +16,7 @@ class PokemonDetailModel {
     var flavorDescription: String
     var stats: [StatModel]
     var types: [String]
+    var weaknesses: [String]
     var weight: Int
     
     init(id: Int,
@@ -25,6 +26,7 @@ class PokemonDetailModel {
          flavorDescription: String,
          stats: [StatModel],
          types: [String],
+         weaknesses: [String],
          weight: Int) {
         self.id = id
         self.name = name
@@ -33,6 +35,7 @@ class PokemonDetailModel {
         self.flavorDescription = flavorDescription
         self.stats = stats
         self.types = types
+        self.weaknesses = weaknesses
         self.weight = weight
     }
     
@@ -43,6 +46,7 @@ class PokemonDetailModel {
         self.flavorDescription = object.flavorDescription
         self.stats = object.stats
         self.types = object.types
+        self.weaknesses = object.weaknesses
         self.weight = object.weight
     }
 }

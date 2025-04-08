@@ -182,16 +182,17 @@ class PokemonDetailContentView: UIView {
         // Populate type pills
         typeStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for type in model.types {
-            let pill = createPillLabel(with: type.capitalized, backgroundColor: color(for: type))
+            let pill = createPillLabel(with: type.capitalized, backgroundColor: .pokemonTypeTheme(type))
             typeStackView.addArrangedSubview(pill)
         }
         
         // Populate weakness pills
         weaknessStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         for weakness in model.weaknesses {
-            let pill = createPillLabel(with: weakness.capitalized, backgroundColor: color(for: weakness))
+            let pill = createPillLabel(with: weakness.capitalized, backgroundColor: .pokemonTypeTheme(weakness))
             weaknessStackView.addArrangedSubview(pill)
         }
+        weaknessStackView.addArrangedSubview(UIView())
         
         // Populate evolution GIFs
         evolutionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
@@ -210,30 +211,18 @@ class PokemonDetailContentView: UIView {
     
     // MARK: - Helper Methods
     
-    private func createPillLabel(with text: String, backgroundColor: UIColor) -> UILabel {
+    private func createPillLabel(with text: String, backgroundColor: ColorType) -> UILabel {
         let label = PaddingLabel()
         label.text = text
         label.font = .systemFont(ofSize: 14, weight: .semibold)
         label.textColor = .black
-        label.backgroundColor = backgroundColor
+        label.backgroundColor = backgroundColor.color
         label.textAlignment = .center
         label.layer.cornerRadius = 12
         label.clipsToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false
         label.heightAnchor.constraint(equalToConstant: 24).isActive = true
         return label
-    }
-    
-    private func color(for category: String) -> UIColor {
-        switch category.lowercased() {
-        case "grass":   return .systemGreen
-        case "poison":  return .systemPurple
-        case "fire":    return .systemRed
-        case "ice":     return .systemTeal
-        case "psychic": return .systemPink
-        case "flying":  return .systemBlue
-        default:        return .darkGray
-        }
     }
 }
 
