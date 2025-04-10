@@ -33,7 +33,7 @@ class PokeDexListVM: PokemonVM {
                 PokemonCell.UIModel(thumbnail: $0.sprite.artwork,
                                     name: $0.name,
                                     pokedexNumber: $0.id,
-                                    colorType: .pokemonTheme($0.themeColor)
+                                    colorType: .theme($0.themeColor)
                 )
             }
         } catch {

@@ -9,7 +9,6 @@ import UIKit
 
 class PokemonDetailVC: UIViewController {
     private let viewModel: PokemonDetailVM
-    private var detailContentView: PokemonDetailContentView!
     
     init(viewModel: PokemonDetailVM) {
         self.viewModel = viewModel
@@ -20,20 +19,28 @@ class PokemonDetailVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func loadView() {
-        detailContentView = PokemonDetailContentView()
-        view = detailContentView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        navigationController?.configureNavigationBarAppearance(titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1), largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1))
-        navigationItem.title = ""
-        navigationItem.largeTitleDisplayMode = .never
-        
-        // Configure the custom view with data from the view model
-        guard let contentModel = viewModel.getPokemonDetails() else { return }
-        detailContentView.configure(with: contentModel)
+        // TODO: - fix navigation UI
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = .clear
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.isTranslucent = true
+        setupPokemonDetailContentView()
+    }
+    
+    private func setupPokemonDetailContentView() {
+        guard let model = viewModel.getPokemonDetails() else { return }
+        let detailContentView = PokemonDetailContentView(model: model)
+        view.addSubview(detailContentView)
+        detailContentView.constrain(to: view, edges: [
+            .top(0),
+            .leading(0),
+            .trailing(0),
+            .bottom(0)
+        ], useSafeArea: false)
     }
 }
