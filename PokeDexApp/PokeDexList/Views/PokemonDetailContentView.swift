@@ -19,7 +19,7 @@ class PokemonDetailContentView: UIView {
         let description: String
         let types: [String]
         let weaknesses: [String]
-        let evolutions: [URL]         // Evolution images as GIF URLs
+        let evolutions: [String]         // Evolution images as GIF URLs
     }
     
     // MARK: - UI Components
@@ -73,7 +73,8 @@ class PokemonDetailContentView: UIView {
             weaknessTitleLabel,
             weaknessCollectionView,
             evolutionTitleLabel,
-            evolutionStackView
+            evolutionStackView,
+            UIView()
         ])
         stackView.axis = .vertical
         stackView.spacing = 16
@@ -141,6 +142,7 @@ class PokemonDetailContentView: UIView {
     private lazy var evolutionStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
         stackView.spacing = 16
         stackView.alignment = .center
         return stackView
@@ -219,14 +221,15 @@ class PokemonDetailContentView: UIView {
         model.evolutions.forEach {
             let evoImageView = SDAnimatedImageView()
             evoImageView.contentMode = .scaleAspectFit
-            evoImageView.sd_setImage(with: $0)
-            evoImageView.constrain(to: self, edges: [
-                .width(64),
-                .height(64)
-            ])
+            evoImageView.layer.cornerRadius = evoImageView.frame.width / 2
+            evoImageView.layer.shadowColor = UIColor.black.cgColor
+            evoImageView.layer.shadowRadius = 8
+            guard let url = URL(string: $0) else { return }
+            evoImageView.sd_setImage(with: url)
             evolutionStackView.addArrangedSubview(evoImageView)
         }
-        evolutionStackView.addArrangedSubview(UIView())
+        evolutionStackView.translatesAutoresizingMaskIntoConstraints = false
+        evolutionStackView.heightAnchor.constraint(equalToConstant: 84).isActive = true
     }
 }
 

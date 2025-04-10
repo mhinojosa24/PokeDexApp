@@ -9,7 +9,7 @@ import UIKit
 
 
 class PillLabel: UILabel {
-    var edgeInsets = UIEdgeInsets(top: 2, left: 8, bottom: 2, right: 8)
+    var edgeInsets = UIEdgeInsets(top: 2, left: 10, bottom: 2, right: 10)
     
     override func drawText(in rect: CGRect) {
         super.drawText(in: rect.inset(by: edgeInsets))

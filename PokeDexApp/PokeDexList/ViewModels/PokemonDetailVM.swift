@@ -27,7 +27,7 @@ class PokeDexDetailVM: PokemonDetailVM {
                                                 description: pokemonDetails.flavorDescription,
                                                 types: pokemonDetails.types,
                                                 weaknesses: pokemonDetails.weaknesses,
-                                                evolutions: [])
+                                                evolutions: pokemonDetails.evolution)
     }
 }
 
