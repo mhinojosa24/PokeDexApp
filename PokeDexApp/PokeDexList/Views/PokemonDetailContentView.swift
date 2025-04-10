@@ -190,7 +190,7 @@ class PokemonDetailContentView: UIView {
         nameLabel.text = model.name.capitalized
         
         // Set the description
-        descriptionLabel.text = model.description.removingNewlinesAndFormFeeds()
+        descriptionLabel.text = model.description.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds()
         
         // Populate type pills
         typePillStackViewFactory()
