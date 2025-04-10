@@ -80,6 +80,8 @@ class PokemonCell: UICollectionViewCell {
     private func setupLayouts() {
         layer.cornerRadius = 15
         layer.masksToBounds = true
+        contentView.addSubview(stackView)
+        stackView.addSubview(thumbnailImageView)
         // Stack View
         stackView.constrain(to: contentView, edges: [
             .top(12),

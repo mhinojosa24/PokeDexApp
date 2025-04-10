@@ -8,6 +8,7 @@
 import UIKit
 import SDWebImage
 
+
 class PokemonDetailContentView: UIView {
     
     // MARK: - UI Model
@@ -25,40 +26,66 @@ class PokemonDetailContentView: UIView {
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.bounces = false
         return scrollView
+    }()
+    
+    private lazy var parentContentStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            pokemonImageStackView,
+            contentStackView
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        return stackView
+    }()
+    
+    private lazy var paddingView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        view.backgroundColor = model.backgroundImageColor.color
+        return view
+    }()
+    
+    private lazy var pokemonImageStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            paddingView,
+            pokemonImageView,
+        ])
+        stackView.axis = .vertical
+        return stackView
+    }()
+    
+    private lazy var pokemonImageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.heightAnchor.constraint(equalToConstant: UIWindow().frame.height * 0.35).isActive = true
+        return imageView
     }()
     
     private lazy var contentStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
-            pokemonImageView,
             nameAndTypesStackView,
             descriptionLabel,
             weaknessTitleLabel,
-            weaknessStackView,
+            weaknessCollectionView,
             evolutionTitleLabel,
             evolutionStackView
         ])
         stackView.axis = .vertical
         stackView.spacing = 16
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.layoutMargins = .init(top: 0, left: 16, bottom: 0, right: 16)
+        stackView.isLayoutMarginsRelativeArrangement = true
         return stackView
-    }()
-    
-    // Main Pokémon image (static)
-    private lazy var pokemonImageView: CustomImageView = {
-        let imageView = CustomImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
     }()
     
     private lazy var nameAndTypesStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [nameLabel, UIView(), typeStackView])
         stackView.axis = .horizontal
         stackView.spacing = 8
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
@@ -66,17 +93,14 @@ class PokemonDetailContentView: UIView {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    // Stack view for type pills
     private lazy var typeStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.spacing = 8
         stackView.alignment = .center
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
@@ -85,7 +109,6 @@ class PokemonDetailContentView: UIView {
         label.numberOfLines = 0
         label.textAlignment = .left
         label.font = UIFont.systemFont(ofSize: 16)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -93,25 +116,24 @@ class PokemonDetailContentView: UIView {
         let label = UILabel()
         label.text = "Weakness"
         label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    // Stack view for weakness pills
-    private lazy var weaknessStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        stackView.alignment = .center
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
+    private lazy var weaknessCollectionView: IntrinsicSizeCollectionView = {
+        let collectionViewLayout = WrappingFlowLayout()
+        let collectionView = IntrinsicSizeCollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        collectionView.dataSource = self
+        collectionView.register(PillCell.self, forCellWithReuseIdentifier: PillCell.identifier)
+
+        return collectionView
     }()
     
     private lazy var evolutionTitleLabel: UILabel = {
         let label = UILabel()
         label.text = "Evolutions"
         label.font = UIFont.boldSystemFont(ofSize: 18)
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -121,16 +143,17 @@ class PokemonDetailContentView: UIView {
         stackView.axis = .horizontal
         stackView.spacing = 16
         stackView.alignment = .center
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
     
-    // MARK: - Initialization
+    private let model: UIModel
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .white
+    // MARK: - Initialization
+    init(model: UIModel) {
+        self.model = model
+        super.init(frame: .zero)
         setupView()
+        configureContentView()
     }
     
     required init?(coder: NSCoder) {
@@ -138,105 +161,89 @@ class PokemonDetailContentView: UIView {
     }
     
     // MARK: - Setup Subviews & Constraints
-    
     private func setupView() {
         addSubview(scrollView)
-        scrollView.addSubview(contentStackView)
-        
-        // Constrain scrollView to the view's edges
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        scrollView.addSubview(parentContentStackView)
+        // scrollView
+        scrollView.constrain(to: self, edges: [
+            .top(0),
+            .leading(0),
+            .trailing(0),
+            .bottom(0)
         ])
-        
-        // Constrain contentStackView inside the scrollView with padding
-        NSLayoutConstraint.activate([
-            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -16),
-            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -32)
-        ])
-        
-        // Set fixed height for the main Pokémon image
-        NSLayoutConstraint.activate([
-            pokemonImageView.heightAnchor.constraint(equalToConstant: 200)
+        // parentContentStackView
+        parentContentStackView.constrain(to: self, edges: [
+            .top(.zero),
+            .leading(.zero),
+            .trailing(.zero),
+            .bottom(.zero)
         ])
     }
     
     // MARK: - Configuration
-    
-    func configure(with model: UIModel) {
+    fileprivate func configureContentView() {
         // Load the main Pokémon image
         pokemonImageView.imageURLString = model.pokemonImageURLString
         pokemonImageView.backgroundColor = model.backgroundImageColor.color
         
         // Set the Pokémon name (uppercase for style)
-        nameLabel.text = model.name.uppercased()
+        nameLabel.text = model.name.capitalized
         
         // Set the description
-        descriptionLabel.text = model.description
+        descriptionLabel.text = model.description.removingNewlinesAndFormFeeds()
         
         // Populate type pills
-        typeStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for type in model.types {
-            let pill = createPillLabel(with: type.capitalized, backgroundColor: .pokemonTypeTheme(type))
-            typeStackView.addArrangedSubview(pill)
-        }
+        typePillStackViewFactory()
         
-        // Populate weakness pills
-        weaknessStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for weakness in model.weaknesses {
-            let pill = createPillLabel(with: weakness.capitalized, backgroundColor: .pokemonTypeTheme(weakness))
-            weaknessStackView.addArrangedSubview(pill)
-        }
-        weaknessStackView.addArrangedSubview(UIView())
+        // Populate weakness pill cells
+        weaknessCollectionView.reloadData()
         
         // Populate evolution GIFs
-        evolutionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
-        for evolutionURL in model.evolutions {
-            let evoImageView = SDAnimatedImageView()
-            evoImageView.contentMode = .scaleAspectFit
-            evoImageView.sd_setImage(with: evolutionURL)
-            evoImageView.translatesAutoresizingMaskIntoConstraints = false
-            NSLayoutConstraint.activate([
-                evoImageView.widthAnchor.constraint(equalToConstant: 64),
-                evoImageView.heightAnchor.constraint(equalToConstant: 64)
-            ])
-            evolutionStackView.addArrangedSubview(evoImageView)
-        }
+        evolutionGIFsStackViewFactory()
     }
     
     // MARK: - Helper Methods
+    fileprivate func typePillStackViewFactory() {
+        typeStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        model.types.forEach {
+            let pill = PillLabel()
+            pill.configure(with: $0.capitalized, font: .systemFont(ofSize: 14, weight: .semibold), backgroundColor: ColorType.pokemonTypeTheme($0).color)
+            pill.translatesAutoresizingMaskIntoConstraints = false
+            pill.heightAnchor.constraint(equalToConstant: 25).isActive = true
+            typeStackView.addArrangedSubview(pill)
+        }
+    }
     
-    private func createPillLabel(with text: String, backgroundColor: ColorType) -> UILabel {
-        let label = PaddingLabel()
-        label.text = text
-        label.font = .systemFont(ofSize: 14, weight: .semibold)
-        label.textColor = .black
-        label.backgroundColor = backgroundColor.color
-        label.textAlignment = .center
-        label.layer.cornerRadius = 12
-        label.clipsToBounds = true
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        return label
+    fileprivate func evolutionGIFsStackViewFactory() {
+        evolutionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        model.evolutions.forEach {
+            let evoImageView = SDAnimatedImageView()
+            evoImageView.contentMode = .scaleAspectFit
+            evoImageView.sd_setImage(with: $0)
+            evoImageView.constrain(to: self, edges: [
+                .width(64),
+                .height(64)
+            ])
+            evolutionStackView.addArrangedSubview(evoImageView)
+        }
+        evolutionStackView.addArrangedSubview(UIView())
     }
 }
 
-// Optional: A simple PaddingLabel subclass to add padding around text.
-class PaddingLabel: UILabel {
-    var edgeInsets = UIEdgeInsets(top: 2, left: 8, bottom: 2, right: 8)
-    
-    override func drawText(in rect: CGRect) {
-        super.drawText(in: rect.inset(by: edgeInsets))
+// MARK: - UICollectionViewDataSource for Weaknesses
+extension PokemonDetailContentView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return model.weaknesses.count
     }
     
-    override var intrinsicContentSize: CGSize {
-        let size = super.intrinsicContentSize
-        return CGSize(width: size.width + edgeInsets.left + edgeInsets.right,
-                      height: size.height + edgeInsets.top + edgeInsets.bottom)
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PillCell.identifier, for: indexPath) as? PillCell else {
+            return UICollectionViewCell()
+        }
+        
+        let weakness = model.weaknesses[indexPath.item]
+        // Assumes you have a UIColor extension or function .pokemonTypeTheme(_:) for color mapping
+        cell.configure(text: weakness.capitalized, backgroundColor: .pokemonTypeTheme(weakness))
+        return cell
     }
 }
