@@ -8,12 +8,12 @@
 import UIKit
 
 enum ColorType {
-    case pokemonTheme(String)
+    case theme(String)
     case pokemonTypeTheme(String)
     
     var color: UIColor {
         switch self {
-        case .pokemonTheme(let colorName):
+        case .theme(let colorName):
             switch colorName.lowercased() {
             case "black":
                 return UIColor.black.withAlphaComponent(0.25)
@@ -35,6 +35,8 @@ enum ColorType {
                 return UIColor.lightGray.withAlphaComponent(0.25)
             case "yellow":
                 return UIColor.systemYellow.withAlphaComponent(0.25)
+            case "background":
+                return #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
             default:
                 return UIColor.black.withAlphaComponent(0.25)
             }

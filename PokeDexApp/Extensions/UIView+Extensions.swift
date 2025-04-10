@@ -27,7 +27,6 @@ extension UIView {
     ///   - useSafeArea: A Boolean value indicating whether to use the safe area layout guide.
     func constrain(to superview: UIView, edges: [Edge], useSafeArea: Bool = false) {
         translatesAutoresizingMaskIntoConstraints = false
-        superview.addSubview(self)
         
         let topAnchorReference: NSLayoutYAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.topAnchor : superview.topAnchor
         let bottomAnchorReference: NSLayoutYAxisAnchor = useSafeArea ? superview.safeAreaLayoutGuide.bottomAnchor : superview.bottomAnchor
