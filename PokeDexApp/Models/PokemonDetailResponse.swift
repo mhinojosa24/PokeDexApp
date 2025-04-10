@@ -15,6 +15,7 @@ struct PokemonDetailResponse: Decodable {
     let types: [PokemonTypeResponse] // Type of pokemon
     let weight: Int // Weight of pokemon
     var weaknessTypes: [String]?
+    var evolutionChain: [ChainResponse]?
 }
 
 // MARK: - Species Response
@@ -27,12 +28,42 @@ struct SpeciesResponse: Decodable {
 // MARK: - Species Detail Response
 struct SpeciesDetailResponse: Decodable {
     let color: ColorResponse
+    let evolutionChain: EvolutionChainResponse
     var flavorTextEntries: [FlavorTextResponse]?
 
     enum CodingKeys: String, CodingKey {
+        case evolutionChain = "evolution_chain"
         case color
         case flavorTextEntries = "flavor_text_entries"
     }
+}
+
+struct EvolutionChainResponse: Decodable {
+    let url: String
+}
+
+struct EvolutionChainDetailResponse: Decodable {
+    let chain: ChainDetailResponse
+}
+
+struct ChainDetailResponse: Decodable {
+    let species: ChainSpeciesResponse
+    let evolvesTo: [ChainDetailResponse]?
+    
+    enum CodingKeys: String, CodingKey {
+        case species
+        case evolvesTo = "evolves_to"
+    }
+}
+
+struct ChainSpeciesResponse: Decodable {
+    let name: String
+    let url: String
+}
+
+struct ChainResponse: Decodable {
+    let id: Int
+    let artwork: String
 }
 
 // MARK: - Color Response
