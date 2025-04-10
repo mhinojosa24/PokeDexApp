@@ -106,6 +106,7 @@ class PokemonDataManager {
         
         let types = pokemonDetail.types.map { $0.type.name }
         let weaknesses = pokemonDetail.weaknessTypes ?? []
+        let evolution = pokemonDetail.evolutionChain?.compactMap { $0.artwork } ?? []
         
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
@@ -115,6 +116,7 @@ class PokemonDataManager {
                                   stats: stats,
                                   types: types,
                                   weaknesses: weaknesses,
+                                  evolution: evolution,
                                   weight: pokemonDetail.weight)
     }
     
