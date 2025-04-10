@@ -23,7 +23,7 @@ class PokemonService {
     /// Fetches a list of Pokemons
     /// - Throws: An error if the URL is invalid or the network request fails.
     func fetchPokemons() async throws {
-        let url = try url(from: "https://pokeapi.co/api/v2/pokemon?offset=0&limit=20")
+        let url = try url(from: "https://pokeapi.co/api/v2/pokemon?offset=0&limit=1")
         let response: Response = try await client.fetch(url: url, as: Response.self)
         try await fetchPokemonDetails(from: response)
     }
@@ -65,7 +65,6 @@ class PokemonService {
                     
                     // Fetch the type detail which includes damage relations
                     let typeDetail = try await self.client.fetch(url: typeURL, as: TypeDetailResponse.self)
-                    
                     // Extract the types that deal double damage (i.e., weaknesses)
                     return typeDetail.damageRelations.doubleDamageFrom.compactMap { $0.name }
                 }
@@ -88,18 +87,70 @@ class PokemonService {
         // Fetch species details and update the detail object
         let speciesURL = try url(from: detail.species.url)
         let speciesDetail = try await client.fetch(url: speciesURL, as: SpeciesDetailResponse.self)
-        detail.species.detail = speciesDetail
+        
+        let evolutionURL = try url(from: speciesDetail.evolutionChain.url)
+        let evolutionDetail = try await client.fetch(url: evolutionURL, as: EvolutionChainDetailResponse.self)
+        
+        let evolution = getAllSpecies(from: evolutionDetail.chain)
+        var evolutionChained = try await fetchPokemonArtworks(for: evolution)
+        evolutionChained.sort { $0.id < $1.id }
         
         // Now that detail is fully fetched, call fetchWeaknesses to get the weaknesses.
         let weaknesses = try await fetchWeaknesses(for: detail)
         
         // Update detail weaknesses
+        detail.evolutionChain = evolutionChained
+        detail.species.detail = speciesDetail
         detail.weaknessTypes = weaknesses
         return detail
+    }
+    
+    /// Concurrently fetches Pokémon details for a list of Pokémon names and stores their official artwork URLs.
+    func fetchPokemonArtworks(for names: [String]) async throws -> [ChainResponse] {
+        var results: [ChainResponse] = []
+        try await withThrowingTaskGroup(of: ChainResponse?.self) { group in
+            // For each Pokémon name, add a concurrent task.
+            for name in names {
+                group.addTask { [weak self] in
+                    guard let self = self else { return nil }
+                    let url = try self.url(from: "https://pokeapi.co/api/v2/pokemon/\(name)/")
+                    // Fetch the Pokémon detail.
+                    let detail = try await self.client.fetch(url: url, as: PokemonDetailResponse.self)
+                    // Extract the official artwork URL from the detail response.
+                    if let artwork = detail.sprites.other?.officialArtwork.frontDefault {
+                        return ChainResponse(id: detail.id, artwork: artwork)
+                    }
+                    return nil
+                }
+            }
+            
+            // Process all concurrently fetched results.
+            for try await result in group {
+                if let item = result {
+                    // Save the artwork URL for the Pokémon using your data manager.
+                    results.append(item)
+                }
+            }
+        }
+        return results
     }
     
     fileprivate func url(from string: String) throws -> URL {
         guard let url = URL(string: string) else { throw URLError(.badURL) }
         return url
+    }
+    
+    func getAllSpecies(from chain: ChainDetailResponse) -> [String] {
+        var speciesList: [String] = []
+        
+        // Add the current chain's species
+        speciesList.append(chain.species.name)
+        
+        // Recursively add species from each evolved branch
+        for child in chain.evolvesTo ?? [] {
+            speciesList.append(contentsOf: getAllSpecies(from: child))
+        }
+        
+        return speciesList
     }
 }
