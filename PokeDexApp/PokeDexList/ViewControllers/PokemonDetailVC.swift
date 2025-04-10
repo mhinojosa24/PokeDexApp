@@ -21,7 +21,7 @@ class PokemonDetailVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         // TODO: - fix navigation UI
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()

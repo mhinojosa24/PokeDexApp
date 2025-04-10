@@ -35,8 +35,6 @@ enum ColorType {
                 return UIColor.lightGray.withAlphaComponent(0.25)
             case "yellow":
                 return UIColor.systemYellow.withAlphaComponent(0.25)
-            case "background":
-                return #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
             default:
                 return UIColor.black.withAlphaComponent(0.25)
             }
