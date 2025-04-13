@@ -21,11 +21,11 @@ class PillLabel: UILabel {
                       height: size.height + edgeInsets.top + edgeInsets.bottom)
     }
     
-    func configure(with text: String, textColor: UIColor = .black, font: UIFont, textAlignment: NSTextAlignment = .center, backgroundColor: UIColor) {
+    func configure(with text: String, textColor: UIColor = .black, font: UIFont, textAlignment: NSTextAlignment = .center, backgroundColor: PokemonTypeColor) {
         self.text = text
         self.font = font
         self.textColor = textColor
-        self.backgroundColor = backgroundColor
+        self.backgroundColor = backgroundColor.color
         self.textAlignment = textAlignment
         self.layer.cornerRadius = 12
         self.clipsToBounds = true

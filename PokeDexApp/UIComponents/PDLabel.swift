@@ -28,13 +28,13 @@ class PDLabel: UILabel {
     ///   - fontSize: The size of the font.
     ///   - backgroundColor: The background color for the label.
     init(text: String? = nil,
-         textColor: UIColor = .black,
+         textColor: PokemonBackgroundColor = .black,
          fontWeight: PoppinsFontWeight = .regular,
          fontSize: CGFloat = 17,
          backgroundColor: UIColor = .clear) {
         super.init(frame: .zero)
         self.text = text
-        self.textColor = textColor
+        self.textColor = textColor.color
         self.backgroundColor = backgroundColor
         
         // Set the custom Poppins font. If unavailable, fallback to system font.

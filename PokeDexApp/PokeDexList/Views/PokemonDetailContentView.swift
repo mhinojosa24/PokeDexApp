@@ -14,7 +14,7 @@ class PokemonDetailContentView: UIView {
     // MARK: - UI Model
     struct UIModel {
         let pokemonImageURLString: String      // Main Pokémon image (static)
-        let backgroundImageColor: ColorType
+        let backgroundImageColor: PokemonBackgroundColor
         let name: String
         let description: String
         let types: [String]
@@ -168,10 +168,10 @@ class PokemonDetailContentView: UIView {
         scrollView.addSubview(parentContentStackView)
         // scrollView
         scrollView.constrain(to: self, edges: [
-            .top(0),
-            .leading(0),
-            .trailing(0),
-            .bottom(0)
+            .top(.zero),
+            .leading(.zero),
+            .trailing(.zero),
+            .bottom(.zero)
         ])
         // parentContentStackView
         parentContentStackView.constrain(to: self, edges: [
@@ -209,7 +209,7 @@ class PokemonDetailContentView: UIView {
         typeStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
         model.types.forEach {
             let pill = PillLabel()
-            pill.configure(with: $0.capitalized, font: .systemFont(ofSize: 14, weight: .semibold), backgroundColor: ColorType.pokemonTypeTheme($0).color)
+            pill.configure(with: $0.capitalized, font: .systemFont(ofSize: 14, weight: .semibold), backgroundColor: .init($0))
             pill.translatesAutoresizingMaskIntoConstraints = false
             pill.heightAnchor.constraint(equalToConstant: 25).isActive = true
             typeStackView.addArrangedSubview(pill)
@@ -245,8 +245,7 @@ extension PokemonDetailContentView: UICollectionViewDataSource {
         }
         
         let weakness = model.weaknesses[indexPath.item]
-        // Assumes you have a UIColor extension or function .pokemonTypeTheme(_:) for color mapping
-        cell.configure(text: weakness.capitalized, backgroundColor: .pokemonTypeTheme(weakness))
+        cell.configure(text: weakness.capitalized, backgroundColor: .init(weakness))
         return cell
     }
 }

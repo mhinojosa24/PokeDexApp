@@ -37,10 +37,10 @@ class PokemonDetailVC: UIViewController {
         let detailContentView = PokemonDetailContentView(model: model)
         view.addSubview(detailContentView)
         detailContentView.constrain(to: view, edges: [
-            .top(0),
-            .leading(0),
-            .trailing(0),
-            .bottom(0)
-        ], useSafeArea: false)
+            .top(.zero),
+            .leading(.zero),
+            .trailing(.zero),
+            .bottom(.zero)
+        ])
     }
 }

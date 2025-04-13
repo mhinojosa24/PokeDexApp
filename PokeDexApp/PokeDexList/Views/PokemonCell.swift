@@ -13,7 +13,7 @@ class PokemonCell: UICollectionViewCell {
         let thumbnail: String
         let name: String
         let pokedexNumber: Int
-        let colorType: ColorType
+        let colorType: PokemonBackgroundColor
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(pokedexNumber)
@@ -85,8 +85,8 @@ class PokemonCell: UICollectionViewCell {
         // Stack View
         stackView.constrain(to: contentView, edges: [
             .top(12),
-            .leading(0),
-            .trailing(0),
+            .leading(.zero),
+            .trailing(.zero),
             .bottom(10)
         ])
         
