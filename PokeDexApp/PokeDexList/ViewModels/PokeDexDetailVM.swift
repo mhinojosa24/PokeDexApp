@@ -25,9 +25,9 @@ class PokeDexDetailVM: PokemonDetailVM {
                                                 backgroundImageColor: .init(pokemonDetails.themeColor),
                                                 name: pokemonDetails.name,
                                                 description: pokemonDetails.flavorDescription,
-                                                types: pokemonDetails.types,
-                                                weaknesses: pokemonDetails.weaknesses,
-                                                evolutions: pokemonDetails.evolution)
+                                                types: pokemonDetails.types.map { $0.name },
+                                                weaknesses: pokemonDetails.weaknesses.map { $0.name },
+                                                evolutions: pokemonDetails.evolution.map { $0.name })
     }
 }
 

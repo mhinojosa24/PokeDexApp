@@ -62,11 +62,6 @@ class PokeDexListVC: UIViewController {
         populateCollectionView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print(navigationController?.viewControllers)
-    }
-    
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         navigationController?.configure(

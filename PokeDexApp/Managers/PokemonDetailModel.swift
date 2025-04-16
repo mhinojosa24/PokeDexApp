@@ -15,9 +15,9 @@ class PokemonDetailModel {
     var themeColor: String
     var flavorDescription: String
     var stats: [StatModel]
-    var types: [String]
-    var weaknesses: [String]
-    var evolution: [String]
+    var types: [TypeModel]
+    var weaknesses: [TypeModel]
+    var evolution: [EvolutionModel]
     var weight: Int
     
     init(id: Int,
@@ -26,9 +26,9 @@ class PokemonDetailModel {
          themeColor: String,
          flavorDescription: String,
          stats: [StatModel],
-         types: [String],
-         weaknesses: [String],
-         evolution: [String],
+         types: [TypeModel],
+         weaknesses: [TypeModel],
+         evolution: [EvolutionModel],
          weight: Int) {
         self.id = id
         self.name = name
@@ -80,12 +80,19 @@ class StatModel {
 }
 
 @Model
-class PokemonTypeModel {
+class TypeModel {
     var name: String
-    var iconURL: String
     
-    init(name: String, iconURL: String) {
+    init(name: String) {
         self.name = name
-        self.iconURL = iconURL
+    }
+}
+
+@Model
+class EvolutionModel {
+    var name: String
+    
+    init(name: String) {
+        self.name = name
     }
 }
