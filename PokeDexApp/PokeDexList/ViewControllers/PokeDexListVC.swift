@@ -23,15 +23,26 @@ class PokeDexListVC: UIViewController {
         let searchVC = UISearchController(searchResultsController: nil)
         searchVC.searchResultsUpdater = self
         searchVC.obscuresBackgroundDuringPresentation = false
-        searchVC.searchBar.placeholder = "Name or number"
         searchVC.searchBar.overrideUserInterfaceStyle = .light
+        searchVC.searchBar.searchBarStyle = .prominent
+        searchVC.searchBar.placeholder = "Name or number"
+        searchVC.searchBar.tintColor = PokemonBackgroundColor.black.color
+        searchVC.searchBar.searchTextField.layer.cornerRadius = 16
+        searchVC.searchBar.searchTextField.clipsToBounds = true
+        searchVC.searchBar.searchTextField.font = UIFont.systemFont(ofSize: 16)
+
+        // Style the left image view (magnifying glass)
+        if let leftImageView = searchVC.searchBar.searchTextField.leftView as? UIImageView {
+            leftImageView.tintColor = PokemonBackgroundColor.black.color
+        }
         return searchVC
     }()
     
     private var viewModel: PokemonVM
     private var dataSource: PokeDexDiffableDataSource!
     private var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
-    var delegate: PokeDexDelegate?
+    
+    weak var delegate: PokeDexDelegate?
     
     init(viewModel: PokemonVM) {
         self.viewModel = viewModel
@@ -53,23 +64,29 @@ class PokeDexListVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.configureNavigationBarAppearance(titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1), largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1))
-        navigationItem.largeTitleDisplayMode = .always
+        print(navigationController?.viewControllers)
     }
     
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
-        navigationController?.configureNavigationBarAppearance(titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1), largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1))
+        navigationController?.configure(
+            barAppearance: .opaque,
+            titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1),
+            largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1),
+            prefersLargeTitles: true,
+            isTranslucent: true
+        )
+        
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.title = "PokéDex"
-        navigationItem.largeTitleDisplayMode = .never
+        navigationItem.largeTitleDisplayMode = .always
     }
     
     private func setupLayouts() {
         view.addSubview(collectionView)
         collectionView.constrain(to: view, edges: [
-            .top(20),
+            .top(0),
             .leading(17),
             .trailing(17),
             .bottom(0)

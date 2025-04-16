@@ -15,7 +15,7 @@ extension UINavigationController {
         case none
     }
     
-    func configureNavigationBarAppearance(
+    func configure(
         barAppearance: NavigationBarBackgroundAppearance = .none,
         backgroundColor: UIColor = .clear,
         backgroundEffect: UIBlurEffect.Style = .light,
