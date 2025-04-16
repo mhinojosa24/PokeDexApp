@@ -94,11 +94,7 @@ extension SplashCoordinator: SplashDelegate {
         } else {
             Task {
                 do {
-                    let configuration = URLSessionConfiguration.default
-                    configuration.timeoutIntervalForRequest = 15
-                    configuration.timeoutIntervalForResource = 30
-                    let session = URLSession(configuration: configuration)
-                    let client = NetworkClient(session: session)
+                    let client = NetworkClient()
                     let service = PokemonService(client: client)
                     try await service.fetchPokemons()
                     showPokeDexList()

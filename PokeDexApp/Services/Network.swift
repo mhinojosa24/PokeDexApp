@@ -38,11 +38,13 @@ class NetworkClient: APIClient {
         }
     }
     
-    private let session: URLSession
-
-    init(session: URLSession = .shared) {
-        self.session = session
-    }
+    private let session: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 15
+        configuration.timeoutIntervalForResource = 30
+        let session = URLSession(configuration: configuration)
+        return session
+    }()
     
     /// Fetches data from a given URL asynchronously using `URLSession`.
     /// - Parameters:
