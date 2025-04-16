@@ -17,6 +17,22 @@ protocol APIClient {
 
 // MARK: - Network Client
 class NetworkClient: APIClient {
+    /**
+     An enumeration representing common HTTP error cases encountered during network requests.
+
+     This enum conforms to both `Error` and `LocalizedError` so it can be thrown and provide
+     user-friendly error descriptions. It encapsulates various HTTP error conditions:
+     
+     - `badRequest`: Represents a 400 status code, indicating that the request was malformed.
+     - `unauthorized`: Represents a 401 status code, indicating that access is unauthorized.
+     - `notFound`: Represents a 404 status code, meaning the requested resource does not exist.
+     - `invalidResponse(Data)`: Indicates that the URL response could not be cast to an HTTPURLResponse.
+       The associated `Data` is returned for debugging purposes.
+     - `http(response: HTTPURLResponse, data: Data)`: Captures all other non-success HTTP status codes,
+       providing both the `HTTPURLResponse` and the associated `Data` for further error handling.
+
+     The computed property `errorDescription` provides a localized description for each error case.
+     */
     enum HTTPError: Error, LocalizedError {
         case badRequest
         case unauthorized
@@ -38,6 +54,16 @@ class NetworkClient: APIClient {
         }
     }
     
+    /**
+     A private URLSession instance configured with custom timeout intervals.
+
+     This session is created using a closure that configures a `URLSessionConfiguration` with default settings,
+     and then adjusts the following properties:
+     - `timeoutIntervalForRequest`: 15 seconds, defining the maximum time a request should take before timing out.
+     - `timeoutIntervalForResource`: 30 seconds, defining the maximum time a resource request should persist.
+
+     The configured session is used throughout the network client to perform asynchronous data tasks.
+     */
     private let session: URLSession = {
         let configuration = URLSessionConfiguration.default
         configuration.timeoutIntervalForRequest = 15
@@ -57,6 +83,21 @@ class NetworkClient: APIClient {
         return try await session.data(from: url)
     }
     
+    /**
+     Validates the HTTP response returned from a data task and returns the valid data.
+
+     This method checks that the provided URLResponse is an HTTPURLResponse. It then verifies the status code:
+     - If the status code is in the 200–299 range, the data is considered valid and is returned.
+     - Otherwise, it compares the status code against a mapping of known HTTP errors. If a match is found, that error is thrown.
+     - If the status code does not match any known errors, a generic HTTP error is thrown including the response and data.
+
+     - Parameter dataTaskResult: A tuple containing the raw data and URLResponse obtained from an asynchronous URLSession data task.
+     - Returns: The data if the HTTP response indicates a successful request (status code in the 200–299 range).
+     - Throws:
+       - `.invalidResponse(data)`, if the response cannot be cast as an HTTPURLResponse.
+       - A specific HTTPError defined in the `statusCodeMapping` if the status code is 400, 401, or 404.
+       - `.http(response:data)`, if the HTTP status code is outside the 200–299 range and not specifically mapped.
+     */
     func validateHTTPResponse(with dataTaskResult: (data: Data, response: URLResponse)) throws -> Data {
         guard let httpResponse = dataTaskResult.response as? HTTPURLResponse else {
             throw NetworkClient.HTTPError.invalidResponse(dataTaskResult.data)
