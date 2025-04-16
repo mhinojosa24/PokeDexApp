@@ -63,7 +63,7 @@ class PokeDexDetailCoordinator: Coordinator {
      */
     func start() {
         let viewModel = PokeDexDetailVM(pokemonDetails)
-        let pokeDexDetailVC = PokeDexDetailVC()
+        let pokeDexDetailVC = PokeDexDetailVC(viewModel: viewModel)
         pokeDexDetailVC.delegate = self
         navigationController.pushViewController(pokeDexDetailVC, animated: true)
     }
