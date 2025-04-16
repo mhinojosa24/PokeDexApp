@@ -10,7 +10,7 @@ import UIKit
 
 /// `Coordinator` is a protocol that defines the basic structure for coordinators in the application.
 /// Coordinators are responsible for managing navigation flow and child coordinators.
-protocol Coordinator {
+protocol Coordinator: AnyObject {
     /// An array to keep track of child coordinators.
     var childCoordinators: [Coordinator] { get set }
     
@@ -19,4 +19,9 @@ protocol Coordinator {
     
     /// Starts the coordinator.
     func start()
+}
+
+
+protocol ChildCoordinatorDelegate: AnyObject {
+    func childDidFinish(_ coordinator: Coordinator)
 }

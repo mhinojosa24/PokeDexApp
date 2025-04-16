@@ -26,6 +26,7 @@ class ApplicationCoordinator: Coordinator {
     /// Starts the application by initializing and starting the `SplashCoordinator`.
     func start() {
         let splashCoordinator = SplashCoordinator(navigationController: navigationController)
+        childCoordinators.append(splashCoordinator)
         splashCoordinator.start()
         window.makeKeyAndVisible()
     }
