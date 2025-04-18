@@ -31,11 +31,11 @@ class PillCell: UICollectionViewCell {
     
     fileprivate func setupLayout() {
         contentView.addSubview(pillLabel)
-        pillLabel.constrain(to: contentView, edges: [
-            .top(.zero),
-            .leading(.zero),
-            .trailing(.zero),
-            .bottom(.zero),
+        pillLabel.constrain([
+            .top(targetAnchor: contentView.topAnchor),
+            .leading(targetAnchor: contentView.leadingAnchor),
+            .trailing(targetAnchor: contentView.trailingAnchor),
+            .bottom(targetAnchor: contentView.bottomAnchor),
             .height(25)
         ])
     }

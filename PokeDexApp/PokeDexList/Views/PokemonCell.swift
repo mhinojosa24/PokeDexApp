@@ -34,7 +34,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1)
+        label.textColor = PokemonBackgroundColor.darkNavyBlue.color
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -43,7 +43,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var numberLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1)
+        label.textColor = PokemonBackgroundColor.darkNavyBlue.color
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -83,25 +83,25 @@ class PokemonCell: UICollectionViewCell {
         contentView.addSubview(stackView)
         stackView.addSubview(thumbnailImageView)
         // Stack View
-        stackView.constrain(to: contentView, edges: [
-            .top(12),
-            .leading(.zero),
-            .trailing(.zero),
-            .bottom(10)
+        stackView.constrain([
+            .top(targetAnchor: contentView.topAnchor, constant: 12),
+            .leading(targetAnchor: contentView.leadingAnchor),
+            .trailing(targetAnchor: contentView.trailingAnchor),
+            .bottom(targetAnchor: contentView.bottomAnchor, constant: 10)
         ])
         
         // Thumbnail Image View
-        thumbnailImageView.constrain(to: stackView, edges: [
-            .heightMultiplier(0.75),
-            .widthMultiplier(0.75)
+        thumbnailImageView.constrain([
+            .heightMultiplier(targetAnchor: stackView.heightAnchor, multiplier: 0.75),
+            .widthMultiplier(targetAnchor: stackView.widthAnchor, multiplier: 0.75)
         ])
     }
     
     func configure(with model: UIModel) {
         thumbnailImageView.imageURLString = model.thumbnail
         nameLabel.text = model.name
-        let formattedNumber = String(format: "#%03d", model.pokedexNumber)
+        let formattedNumber = String(format: "%03d", model.pokedexNumber)
         numberLabel.text = formattedNumber
-        contentView.backgroundColor = model.colorType.color
+        contentView.backgroundColor = model.colorType.color.withAlphaComponent(0.45)
     }
 }

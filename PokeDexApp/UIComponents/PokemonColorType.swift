@@ -10,34 +10,36 @@ import UIKit
 // MARK: - Pokemon Background Colors
 
 enum PokemonBackgroundColor: String {
-    case black, blue, brown, gray, green, pink, purple, red, white, yellow, unknown
+    case black, darkNavyBlue, blue, brown, gray, green, pink, purple, red, white, yellow, unknown
     
     init(_ type: String) {
         self = PokemonBackgroundColor(rawValue: type.lowercased()) ?? .unknown
     }
-    
+
     var color: UIColor {
         switch self {
         case .black:
-            return #colorLiteral(red: 0.1834126115, green: 0.1884033084, blue: 0.3521870375, alpha: 1)
+            return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        case .darkNavyBlue:
+            return #colorLiteral(red: 0.297126472, green: 0.3140752614, blue: 0.5818428397, alpha: 1)
         case .blue:
-            return UIColor.systemBlue.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.3905215859, green: 0.5775662065, blue: 0.9194149375, alpha: 1)
         case .brown:
-            return UIColor.systemBrown.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.5743098855, green: 0.3714034557, blue: 0.1913413107, alpha: 1)
         case .gray:
-            return UIColor.systemGray.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.7158644795, green: 0.7258198261, blue: 0.8154850602, alpha: 1)
         case .green:
-            return UIColor.systemGreen.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.4553773403, green: 0.7966255546, blue: 0.280756712, alpha: 1)
         case .pink:
-            return UIColor.systemPink.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.9829356074, green: 0.3329133987, blue: 0.5193170905, alpha: 1)
         case .purple:
-            return UIColor.systemPurple.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.4401388168, green: 0.3330246806, blue: 0.6093851924, alpha: 1)
         case .red:
-            return UIColor.systemRed.withAlphaComponent(0.25)
+            return #colorLiteral(red: 1, green: 0.4556620121, blue: 0, alpha: 1)
         case .white:
-            return UIColor.lightGray.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         case .yellow:
-            return UIColor.systemYellow.withAlphaComponent(0.25)
+            return #colorLiteral(red: 0.9750881791, green: 0.813549459, blue: 0.189127773, alpha: 1)
         case .unknown:
             return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1).withAlphaComponent(0.65)
         }
@@ -70,7 +72,7 @@ enum PokemonTypeColor: String {
         case .rock:
             return #colorLiteral(red: 0.6460644603, green: 0.5820371509, blue: 0.291392535, alpha: 1).withAlphaComponent(0.65)
         case .bug:
-            return #colorLiteral(red: 0.6446012855, green: 0.6795505881, blue: 0.2920807004, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1).withAlphaComponent(0.65)
         case .ghost:
             return #colorLiteral(red: 0.4506624937, green: 0.3530937433, blue: 0.612631619, alpha: 1).withAlphaComponent(0.65)
         case .steel:
