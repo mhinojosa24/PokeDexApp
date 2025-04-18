@@ -9,126 +9,146 @@ import UIKit
 
 
 class PokeDexDetailVC: UIViewController {
-    
+    struct Constants {
+        static fileprivate let headerHeight: CGFloat = 210
+    }
     // MARK: - Subviews
     
     private lazy var scrollView: UIScrollView = {
-        let scroll = UIScrollView()
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        return scroll
+        let scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+    
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
+        view.layer.cornerRadius = 32
+        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    private lazy var imageView: CustomImageView = {
+        let imageView = CustomImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.imageURLString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+        imageView.clipsToBounds = true
+        return imageView
     }()
     
     private lazy var contentStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = 16
-        stack.alignment = .center
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.distribution = .fill
+        stack.alignment = .leading
+        stack.spacing = 20
+        stack.backgroundColor = .clear
         return stack
     }()
     
-    // Top labels: Name & Number
-    private lazy var pokemonNameLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Venusaur"
-        label.font = UIFont.systemFont(ofSize: 28, weight: .bold)
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
+    // MARK: - Segment View
     
-    private lazy var pokemonNumberLabel: UILabel = {
-        let label = UILabel()
-        label.text = "003"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    // Main Pokémon Image
-    private lazy var pokemonImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFit
-        // Example placeholder
-        imageView.image = UIImage(named: "venusaur_placeholder")
-        imageView.backgroundColor = UIColor.systemGray6
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        // Constrain width/height so it has a square shape
-        NSLayoutConstraint.activate([
-            imageView.widthAnchor.constraint(equalToConstant: 240),
-            imageView.heightAnchor.constraint(equalToConstant: 240)
-        ])
-        return imageView
-    }()
-    
-    // Segmented Control
-    private lazy var segmentedControl: UISegmentedControl = {
-        let items = ["Forms", "Detail", "Types", "Stats", "Weakness"]
-        let control = UISegmentedControl(items: items)
-        control.selectedSegmentIndex = 0
-        control.translatesAutoresizingMaskIntoConstraints = false
-        control.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
-        return control
-    }()
-    
-    private let segmentTitles = ["Forms", "Detail", "Types", "Stats", "Weakness"]
-
-    // MARK: - Collection View for Segments
-    private lazy var segmentsCollectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.register(SegmentCell.self, forCellWithReuseIdentifier: SegmentCell.reuseIdentifier)
-        return collectionView
-    }()
-    
-    // Horizontal forms scroll (or stack)
-    private lazy var formsScrollView: UIScrollView = {
-        let scroll = UIScrollView()
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        return scroll
-    }()
-    
-    private lazy var formsStackView: UIStackView = {
-        let stack = UIStackView()
+    private lazy var segmentStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [aboutLabel, statsLabel, evolutionLabel])
         stack.axis = .horizontal
+        stack.distribution = .fillEqually
+        stack.alignment = .center
+        stack.spacing = 10
+        return stack
+    }()
+    
+    private lazy var segment: UISegmentedControl = {
+        let segment = UISegmentedControl(items: ["About", "Stats", "Evolution"])
+        segment.selectedSegmentIndex = 0
+        return segment
+    }()
+    
+    private lazy var aboutLabel: PDLabel = {
+        let label = PDLabel(text: "About", textColor: .white, fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var statsLabel: PDLabel = {
+        let label = PDLabel(text: "Stats", textColor: .gray, fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var evolutionLabel: PDLabel = {
+        let label = PDLabel(text: "Evolution", textColor: .gray, fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        return label
+    }()
+    
+    // MARK: - About View
+    
+    private lazy var aboutStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.alignment = .fill
         stack.spacing = 16
+        return stack
+    }()
+    
+    private lazy var pokemonDescriptionLabel: PDLabel = {
+        let label = PDLabel(text: "", textColor: .black, fontWeight: .light, fontSize: 14, backgroundColor: .clear)
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private lazy var pokemonDataLabel: PDLabel = {
+        let label = PDLabel(text: "PokéDex Data", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private lazy var trainingLabel: PDLabel = {
+        let label = PDLabel(text: "Training", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
+    private lazy var typeWeaknessesLabel: PDLabel = {
+        let label = PDLabel(text: "Type Weaknesses", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
+        label.numberOfLines = 0
+        label.textAlignment = .left
+        return label
+    }()
+    
+    // MARK: - Stats View
+    
+    private lazy var statsStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [])
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.alignment = .fill
+        stack.spacing = 10
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
     
-    // Title & Description below forms
-    private lazy var formTitleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Mega Evolution"
-        label.font = UIFont.systemFont(ofSize: 18, weight: .semibold)
-        label.textAlignment = .left
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    // MARK: - Evolution View
+    
+    private lazy var evolutionStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [])
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.alignment = .fill
+        stack.spacing = 10
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
     }()
     
-    private lazy var formDescriptionLabel: UILabel = {
-        let label = UILabel()
-        label.text = "In order to support its flower, which has grown larger due to Mega Evolution, its back and legs have become stronger."
-        label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .darkGray
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .justified
-        return label
-    }()
+    // MARK: - Variables & Attributes
     
     private let viewModel: PokeDexDetailVM
     
@@ -144,202 +164,196 @@ class PokeDexDetailVC: UIViewController {
     }
     
     // MARK: - Lifecycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
+        //        setupNavigationBar()
         setupLayout()
-        configureForms() // Example: populate the forms area
     }
     
     // MARK: - Setup Layout
     
     private func setupNavigationBar() {
-        title = "Venusaur"
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         navigationItem.largeTitleDisplayMode = .never
+        configureNavigationBar(
+            style: .transparent,
+            tint: PokemonBackgroundColor.darkNavyBlue.color,
+            hidesSeparator: true,
+            prefersLargeTitles: false
+        )
+        
         let leftBarButtonItemAction: Selector = #selector(didTapBackButton)
         let leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"),
                                                 style: .plain,
                                                 target: self,
                                                 action: leftBarButtonItemAction)
-        leftBarButtonItem.tintColor = PokemonBackgroundColor.black.color
+        leftBarButtonItem.tintColor = PokemonBackgroundColor.darkNavyBlue.color
+        
         navigationItem.leftBarButtonItem = leftBarButtonItem
+        navigationItem.backButtonDisplayMode = .minimal
     }
     
     private func setupLayout() {
-        // 1. Add scrollView to the view
         view.addSubview(scrollView)
-        NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        scrollView.addSubview(imageView)
+        scrollView.addSubview(segmentStackView)
+        scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
+        
+        let aboutContent = configureAbout()
+        let trainingContent = configureTraining()
+        aboutStackView.addArrangedSubview(aboutContent)
+        aboutStackView.addArrangedSubview(trainingContent)
+        aboutStackView.addArrangedSubview(typeWeaknessesLabel)
+        pokemonDescriptionLabel.text = viewModel.pokemonDetails.flavorDescription.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds()
+        contentStackView.addArrangedSubview(pokemonDescriptionLabel)
+        contentStackView.addArrangedSubview(aboutStackView)
+        
+        containerView.addSubview(contentStackView)
+        scrollView.addSubview(containerView)
+        
+        scrollView.constrain([
+            .top(targetAnchor: view.topAnchor),
+            .leading(targetAnchor: view.leadingAnchor),
+            .trailing(targetAnchor: view.trailingAnchor),
+            .bottom(targetAnchor: view.bottomAnchor)
         ])
         
-        // 2. Add contentStackView inside the scrollView
-        scrollView.addSubview(contentStackView)
-        NSLayoutConstraint.activate([
-            contentStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 16),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)  // match width to scrollView
+        imageView.constrain([
+            .top(targetAnchor: scrollView.topAnchor, constant: 0),
+            .centerX(targetAnchor: scrollView.centerXAnchor),
+            .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
         ])
         
-        // 3. Add subviews to contentStackView
-        contentStackView.addArrangedSubview(pokemonNameLabel)
-        contentStackView.addArrangedSubview(pokemonNumberLabel)
-        contentStackView.addArrangedSubview(pokemonImageView)
-//        contentStackView.addArrangedSubview(segmentedControl)
-        
-        contentStackView.addArrangedSubview(segmentsCollectionView)
-        NSLayoutConstraint.activate([
-            segmentsCollectionView.heightAnchor.constraint(equalToConstant: 40),
-            segmentsCollectionView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            segmentsCollectionView.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor)
+        segmentStackView.constrain([
+            .top(targetAnchor: imageView.bottomAnchor),
+            .leading(targetAnchor: scrollView.safeAreaLayoutGuide.leadingAnchor),
+            .trailing(targetAnchor: scrollView.safeAreaLayoutGuide.trailingAnchor),
+            .height(50)
         ])
         
-        // The forms area can be optional if we only show it for certain segments
-        // but for simplicity, let's always add it:
-        contentStackView.addArrangedSubview(formsScrollView)
-        
-        // Constrain formsScrollView width to contentStackView so it doesn't scroll horizontally in an odd way
-        NSLayoutConstraint.activate([
-            formsScrollView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
-            formsScrollView.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor),
-            // Set a fixed height for forms row or let the images define it
-            formsScrollView.heightAnchor.constraint(equalToConstant: 80)
+        containerView.constrain([
+            .top(targetAnchor: segmentStackView.bottomAnchor),
+            .leading(targetAnchor: segmentStackView.leadingAnchor),
+            .trailing(targetAnchor: segmentStackView.trailingAnchor),
+            .bottom(targetAnchor: view.bottomAnchor)
         ])
         
-        // Add formsStackView inside formsScrollView
-        formsScrollView.addSubview(formsStackView)
-        NSLayoutConstraint.activate([
-            formsStackView.topAnchor.constraint(equalTo: formsScrollView.topAnchor),
-            formsStackView.leadingAnchor.constraint(equalTo: formsScrollView.leadingAnchor, constant: 16),
-            formsStackView.trailingAnchor.constraint(equalTo: formsScrollView.trailingAnchor, constant: -16),
-            formsStackView.bottomAnchor.constraint(equalTo: formsScrollView.bottomAnchor),
-            // No fixed width so it can grow horizontally
+        contentStackView.constrain([
+            .top(targetAnchor: containerView.topAnchor, constant: 24),
+            .leading(targetAnchor: containerView.leadingAnchor, constant: 24),
+            .trailing(targetAnchor: containerView.trailingAnchor, constant: 24),
         ])
-        
-        // 4. Add form title + description
-        contentStackView.addArrangedSubview(formTitleLabel)
-        
-        // Constrain the width so it doesn’t stretch beyond the safe area
-        formTitleLabel.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor, constant: 16).isActive = true
-        formTitleLabel.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor, constant: -16).isActive = true
-        
-        contentStackView.addArrangedSubview(formDescriptionLabel)
-        formDescriptionLabel.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor, constant: 16).isActive = true
-        formDescriptionLabel.trailingAnchor.constraint(equalTo: contentStackView.trailingAnchor, constant: -16).isActive = true
     }
     
-    // MARK: - Example: Populate the Forms Stack
-    
-    private func configureForms() {
-        // For demonstration, create a few placeholder images
-        let sampleForms = ["venusaur_placeholder", "mega_venusaur", "gmax_venusaur"]
+    private func configureAbout() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.spacing = 16
         
-        for formImageName in sampleForms {
-            let imageView = UIImageView()
-            imageView.contentMode = .scaleAspectFit
-            imageView.clipsToBounds = true
-            imageView.layer.cornerRadius = 8
-            imageView.backgroundColor = .systemGray5
-            if let img = UIImage(named: formImageName) {
-                imageView.image = img
-            }
-            
-            // Add a fixed width/height for each form image
-            NSLayoutConstraint.activate([
-                imageView.widthAnchor.constraint(equalToConstant: 64),
-                imageView.heightAnchor.constraint(equalToConstant: 64)
-            ])
-            
-            formsStackView.addArrangedSubview(imageView)
-        }
+        /// Pokédex Data
+        stackView.addArrangedSubview(pokemonDataLabel)
+        
+        /// species
+        let species = titleAndInfoFactory(title: "Species", info: viewModel.pokemonDetails.species)
+        stackView.addArrangedSubview(species)
+        
+        /// Height
+        let height = titleAndInfoFactory(title: "Height", info: .init(describing: viewModel.pokemonDetails.height))
+        stackView.addArrangedSubview(height)
+        
+        /// Weight
+        let weight = titleAndInfoFactory(title: "Weight", info: .init(describing: viewModel.pokemonDetails.weight))
+        stackView.addArrangedSubview(weight)
+        
+        /// Abilities
+        print( viewModel.pokemonDetails.abilities.map({ $0 }))
+        let abilities = titleAndInfoFactory(title: "Abilities", info: viewModel.pokemonDetails.abilities.map({ $0 }).joined(separator: ", "))
+        stackView.addArrangedSubview(abilities)
+        
+        return stackView
+    }
+    
+    private func configureTraining() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .fill
+        stackView.spacing = 16
+        
+        /// Training
+        stackView.addArrangedSubview(trainingLabel)
+        
+        /// Catch rate
+        let catchRate = titleAndInfoFactory(title: "Catch Rate", info: .init(describing: viewModel.pokemonDetails.catchRate))
+        stackView.addArrangedSubview(catchRate)
+        
+        /// Base experience
+        let baseExp = titleAndInfoFactory(title: "Base Exp", info: .init(describing: viewModel.pokemonDetails.baseExperience))
+        stackView.addArrangedSubview(baseExp)
+        
+        /// Growth rate
+        let growthRate = titleAndInfoFactory(title: "Growth Rate", info: viewModel.pokemonDetails.growthRate.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds())
+        stackView.addArrangedSubview(growthRate)
+        return stackView
+    }
+    
+    private func configureWeaknesses() -> UIStackView {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fill
+        stackView.alignment = .leading
+        stackView.spacing = 16
+        
+        /// Type weaknesses
+        stackView.addArrangedSubview(typeWeaknessesLabel)
+        return stackView
+    }
+    
+    private func titleAndInfoFactory(title: String, info: String) -> UIStackView {
+        /// Title
+        let title = PDLabel(text: title, textColor: .black, fontWeight: .regular, fontSize: 16)
+        title.textAlignment = .left
+        title.numberOfLines = .zero
+        /// Info
+        let info = PDLabel(text: info, textColor: .black, fontWeight: .light, fontSize: 16)
+        info.textAlignment = .right
+        info.numberOfLines = .zero
+        /// Stack View
+        let stackView = UIStackView(arrangedSubviews: [title, UIView(), info])
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .equalCentering
+        stackView.spacing = 35
+        return stackView
     }
     
     // MARK: - Actions
-    
-    @objc private func segmentedControlValueChanged(_ sender: UISegmentedControl) {
-        // Handle switching between "Forms", "Detail", "Types", "Stats", "Weakness"
-        // For simplicity, we won't implement the actual UI changes here.
-        print("Switched to segment index \(sender.selectedSegmentIndex)")
-    }
     
     @objc func didTapBackButton() {
         delegate?.didTapBackButton()
     }
 }
 
-class SegmentCell: UICollectionViewCell {
-    static let reuseIdentifier = "SegmentCell"
-    
-    private lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .darkGray
-        label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    override var isSelected: Bool {
-        didSet {
-            // Change background or text color on selection
-            contentView.backgroundColor = isSelected ? UIColor.systemPurple : UIColor.clear
-            titleLabel.textColor = isSelected ? UIColor.white : UIColor.darkGray
-        }
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        contentView.layer.cornerRadius = 8
-        contentView.layer.borderWidth = 1
-        contentView.layer.borderColor = UIColor.systemPurple.cgColor
-        contentView.clipsToBounds = true
-        
-        contentView.addSubview(titleLabel)
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4)
-        ])
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    func configure(with title: String) {
-        titleLabel.text = title
-    }
-}
-
-extension PokeDexDetailVC: UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return segmentTitles.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SegmentCell.reuseIdentifier, for: indexPath) as? SegmentCell else {
-            return UICollectionViewCell()
-        }
-        let title = segmentTitles[indexPath.item]
-        cell.configure(with: title)
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // Handle selection of a segment.
-        print("Selected segment: \(segmentTitles[indexPath.item])")
-        // Implement your logic to update the view (e.g., switching subviews, updating content, etc.)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        // Optional: handle deselection if you need to update UI.
+extension PokeDexDetailVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        if scrollView.contentOffset.y < 0.0 {
+//            headerHeightConstraint?.constant = Constants.headerHeight - scrollView.contentOffset.y
+//        } else {
+//            let parallaxFactor: CGFloat = 0.25
+//            let offsetY = scrollView.contentOffset.y * parallaxFactor
+//            let minOffsetY: CGFloat = 8.0
+//            let availableOffset = min(offsetY, minOffsetY)
+//            let contentRectOffsetY = availableOffset / 210
+//            headerTopConstraint?.constant = view.frame.origin.y
+//            headerHeightConstraint?.constant = 210 - scrollView.contentOffset.y
+//            headerImageView.layer.contentsRect = CGRect(x: 0, y: -contentRectOffsetY, width: 1, height: 1)
+//        }
     }
 }

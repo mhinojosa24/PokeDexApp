@@ -26,14 +26,14 @@ class PokeDexListVC: UIViewController {
         searchVC.searchBar.overrideUserInterfaceStyle = .light
         searchVC.searchBar.searchBarStyle = .prominent
         searchVC.searchBar.placeholder = "Name or number"
-        searchVC.searchBar.tintColor = PokemonBackgroundColor.black.color
+        searchVC.searchBar.tintColor = PokemonBackgroundColor.darkNavyBlue.color
         searchVC.searchBar.searchTextField.layer.cornerRadius = 16
         searchVC.searchBar.searchTextField.clipsToBounds = true
         searchVC.searchBar.searchTextField.font = UIFont.systemFont(ofSize: 16)
 
         // Style the left image view (magnifying glass)
         if let leftImageView = searchVC.searchBar.searchTextField.leftView as? UIImageView {
-            leftImageView.tintColor = PokemonBackgroundColor.black.color
+            leftImageView.tintColor = PokemonBackgroundColor.darkNavyBlue.color
         }
         return searchVC
     }()
@@ -51,6 +51,11 @@ class PokeDexListVC: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
     }
     
     override func viewDidLoad() {
@@ -80,11 +85,11 @@ class PokeDexListVC: UIViewController {
     
     private func setupLayouts() {
         view.addSubview(collectionView)
-        collectionView.constrain(to: view, edges: [
-            .top(0),
-            .leading(17),
-            .trailing(17),
-            .bottom(0)
+        collectionView.constrain([
+            .top(targetAnchor: view.topAnchor),
+            .leading(targetAnchor: view.leadingAnchor, constant: 17),
+            .trailing(targetAnchor: view.trailingAnchor, constant: 17),
+            .bottom(targetAnchor: view.bottomAnchor, constant: 0)
         ])
     }
     
