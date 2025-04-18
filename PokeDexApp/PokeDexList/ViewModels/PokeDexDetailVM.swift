@@ -25,9 +25,16 @@ class PokeDexDetailVM: PokemonDetailVM {
                                                 backgroundImageColor: .init(pokemonDetails.themeColor),
                                                 name: pokemonDetails.name,
                                                 description: pokemonDetails.flavorDescription,
+                                                species: pokemonDetails.species,
                                                 types: pokemonDetails.types.map { $0.name },
                                                 weaknesses: pokemonDetails.weaknesses.map { $0.name },
-                                                evolutions: pokemonDetails.evolution.map { $0.name })
+                                                evolutions: pokemonDetails.evolution.map { $0.name },
+                                                height: pokemonDetails.height,
+                                                weight: pokemonDetails.weight,
+                                                abilities: pokemonDetails.abilities,
+                                                captureRate: pokemonDetails.catchRate,
+                                                growthRate: pokemonDetails.growthRate,
+                                                baseExperience: pokemonDetails.baseExperience)
     }
 }
 

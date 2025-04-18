@@ -107,9 +107,14 @@ class PokemonDataManager {
         let types = pokemonDetail.types.compactMap { TypeModel(name: $0.type.name) }
         let weaknesses = pokemonDetail.weaknessTypes?.compactMap { TypeModel(name: $0) } ?? []
         let evolution = pokemonDetail.evolutionChain?.compactMap { EvolutionModel(name: $0.artwork) } ?? []
+        let catchRate = pokemonDetail.species.detail?.captureRate ?? 0
+        let growthRate = pokemonDetail.species.detail?.growthRate.name ?? ""
+        let abilities = pokemonDetail.abilities.map({ $0.ability.name })
         
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
+                                  abilities: abilities,
+                                  species: pokemonDetail.species.name,
                                   sprite: sprite,
                                   themeColor: themeColor,
                                   flavorDescription: flavorDescription,
@@ -117,7 +122,11 @@ class PokemonDataManager {
                                   types: types,
                                   weaknesses: weaknesses,
                                   evolution: evolution,
-                                  weight: pokemonDetail.weight)
+                                  height: pokemonDetail.weight,
+                                  weight: pokemonDetail.weight,
+                                  catchRate: catchRate,
+                                  baseExperience: pokemonDetail.baseExperience,
+                                  growthRate: growthRate)
     }
     
     /// Checks if the context container has any stored objects.

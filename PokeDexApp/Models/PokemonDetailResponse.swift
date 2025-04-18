@@ -9,13 +9,22 @@
 struct PokemonDetailResponse: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
+    let abilities: [AbilityResponse]
     var species: SpeciesResponse // Species info
     let sprites: SpriteResponse // Thumbnail image
     let stats: [StatResponse] // Stats info of pokemon
     let types: [PokemonTypeResponse] // Type of pokemon
     let weight: Int // Weight of pokemon
+    let height: Int // Height of pokemon
     var weaknessTypes: [String]?
     var evolutionChain: [ChainResponse]?
+    let baseExperience: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, abilities, species, sprites, stats, types
+        case weight, height, weaknessTypes, evolutionChain
+        case baseExperience = "base_experience"
+    }
 }
 
 // MARK: - Species Response
@@ -27,15 +36,31 @@ struct SpeciesResponse: Decodable {
 
 // MARK: - Species Detail Response
 struct SpeciesDetailResponse: Decodable {
+    let captureRate: Int
+    let growthRate: GrowthRateResponse
     let color: ColorResponse
     let evolutionChain: EvolutionChainResponse
     var flavorTextEntries: [FlavorTextResponse]?
 
     enum CodingKeys: String, CodingKey {
+        case captureRate = "capture_rate"
+        case growthRate = "growth_rate"
         case evolutionChain = "evolution_chain"
         case color
         case flavorTextEntries = "flavor_text_entries"
     }
+}
+
+struct GrowthRateResponse: Decodable {
+    let name: String
+}
+
+struct AbilityResponse: Decodable {
+    let ability: AbilityDetailResponse
+}
+
+struct AbilityDetailResponse: Decodable {
+    let name: String
 }
 
 struct EvolutionChainResponse: Decodable {

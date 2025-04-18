@@ -11,6 +11,8 @@ import SwiftData
 class PokemonDetailModel {
     @Attribute(.unique) var id: Int
     var name: String
+    var abilities: [String]
+    var species: String
     var sprite: SpriteModel
     var themeColor: String
     var flavorDescription: String
@@ -18,10 +20,16 @@ class PokemonDetailModel {
     var types: [TypeModel]
     var weaknesses: [TypeModel]
     var evolution: [EvolutionModel]
+    var height: Int
     var weight: Int
+    var catchRate: Int
+    var baseExperience: Int
+    var growthRate: String
     
     init(id: Int,
          name: String,
+         abilities: [String],
+         species: String,
          sprite: SpriteModel,
          themeColor: String,
          flavorDescription: String,
@@ -29,9 +37,15 @@ class PokemonDetailModel {
          types: [TypeModel],
          weaknesses: [TypeModel],
          evolution: [EvolutionModel],
-         weight: Int) {
+         height: Int,
+         weight: Int,
+         catchRate: Int,
+         baseExperience: Int,
+         growthRate: String) {
         self.id = id
         self.name = name
+        self.abilities = abilities
+        self.species = species
         self.sprite = sprite
         self.themeColor = themeColor
         self.flavorDescription = flavorDescription
@@ -39,11 +53,17 @@ class PokemonDetailModel {
         self.types = types
         self.weaknesses = weaknesses
         self.evolution = evolution
+        self.height = height
         self.weight = weight
+        self.catchRate = catchRate
+        self.baseExperience = baseExperience
+        self.growthRate = growthRate
     }
     
     func update(_ object: PokemonDetailModel) {
         self.name = object.name
+        self.abilities = object.abilities
+        self.species = object.species
         self.sprite = object.sprite
         self.themeColor = object.themeColor
         self.flavorDescription = object.flavorDescription
@@ -51,7 +71,11 @@ class PokemonDetailModel {
         self.types = object.types
         self.weaknesses = object.weaknesses
         self.evolution = object.evolution
+        self.height = object.weight
         self.weight = object.weight
+        self.catchRate = object.catchRate
+        self.baseExperience = object.baseExperience
+        self.growthRate = object.growthRate
     }
 }
 
