@@ -206,9 +206,10 @@ class PokeDexDetailVC: UIViewController {
         
         let aboutContent = configureAbout()
         let trainingContent = configureTraining()
+        let weaknessContent = configureWeaknesses()
         aboutStackView.addArrangedSubview(aboutContent)
         aboutStackView.addArrangedSubview(trainingContent)
-        aboutStackView.addArrangedSubview(typeWeaknessesLabel)
+        aboutStackView.addArrangedSubview(weaknessContent)
         pokemonDescriptionLabel.text = viewModel.pokemonDetails.flavorDescription.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds()
         contentStackView.addArrangedSubview(pokemonDescriptionLabel)
         contentStackView.addArrangedSubview(aboutStackView)
@@ -308,11 +309,27 @@ class PokeDexDetailVC: UIViewController {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.distribution = .fill
-        stackView.alignment = .leading
-        stackView.spacing = 16
+        stackView.alignment = .fill
+        stackView.spacing = 10
         
-        /// Type weaknesses
+        /// Type weaknesses label
         stackView.addArrangedSubview(typeWeaknessesLabel)
+        let weaknessStackView = UIStackView()
+        weaknessStackView.axis = .horizontal
+        weaknessStackView.distribution = .fillEqually
+        weaknessStackView.alignment = .fill
+        weaknessStackView.spacing = 12
+        weaknessStackView.translatesAutoresizingMaskIntoConstraints = false
+        weaknessStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        viewModel.pokemonDetails.weaknesses.forEach { type in
+            let image = PokemonType(rawValue: type.name)?.icon
+            let imageView = UIImageView(image: image)
+            imageView.contentMode = .scaleAspectFill
+            weaknessStackView.addArrangedSubview(imageView)
+        }
+        weaknessStackView.addArrangedSubview(UIView())
+        stackView.addArrangedSubview(weaknessStackView)
         return stackView
     }
     
