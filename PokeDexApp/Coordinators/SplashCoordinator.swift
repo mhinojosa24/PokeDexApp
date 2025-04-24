@@ -88,7 +88,6 @@ extension SplashCoordinator: SplashDelegate {
      - Note: The optional `dataManager.clearPokeDexInventory()` can be used during testing to simulate an empty store.
      */
     func didLoadSplash() {
-        //dataManager.clearPokeDexInventory() // Remove after testing; this line can clear stored items for debugging purposes.
         if dataManager.hasStoredItems() {
             showPokeDexList()
         } else {
