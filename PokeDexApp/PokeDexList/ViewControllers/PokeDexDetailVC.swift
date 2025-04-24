@@ -204,12 +204,9 @@ class PokeDexDetailVC: UIViewController {
         scrollView.addSubview(segmentStackView)
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
         
-        let aboutContent = configureAbout()
-        let trainingContent = configureTraining()
-        let weaknessContent = configureWeaknesses()
-        aboutStackView.addArrangedSubview(aboutContent)
-        aboutStackView.addArrangedSubview(trainingContent)
-        aboutStackView.addArrangedSubview(weaknessContent)
+        aboutStackView.addArrangedSubview(aboutStackViewFactory())
+        aboutStackView.addArrangedSubview(trainingStackViewFactory())
+        aboutStackView.addArrangedSubview(weaknessesStackViewFactory())
         pokemonDescriptionLabel.text = viewModel.pokemonDetails.flavorDescription.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds()
         contentStackView.addArrangedSubview(pokemonDescriptionLabel)
         contentStackView.addArrangedSubview(aboutStackView)
@@ -217,6 +214,7 @@ class PokeDexDetailVC: UIViewController {
         containerView.addSubview(contentStackView)
         scrollView.addSubview(containerView)
         
+        /// Scroll View
         scrollView.constrain([
             .top(targetAnchor: view.topAnchor),
             .leading(targetAnchor: view.leadingAnchor),
@@ -224,12 +222,14 @@ class PokeDexDetailVC: UIViewController {
             .bottom(targetAnchor: view.bottomAnchor)
         ])
         
+        /// Image View
         imageView.constrain([
             .top(targetAnchor: scrollView.topAnchor, constant: 0),
             .centerX(targetAnchor: scrollView.centerXAnchor),
             .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
         ])
         
+        /// Segment Stack View
         segmentStackView.constrain([
             .top(targetAnchor: imageView.bottomAnchor),
             .leading(targetAnchor: scrollView.safeAreaLayoutGuide.leadingAnchor),
@@ -237,6 +237,7 @@ class PokeDexDetailVC: UIViewController {
             .height(50)
         ])
         
+        /// Container View
         containerView.constrain([
             .top(targetAnchor: segmentStackView.bottomAnchor),
             .leading(targetAnchor: segmentStackView.leadingAnchor),
@@ -244,6 +245,7 @@ class PokeDexDetailVC: UIViewController {
             .bottom(targetAnchor: view.bottomAnchor)
         ])
         
+        /// Content Stack View
         contentStackView.constrain([
             .top(targetAnchor: containerView.topAnchor, constant: 24),
             .leading(targetAnchor: containerView.leadingAnchor, constant: 24),
@@ -251,7 +253,7 @@ class PokeDexDetailVC: UIViewController {
         ])
     }
     
-    private func configureAbout() -> UIStackView {
+    private func aboutStackViewFactory() -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.distribution = .fill
@@ -281,7 +283,7 @@ class PokeDexDetailVC: UIViewController {
         return stackView
     }
     
-    private func configureTraining() -> UIStackView {
+    private func trainingStackViewFactory() -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.distribution = .fill
@@ -305,7 +307,7 @@ class PokeDexDetailVC: UIViewController {
         return stackView
     }
     
-    private func configureWeaknesses() -> UIStackView {
+    private func weaknessesStackViewFactory() -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .vertical
         stackView.distribution = .fill
