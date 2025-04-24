@@ -100,3 +100,55 @@ enum PokemonTypeColor: String {
         }
     }
 }
+
+enum PokemonType: String {
+    case normal, fighting, flying, poison, ground, rock, bug, ghost, steel
+    case fire, water, grass, electric, psychic, ice, dragon, dark, fairy, stellar, unknown
+    
+    init(_ type: String) {
+        self = PokemonType(rawValue: type.lowercased()) ?? .unknown
+    }
+    
+    var icon: UIImage {
+        switch self {
+        case .normal:
+            return UIImage(imageLiteralResourceName: "normal")
+        case .fighting:
+            return UIImage(imageLiteralResourceName: "fighting")
+        case .flying:
+            return UIImage(imageLiteralResourceName: "flying")
+        case .poison:
+            return UIImage(imageLiteralResourceName: "poison")
+        case .ground:
+            return UIImage(imageLiteralResourceName: "ground")
+        case .rock:
+            return UIImage(imageLiteralResourceName: "rock")
+        case .bug:
+            return UIImage(imageLiteralResourceName: "bug")
+        case .ghost:
+            return UIImage(imageLiteralResourceName: "ghost")
+        case .steel:
+            return UIImage(imageLiteralResourceName: "steel")
+        case .fire:
+            return UIImage(imageLiteralResourceName: "fire")
+        case .water:
+            return UIImage(imageLiteralResourceName: "water")
+        case .grass:
+            return UIImage(imageLiteralResourceName: "grass")
+        case .electric:
+            return UIImage(imageLiteralResourceName: "electric")
+        case .psychic:
+            return UIImage(imageLiteralResourceName: "psychic")
+        case .ice:
+            return UIImage(imageLiteralResourceName: "ice")
+        case .dragon:
+            return UIImage(imageLiteralResourceName: "dragon")
+        case .dark:
+            return UIImage(imageLiteralResourceName: "dark")
+        case .fairy:
+            return UIImage(imageLiteralResourceName: "fairy")
+        case .stellar, .unknown:
+            return UIImage(imageLiteralResourceName: "normal")
+        }
+    }
+}
