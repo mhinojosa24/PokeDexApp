@@ -5,7 +5,6 @@
 //  Created by Maximo Hinojosa on 3/25/25.
 //
 
-import Foundation
 protocol PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)? { get set }
     var filterPublisher: (([PokemonCell.UIModel]) -> Void)? { get set }
@@ -13,7 +12,6 @@ protocol PokemonVM {
     func filterPokemon(by searchText: String)
     func getPokemonInfo(by id: Int) async throws -> PokemonDetailModel?
 }
-
 
 class PokeDexListVM: PokemonVM {
     var publisher: (([PokemonCell.UIModel]) -> Void)?
