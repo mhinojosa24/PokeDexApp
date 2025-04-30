@@ -41,6 +41,7 @@ struct SpeciesDetailResponse: Decodable {
     let color: ColorResponse
     let evolutionChain: EvolutionChainResponse
     var flavorTextEntries: [FlavorTextResponse]?
+    let genera: [GeneraDetailResponse]
 
     enum CodingKeys: String, CodingKey {
         case captureRate = "capture_rate"
@@ -48,7 +49,17 @@ struct SpeciesDetailResponse: Decodable {
         case evolutionChain = "evolution_chain"
         case color
         case flavorTextEntries = "flavor_text_entries"
+        case genera
     }
+}
+
+struct GeneraDetailResponse: Decodable {
+    let genus: String
+    let language: LanguageResponse
+}
+
+struct LanguageResponse: Decodable {
+    let name: String
 }
 
 struct GrowthRateResponse: Decodable {

@@ -110,11 +110,12 @@ class PokemonDataManager {
         let catchRate = pokemonDetail.species.detail?.captureRate ?? 0
         let growthRate = pokemonDetail.species.detail?.growthRate.name ?? ""
         let abilities = pokemonDetail.abilities.map({ $0.ability.name })
+        let species = pokemonDetail.species.detail?.genera.first(where: { $0.language.name == "en" })?.genus ?? ""
         
         return PokemonDetailModel(id: pokemonDetail.id,
                                   name: pokemonDetail.name,
                                   abilities: abilities,
-                                  species: pokemonDetail.species.name,
+                                  species: species,
                                   sprite: sprite,
                                   themeColor: themeColor,
                                   flavorDescription: flavorDescription,
@@ -122,7 +123,7 @@ class PokemonDataManager {
                                   types: types,
                                   weaknesses: weaknesses,
                                   evolution: evolution,
-                                  height: pokemonDetail.weight,
+                                  height: pokemonDetail.height,
                                   weight: pokemonDetail.weight,
                                   catchRate: catchRate,
                                   baseExperience: pokemonDetail.baseExperience,
