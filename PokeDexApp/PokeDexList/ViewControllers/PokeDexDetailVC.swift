@@ -20,7 +20,7 @@ class PokeDexDetailVC: UIViewController {
         return scrollView
     }()
     
-    private lazy var containerView: UIView = {
+    private lazy var modalView: UIView = {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         view.layer.cornerRadius = 32
@@ -29,7 +29,7 @@ class PokeDexDetailVC: UIViewController {
         return view
     }()
     
-    private lazy var imageView: CustomImageView = {
+    private lazy var thumbnail: CustomImageView = {
         let imageView = CustomImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.imageURLString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
@@ -41,8 +41,7 @@ class PokeDexDetailVC: UIViewController {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.distribution = .fill
-        stack.alignment = .leading
-        stack.spacing = 20
+        stack.alignment = .fill
         stack.backgroundColor = .clear
         return stack
     }()
@@ -50,22 +49,21 @@ class PokeDexDetailVC: UIViewController {
     // MARK: - Segment View
     
     private lazy var segmentStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [aboutLabel, statsLabel, evolutionLabel])
-        stack.axis = .horizontal
-        stack.distribution = .fillEqually
-        stack.alignment = .center
-        stack.spacing = 10
-        return stack
-    }()
-    
-    private lazy var segment: UISegmentedControl = {
-        let segment = UISegmentedControl(items: ["About", "Stats", "Evolution"])
-        segment.selectedSegmentIndex = 0
-        return segment
+        let stackView = UIStackView(arrangedSubviews: [aboutLabel, statsLabel, evolutionLabel])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.alignment = .center
+        stackView.spacing = 10
+        stackView.subviews.enumerated().forEach({ index, view in
+            view.tag = index
+            view.isUserInteractionEnabled = true
+            view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapSegmentItem)))
+        })
+        return stackView
     }()
     
     private lazy var aboutLabel: PDLabel = {
-        let label = PDLabel(text: "About", textColor: .white, fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
+        let label = PDLabel(text: "About", textColor: .white, fontWeight: .semiBold, fontSize: 16, backgroundColor: .clear)
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -87,64 +85,22 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - About View
     
-    private lazy var aboutStackView: UIStackView = {
+    private lazy var aboutInfoView: UIStackView = {
         let stack = UIStackView()
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.alignment = .fill
-        stack.spacing = 16
         return stack
-    }()
-    
-    private lazy var pokemonDescriptionLabel: PDLabel = {
-        let label = PDLabel(text: "", textColor: .black, fontWeight: .light, fontSize: 14, backgroundColor: .clear)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
-    
-    private lazy var pokemonDataLabel: PDLabel = {
-        let label = PDLabel(text: "PokéDex Data", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
-    
-    private lazy var trainingLabel: PDLabel = {
-        let label = PDLabel(text: "Training", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
-    }()
-    
-    private lazy var typeWeaknessesLabel: PDLabel = {
-        let label = PDLabel(text: "Type Weaknesses", textColor: PokemonBackgroundColor(viewModel.pokemonDetails.themeColor), fontWeight: .semiBold, fontSize: 17)
-        label.numberOfLines = 0
-        label.textAlignment = .left
-        return label
     }()
     
     // MARK: - Stats View
     
     private lazy var statsStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [])
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.alignment = .fill
-        stack.spacing = 10
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        let stack = UIStackView()
         return stack
     }()
     
     // MARK: - Evolution View
     
     private lazy var evolutionStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [])
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.alignment = .fill
-        stack.spacing = 10
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        let stack = UIStackView()
         return stack
     }()
     
@@ -173,9 +129,10 @@ class PokeDexDetailVC: UIViewController {
         super.viewDidLoad()
         //        setupNavigationBar()
         setupLayout()
+        setupObservers()
     }
     
-    // MARK: - Setup Layout
+    // MARK: - Navigation Bar Configuration
     
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
@@ -198,21 +155,27 @@ class PokeDexDetailVC: UIViewController {
         navigationItem.backButtonDisplayMode = .minimal
     }
     
+    // MARK: - Auto Layout Configuration
+    
     private func setupLayout() {
-        view.addSubview(scrollView)
-        scrollView.addSubview(imageView)
-        scrollView.addSubview(segmentStackView)
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
+        thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
+        aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
+        aboutInfoView.tag = 0
+        let statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel()) // add view & constraints
+        statsInfoView.tag = 1
+//        let evolutionInfoView = EvolutionInfoView(model: viewModel.getPokemonDetails(for: .evolutions))
         
-        aboutStackView.addArrangedSubview(aboutStackViewFactory())
-        aboutStackView.addArrangedSubview(trainingStackViewFactory())
-        aboutStackView.addArrangedSubview(weaknessesStackViewFactory())
-        pokemonDescriptionLabel.text = viewModel.pokemonDetails.flavorDescription.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds()
-        contentStackView.addArrangedSubview(pokemonDescriptionLabel)
-        contentStackView.addArrangedSubview(aboutStackView)
-        
-        containerView.addSubview(contentStackView)
-        scrollView.addSubview(containerView)
+        /// Adding subviews
+//        [aboutInfoView, statsInfoView].forEach({ modalView.addSubview($0) })
+        contentStackView.addArrangedSubviews([
+            AboutInfoView(model: viewModel.getAboutInfoUIModel()),
+            StatsInfoView(model: viewModel.getStatsInfoUIModel())
+        ])
+        modalView.addSubview(contentStackView)
+        [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
+        scrollView.addSubview(modalView)
+        view.addSubview(scrollView)
         
         /// Scroll View
         scrollView.constrain([
@@ -223,7 +186,7 @@ class PokeDexDetailVC: UIViewController {
         ])
         
         /// Image View
-        imageView.constrain([
+        thumbnail.constrain([
             .top(targetAnchor: scrollView.topAnchor, constant: 0),
             .centerX(targetAnchor: scrollView.centerXAnchor),
             .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
@@ -231,14 +194,14 @@ class PokeDexDetailVC: UIViewController {
         
         /// Segment Stack View
         segmentStackView.constrain([
-            .top(targetAnchor: imageView.bottomAnchor),
+            .top(targetAnchor: thumbnail.bottomAnchor),
             .leading(targetAnchor: scrollView.safeAreaLayoutGuide.leadingAnchor),
             .trailing(targetAnchor: scrollView.safeAreaLayoutGuide.trailingAnchor),
             .height(50)
         ])
         
         /// Container View
-        containerView.constrain([
+        modalView.constrain([
             .top(targetAnchor: segmentStackView.bottomAnchor),
             .leading(targetAnchor: segmentStackView.leadingAnchor),
             .trailing(targetAnchor: segmentStackView.trailingAnchor),
@@ -247,116 +210,32 @@ class PokeDexDetailVC: UIViewController {
         
         /// Content Stack View
         contentStackView.constrain([
-            .top(targetAnchor: containerView.topAnchor, constant: 24),
-            .leading(targetAnchor: containerView.leadingAnchor, constant: 24),
-            .trailing(targetAnchor: containerView.trailingAnchor, constant: 24),
+            .top(targetAnchor: modalView.topAnchor, constant: 24),
+            .leading(targetAnchor: modalView.leadingAnchor, constant: 24),
+            .trailing(targetAnchor: modalView.trailingAnchor, constant: 24),
+            .bottom(targetAnchor: scrollView.bottomAnchor)
         ])
     }
     
-    private func aboutStackViewFactory() -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 16
-        
-        /// Pokédex Data
-        stackView.addArrangedSubview(pokemonDataLabel)
-        
-        /// species
-        let species = titleAndInfoFactory(title: "Species", info: viewModel.pokemonDetails.species)
-        stackView.addArrangedSubview(species)
-        
-        /// Height
-        let height = titleAndInfoFactory(title: "Height", info: .init(describing: viewModel.pokemonDetails.height))
-        stackView.addArrangedSubview(height)
-        
-        /// Weight
-        let weight = titleAndInfoFactory(title: "Weight", info: .init(describing: viewModel.pokemonDetails.weight))
-        stackView.addArrangedSubview(weight)
-        
-        /// Abilities
-        print( viewModel.pokemonDetails.abilities.map({ $0 }))
-        let abilities = titleAndInfoFactory(title: "Abilities", info: viewModel.pokemonDetails.abilities.map({ $0 }).joined(separator: ", "))
-        stackView.addArrangedSubview(abilities)
-        
-        return stackView
-    }
-    
-    private func trainingStackViewFactory() -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 16
-        
-        /// Training
-        stackView.addArrangedSubview(trainingLabel)
-        
-        /// Catch rate
-        let catchRate = titleAndInfoFactory(title: "Catch Rate", info: .init(describing: viewModel.pokemonDetails.catchRate))
-        stackView.addArrangedSubview(catchRate)
-        
-        /// Base experience
-        let baseExp = titleAndInfoFactory(title: "Base Exp", info: .init(describing: viewModel.pokemonDetails.baseExperience))
-        stackView.addArrangedSubview(baseExp)
-        
-        /// Growth rate
-        let growthRate = titleAndInfoFactory(title: "Growth Rate", info: viewModel.pokemonDetails.growthRate.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds())
-        stackView.addArrangedSubview(growthRate)
-        return stackView
-    }
-    
-    private func weaknessesStackViewFactory() -> UIStackView {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.distribution = .fill
-        stackView.alignment = .fill
-        stackView.spacing = 10
-        
-        /// Type weaknesses label
-        stackView.addArrangedSubview(typeWeaknessesLabel)
-        let weaknessStackView = UIStackView()
-        weaknessStackView.axis = .horizontal
-        weaknessStackView.distribution = .fillEqually
-        weaknessStackView.alignment = .fill
-        weaknessStackView.spacing = 12
-        weaknessStackView.translatesAutoresizingMaskIntoConstraints = false
-        weaknessStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        viewModel.pokemonDetails.weaknesses.forEach { type in
-            let image = PokemonType(rawValue: type.name)?.icon
-            let imageView = UIImageView(image: image)
-            imageView.contentMode = .scaleAspectFill
-            weaknessStackView.addArrangedSubview(imageView)
-        }
-        weaknessStackView.addArrangedSubview(UIView())
-        stackView.addArrangedSubview(weaknessStackView)
-        return stackView
-    }
-    
-    private func titleAndInfoFactory(title: String, info: String) -> UIStackView {
-        /// Title
-        let title = PDLabel(text: title, textColor: .black, fontWeight: .regular, fontSize: 16)
-        title.textAlignment = .left
-        title.numberOfLines = .zero
-        /// Info
-        let info = PDLabel(text: info, textColor: .black, fontWeight: .light, fontSize: 16)
-        info.textAlignment = .right
-        info.numberOfLines = .zero
-        /// Stack View
-        let stackView = UIStackView(arrangedSubviews: [title, UIView(), info])
-        stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalCentering
-        stackView.spacing = 35
-        return stackView
+    private func setupObservers() {
+        let tapGesture = UIGestureRecognizer(target: self, action: #selector(didTapSegmentItem))
+        aboutLabel.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Actions
     
     @objc func didTapBackButton() {
         delegate?.didTapBackButton()
+    }
+    
+    // TODO: - create logic to display selected tab [about , stats, evolution]
+    @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
+        guard let label = sender.view as? PDLabel else { return }
+        for item in segmentStackView.subviews where item.tag != label.tag {
+            guard let itemLabel = item as? PDLabel else { return }
+            itemLabel.textColor = PokemonBackgroundColor.gray.color
+        }
+        label.textColor = PokemonBackgroundColor.white.color
     }
 }
 
