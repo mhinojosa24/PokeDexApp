@@ -161,17 +161,24 @@ class PokeDexDetailVC: UIViewController {
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
         thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
         aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
+        statsStackView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
+//        evolutionStackView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
+        
         aboutInfoView.tag = 0
-        let statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel()) // add view & constraints
-        statsInfoView.tag = 1
-//        let evolutionInfoView = EvolutionInfoView(model: viewModel.getPokemonDetails(for: .evolutions))
+        statsStackView.tag = 1
+        statsStackView.alpha = 0
+        evolutionStackView.tag = 2
+        evolutionStackView.alpha = 0
         
         /// Adding subviews
-//        [aboutInfoView, statsInfoView].forEach({ modalView.addSubview($0) })
         contentStackView.addArrangedSubviews([
-            AboutInfoView(model: viewModel.getAboutInfoUIModel()),
-            StatsInfoView(model: viewModel.getStatsInfoUIModel())
+            aboutInfoView,
+            statsStackView
         ])
+        
+        statsStackView.isHidden = true
+        evolutionStackView.isHidden = true
+        
         modalView.addSubview(contentStackView)
         [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
         scrollView.addSubview(modalView)
@@ -228,14 +235,19 @@ class PokeDexDetailVC: UIViewController {
         delegate?.didTapBackButton()
     }
     
-    // TODO: - create logic to display selected tab [about , stats, evolution]
     @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
         guard let label = sender.view as? PDLabel else { return }
-        for item in segmentStackView.subviews where item.tag != label.tag {
-            guard let itemLabel = item as? PDLabel else { return }
-            itemLabel.textColor = PokemonBackgroundColor.gray.color
-        }
-        label.textColor = PokemonBackgroundColor.white.color
+        let selectedIndex = label.tag
+        UIView.transition(with: contentStackView,
+                          duration: 0.35,
+                          options: .transitionCrossDissolve,
+                          animations: { [weak self] in
+            guard let self = self else { return }
+            for case let contentView in self.contentStackView.arrangedSubviews {
+                contentView.isHidden = (contentView.tag != selectedIndex)
+                contentView.alpha = (contentView.tag != selectedIndex) ? 0.0 : 1.0
+            }
+        }, completion: nil)
     }
 }
 
