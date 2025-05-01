@@ -22,8 +22,8 @@ enum PokemonStat: String, CaseIterable {
         case .hp: return "HP"
         case .attack: return "Attack"
         case .defense: return "Defense"
-        case .specialAttack: return "Sp.Atk"
-        case .specialDefense: return "Sp.Def"
+        case .specialAttack: return "Sp. Atk"
+        case .specialDefense: return "Sp. Def"
         case .speed: return "Speed"
         }
     }
