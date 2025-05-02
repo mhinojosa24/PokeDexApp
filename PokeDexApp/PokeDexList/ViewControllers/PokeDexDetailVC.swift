@@ -92,14 +92,14 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Stats View
     
-    private lazy var statsStackView: UIStackView = {
+    private lazy var statsInfoView: UIStackView = {
         let stack = UIStackView()
         return stack
     }()
     
     // MARK: - Evolution View
     
-    private lazy var evolutionStackView: UIStackView = {
+    private lazy var evolutionInfoView: UIStackView = {
         let stack = UIStackView()
         return stack
     }()
@@ -161,23 +161,21 @@ class PokeDexDetailVC: UIViewController {
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
         thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
         aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
-        statsStackView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
-//        evolutionStackView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
+        statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
+        evolutionInfoView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
         
         aboutInfoView.tag = 0
-        statsStackView.tag = 1
-        statsStackView.alpha = 0
-        evolutionStackView.tag = 2
-        evolutionStackView.alpha = 0
+        statsInfoView.tag = 1
+        evolutionInfoView.tag = 2
         
         /// Adding subviews
         contentStackView.addArrangedSubviews([
             aboutInfoView,
-            statsStackView
+            statsInfoView
         ])
         
-        statsStackView.isHidden = true
-        evolutionStackView.isHidden = true
+        statsInfoView.isHidden = true
+        evolutionInfoView.isHidden = true
         
         modalView.addSubview(contentStackView)
         [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
@@ -238,16 +236,20 @@ class PokeDexDetailVC: UIViewController {
     @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
         guard let label = sender.view as? PDLabel else { return }
         let selectedIndex = label.tag
-        UIView.transition(with: contentStackView,
-                          duration: 0.35,
-                          options: .transitionCrossDissolve,
-                          animations: { [weak self] in
-            guard let self = self else { return }
-            for case let contentView in self.contentStackView.arrangedSubviews {
+        for case let itemLabel as PDLabel in segmentStackView.subviews {
+            let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
+            itemLabel.textColor = doesSelectedIndexMatch ? PokemonBackgroundColor.white.color : PokemonBackgroundColor.gray.color
+        }
+        
+        for case let contentView in contentStackView.arrangedSubviews {
+            UIView.transition(with: contentStackView,
+                              duration: 0.35,
+                              options: .transitionCrossDissolve,
+                              animations: {
                 contentView.isHidden = (contentView.tag != selectedIndex)
-                contentView.alpha = (contentView.tag != selectedIndex) ? 0.0 : 1.0
-            }
-        }, completion: nil)
+            }, completion: nil)
+            
+        }
     }
 }
 

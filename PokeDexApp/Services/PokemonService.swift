@@ -89,36 +89,32 @@ class PokemonService {
         let speciesDetail = try await client.fetch(url: speciesURL, as: SpeciesDetailResponse.self)
         
         let evolutionURL = try url(from: speciesDetail.evolutionChain.url)
-        let evolutionDetail = try await client.fetch(url: evolutionURL, as: EvolutionChainDetailResponse.self)
+        let evolution = try await client.fetch(url: evolutionURL, as: EvolutionResponse.self)
         
-        let evolution = getAllSpecies(from: evolutionDetail.chain)
-        var evolutionChained = try await fetchPokemonArtworks(for: evolution)
-        evolutionChained.sort { $0.id < $1.id }
+        let evolutionChain = extractSpeciesChain(from: evolution.chain)
+        let evolutionDetailChain = try await fetchPokemonArtworks(for: evolutionChain).sorted { $0.minLevel < $1.minLevel }
         
-        // Now that detail is fully fetched, call fetchWeaknesses to get the weaknesses.
         let weaknesses = try await fetchWeaknesses(for: detail)
-        
-        // Update detail weaknesses
-        detail.evolutionChain = evolutionChained
+        detail.evolutionDetailChain = evolutionDetailChain
         detail.species.detail = speciesDetail
         detail.weaknessTypes = weaknesses
         return detail
     }
     
     /// Concurrently fetches Pokémon details for a list of Pokémon names and stores their official artwork URLs.
-    func fetchPokemonArtworks(for names: [String]) async throws -> [ChainResponse] {
-        var results: [ChainResponse] = []
-        try await withThrowingTaskGroup(of: ChainResponse?.self) { group in
-            // For each Pokémon name, add a concurrent task.
-            for name in names {
+    func fetchPokemonArtworks(for evolutionChain: [(name: String, minLevel: Int?)]) async throws -> [ChainDetailResponse] {
+        var results: [ChainDetailResponse] = []
+        
+        try await withThrowingTaskGroup(of: ChainDetailResponse?.self) { group in
+            for (name, lvl) in evolutionChain {
                 group.addTask { [weak self] in
                     guard let self = self else { return nil }
                     let url = try self.url(from: "https://pokeapi.co/api/v2/pokemon/\(name)/")
-                    // Fetch the Pokémon detail.
+                    
                     let detail = try await self.client.fetch(url: url, as: PokemonDetailResponse.self)
-                    // Extract the official artwork URL from the detail response.
+                    
                     if let artwork = detail.sprites.other?.officialArtwork.frontDefault {
-                        return ChainResponse(id: detail.id, artwork: artwork)
+                        return ChainDetailResponse(id: detail.id, name: name, minLevel: lvl ?? .zero, artwork: artwork)
                     }
                     return nil
                 }
@@ -140,17 +136,21 @@ class PokemonService {
         return url
     }
     
-    func getAllSpecies(from chain: ChainDetailResponse) -> [String] {
-        var speciesList: [String] = []
-        
-        // Add the current chain's species
-        speciesList.append(chain.species.name)
-        
-        // Recursively add species from each evolved branch
+    /**
+     Recursively extracts species names along with their minimum evolution levels from an evolution chain.
+     - Parameter chain: The root of the evolution chain.
+     - Returns: An array of tuples `(name, minLevel)` in chain order.
+     */
+    func extractSpeciesChain(from chain: ChainResponse) -> [(name: String, minLevel: Int?)] {
+        var result: [(name: String, minLevel: Int?)] = []
+        // Current species and its min evolution level (if any)
+        let minLevel = chain.evolutionDetails.first?.minLevel
+        result.append((name: chain.species.name, minLevel: minLevel))
+        // Process each evolution branch recursively
         for child in chain.evolvesTo ?? [] {
-            speciesList.append(contentsOf: getAllSpecies(from: child))
+            let childSpecies = extractSpeciesChain(from: child)
+            result.append(contentsOf: childSpecies)
         }
-        
-        return speciesList
+        return result
     }
 }

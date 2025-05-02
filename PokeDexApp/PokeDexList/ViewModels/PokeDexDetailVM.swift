@@ -28,7 +28,7 @@ final class PokeDexDetailVM: PokemonDetailVM {
                                      species: pokemonDetails.species,
                                      height: .init(describing: pokemonDetails.height),
                                      weight: .init(describing: pokemonDetails.weight),
-                                     abilities: pokemonDetails.abilities,
+                                     abilities: pokemonDetails.abilities.map({ $0.name }),
                                      catchRate: pokemonDetails.catchRate,
                                      baseExperience: pokemonDetails.baseExperience,
                                      growthRateDescription: pokemonDetails.growthRate,
@@ -51,5 +51,10 @@ final class PokeDexDetailVM: PokemonDetailVM {
             )
         }
         return StatsInfoView.UIModel(themeColor: pokemonDetails.themeColor, stats: pokemonStats)
+    }
+    
+    func getEvolutionInfoUIModel() -> EvolutionInfoView.UIModel {
+        let evolution = pokemonDetails.evolution
+        return .init(themeColor: pokemonDetails.themeColor, evolutions: evolution.compactMap({ .init(id: 0, name: $0.name, thumbnail: $0.artwork, level: $0.level) }))
     }
 }

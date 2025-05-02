@@ -17,9 +17,22 @@ class PokemonDetailContentView: UIView {
         let backgroundImageColor: PokemonBackgroundColor
         let name: String
         let description: String
+        let species: String
         let types: [String]
         let weaknesses: [String]
         let evolutions: [String]         // Evolution images as GIF URLs
+        let height: Int
+        let weight: Int
+        let abilities: [String]
+        let captureRate: Int
+        let growthRate: String
+        let baseExperience: Int
+        let stats: [StatsInfoView.UIModel]
+        
+        struct StatModel {
+            let name: String
+            let statValue: Int
+        }
     }
     
     // MARK: - UI Components
@@ -166,20 +179,6 @@ class PokemonDetailContentView: UIView {
     private func setupView() {
         addSubview(scrollView)
         scrollView.addSubview(parentContentStackView)
-        // scrollView
-        scrollView.constrain(to: self, edges: [
-            .top(.zero),
-            .leading(.zero),
-            .trailing(.zero),
-            .bottom(.zero)
-        ])
-        // parentContentStackView
-        parentContentStackView.constrain(to: self, edges: [
-            .top(.zero),
-            .leading(.zero),
-            .trailing(.zero),
-            .bottom(.zero)
-        ])
     }
     
     // MARK: - Configuration

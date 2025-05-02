@@ -106,10 +106,10 @@ class PokemonDataManager {
         
         let types = pokemonDetail.types.compactMap { TypeModel(name: $0.type.name) }
         let weaknesses = pokemonDetail.weaknessTypes?.compactMap { TypeModel(name: $0) } ?? []
-        let evolution = pokemonDetail.evolutionChain?.compactMap { EvolutionModel(name: $0.artwork) } ?? []
+        let evolution = pokemonDetail.evolutionDetailChain?.compactMap { EvolutionModel(id: $0.id, name: $0.name, level: $0.minLevel, artwork: $0.artwork) } ?? []
         let catchRate = pokemonDetail.species.detail?.captureRate ?? 0
         let growthRate = pokemonDetail.species.detail?.growthRate.name ?? ""
-        let abilities = pokemonDetail.abilities.map({ $0.ability.name })
+        let abilities = pokemonDetail.abilities.map({ AbilityModel(name: $0.ability.name) })
         let species = pokemonDetail.species.detail?.genera.first(where: { $0.language.name == "en" })?.genus ?? ""
         
         return PokemonDetailModel(id: pokemonDetail.id,

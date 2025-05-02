@@ -11,7 +11,7 @@ import SwiftData
 class PokemonDetailModel {
     @Attribute(.unique) var id: Int
     var name: String
-    var abilities: [String]
+    var abilities: [AbilityModel]
     var species: String
     var sprite: SpriteModel
     var themeColor: String
@@ -28,7 +28,7 @@ class PokemonDetailModel {
     
     init(id: Int,
          name: String,
-         abilities: [String],
+         abilities: [AbilityModel],
          species: String,
          sprite: SpriteModel,
          themeColor: String,
@@ -80,6 +80,15 @@ class PokemonDetailModel {
 }
 
 @Model
+class AbilityModel {
+    var name: String
+    
+    init(name: String) {
+        self.name = name
+    }
+}
+
+@Model
 class SpriteModel {
     var artwork: String
     var showdownGifURL: String
@@ -114,9 +123,15 @@ class TypeModel {
 
 @Model
 class EvolutionModel {
+    var id: Int
     var name: String
+    var level: Int
+    var artwork: String
     
-    init(name: String) {
+    init(id: Int, name: String, level: Int, artwork: String) {
+        self.id = id
         self.name = name
+        self.level = level
+        self.artwork = artwork
     }
 }

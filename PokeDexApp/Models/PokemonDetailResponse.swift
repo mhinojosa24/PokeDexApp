@@ -17,12 +17,12 @@ struct PokemonDetailResponse: Decodable {
     let weight: Int // Weight of pokemon
     let height: Int // Height of pokemon
     var weaknessTypes: [String]?
-    var evolutionChain: [ChainResponse]?
+    var evolutionDetailChain: [ChainDetailResponse]?
     let baseExperience: Int
     
     enum CodingKeys: String, CodingKey {
         case id, name, abilities, species, sprites, stats, types
-        case weight, height, weaknessTypes, evolutionChain
+        case weight, height, weaknessTypes, evolutionDetailChain
         case baseExperience = "base_experience"
     }
 }
@@ -78,17 +78,27 @@ struct EvolutionChainResponse: Decodable {
     let url: String
 }
 
-struct EvolutionChainDetailResponse: Decodable {
-    let chain: ChainDetailResponse
+struct EvolutionResponse: Decodable {
+    let chain: ChainResponse
 }
 
-struct ChainDetailResponse: Decodable {
+struct ChainResponse: Decodable {
+    let evolutionDetails: [EvolutionDetailsResponse]
     let species: ChainSpeciesResponse
-    let evolvesTo: [ChainDetailResponse]?
+    let evolvesTo: [ChainResponse]?
     
     enum CodingKeys: String, CodingKey {
+        case evolutionDetails = "evolution_details"
         case species
         case evolvesTo = "evolves_to"
+    }
+}
+
+struct EvolutionDetailsResponse: Decodable {
+    let minLevel: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case minLevel = "min_level"
     }
 }
 
@@ -97,8 +107,10 @@ struct ChainSpeciesResponse: Decodable {
     let url: String
 }
 
-struct ChainResponse: Decodable {
+struct ChainDetailResponse: Decodable {
     let id: Int
+    let name: String
+    let minLevel: Int
     let artwork: String
 }
 
@@ -232,4 +244,3 @@ struct StatResponse: Decodable {
 struct StatDetailResponse: Decodable {
     let name: String
 }
-
