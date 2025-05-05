@@ -92,7 +92,7 @@ class PokemonService {
         let evolution = try await client.fetch(url: evolutionURL, as: EvolutionResponse.self)
         
         let evolutionChain = extractSpeciesChain(from: evolution.chain)
-        let evolutionDetailChain = try await fetchPokemonArtworks(for: evolutionChain).sorted { $0.minLevel < $1.minLevel }
+        let evolutionDetailChain = try await fetchPokemonArtworks(for: evolutionChain).sorted { $0.minLevel > $1.minLevel }
         
         let weaknesses = try await fetchWeaknesses(for: detail)
         detail.evolutionDetailChain = evolutionDetailChain

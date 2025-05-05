@@ -21,18 +21,21 @@ class StatsInfoView: UIStackView {
         let stats: [Stat]
     }
 
+    private var model: UIModel
+    
     init(model: UIModel) {
+        self.model = model
         super.init(frame: .zero)
         axis = .vertical
         spacing = 20
-        setupStats(model)
+        setupStats()
     }
 
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupStats(_ model: UIModel) {
+    private func setupStats() {
         let container = UIStackView()
         container.axis = .vertical
         container.spacing = 12
@@ -57,21 +60,22 @@ class StatsInfoView: UIStackView {
         container.distribution = .fill
 
         let nameLabel = PDLabel(text: stat.name, textColor: .black, fontWeight: .regular, fontSize: 14)
+        nameLabel.textAlignment = .right
         nameLabel.widthAnchor.constraint(equalToConstant: 60).isActive = true
 
         let valueLabel = PDLabel(text: "\(stat.baseValue)", textColor: .black, fontWeight: .regular, fontSize: 14)
 
         let progressBar = UIProgressView(progressViewStyle: .default)
-        progressBar.progressTintColor = UIColor.systemGreen.withAlphaComponent(0.6)
-        progressBar.trackTintColor = UIColor.systemGray6
-        progressBar.setProgress(Float(stat.baseValue) / 100.0, animated: false)
+        progressBar.progressTintColor = PokemonBackgroundColor(model.themeColor).color
+        progressBar.trackTintColor = PokemonBackgroundColor(model.themeColor).oxidized()
+        progressBar.setProgress(Float(stat.baseValue) / 255.0, animated: false)
 
         
         let minLabel = PDLabel(text: "\(stat.minValue)", textColor: .black, fontWeight: .regular, fontSize: 14)
-        minLabel.contentMode = .right
+        minLabel.textAlignment = .right
         
         let maxLabel = PDLabel(text: "\(stat.maxValue)", textColor: .black, fontWeight: .regular, fontSize: 14)
-        maxLabel.contentMode = .right
+        maxLabel.textAlignment = .right
         
         container.addArrangedSubviews([
             nameLabel,
@@ -84,4 +88,3 @@ class StatsInfoView: UIStackView {
         return container
     }
 }
-

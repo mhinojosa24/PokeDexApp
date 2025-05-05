@@ -99,7 +99,7 @@ class PokemonCell: UICollectionViewCell {
     
     func configure(with model: UIModel) {
         thumbnailImageView.imageURLString = model.thumbnail
-        nameLabel.text = model.name
+        nameLabel.text = model.name.capitalized
         let formattedNumber = String(format: "%03d", model.pokedexNumber)
         numberLabel.text = formattedNumber
         contentView.backgroundColor = model.colorType.color.withAlphaComponent(0.45)

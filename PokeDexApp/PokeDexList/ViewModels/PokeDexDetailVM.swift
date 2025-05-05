@@ -55,6 +55,6 @@ final class PokeDexDetailVM: PokemonDetailVM {
     
     func getEvolutionInfoUIModel() -> EvolutionInfoView.UIModel {
         let evolution = pokemonDetails.evolution
-        return .init(themeColor: pokemonDetails.themeColor, evolutions: evolution.compactMap({ .init(id: 0, name: $0.name, thumbnail: $0.artwork, level: $0.level) }))
+        return .init(themeColor: pokemonDetails.themeColor, evolutions: evolution.compactMap({ .init(pokedexNumber: $0.id, name: $0.name, thumbnail: $0.artwork, level: $0.level) }))
     }
 }

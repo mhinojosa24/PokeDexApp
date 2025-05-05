@@ -29,11 +29,18 @@ class PokeDexDetailVC: UIViewController {
         return view
     }()
     
+    private lazy var backgroundThumbnail: UIImageView = {
+        let imageView = UIImageView(image: .init(named: "pokeball"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.backgroundColor = .lightGray
+        return imageView
+    }()
+    
     private lazy var thumbnail: CustomImageView = {
         let imageView = CustomImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.imageURLString = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
         imageView.clipsToBounds = true
+        imageView.backgroundColor = .clear
         return imageView
     }()
     
@@ -171,14 +178,15 @@ class PokeDexDetailVC: UIViewController {
         /// Adding subviews
         contentStackView.addArrangedSubviews([
             aboutInfoView,
-            statsInfoView
+            statsInfoView,
+            evolutionInfoView
         ])
         
         statsInfoView.isHidden = true
         evolutionInfoView.isHidden = true
         
         modalView.addSubview(contentStackView)
-        [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
+        [backgroundThumbnail, thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
         scrollView.addSubview(modalView)
         view.addSubview(scrollView)
         
@@ -188,6 +196,13 @@ class PokeDexDetailVC: UIViewController {
             .leading(targetAnchor: view.leadingAnchor),
             .trailing(targetAnchor: view.trailingAnchor),
             .bottom(targetAnchor: view.bottomAnchor)
+        ])
+        
+        /// Background Thumbnail Image View
+        backgroundThumbnail.constrain([
+            .top(targetAnchor: scrollView.topAnchor),
+            .trailing(targetAnchor: scrollView.trailingAnchor, constant: 8),
+            .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
         ])
         
         /// Image View
@@ -239,17 +254,14 @@ class PokeDexDetailVC: UIViewController {
         for case let itemLabel as PDLabel in segmentStackView.subviews {
             let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
             itemLabel.textColor = doesSelectedIndexMatch ? PokemonBackgroundColor.white.color : PokemonBackgroundColor.gray.color
+            aboutInfoView.isHidden = aboutInfoView.tag != selectedIndex
+            statsInfoView.isHidden = statsInfoView.tag != selectedIndex
+            evolutionInfoView.isHidden = evolutionInfoView.tag != selectedIndex
         }
         
-        for case let contentView in contentStackView.arrangedSubviews {
-            UIView.transition(with: contentStackView,
-                              duration: 0.35,
-                              options: .transitionCrossDissolve,
-                              animations: {
-                contentView.isHidden = (contentView.tag != selectedIndex)
-            }, completion: nil)
-            
-        }
+//        for case let contentView in contentStackView.arrangedSubviews {
+//            contentView.isHidden = (contentView.tag != selectedIndex)
+//        }
     }
 }
 

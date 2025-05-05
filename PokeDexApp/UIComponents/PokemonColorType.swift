@@ -44,6 +44,10 @@ enum PokemonBackgroundColor: String {
             return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1).withAlphaComponent(0.65)
         }
     }
+    
+    func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
+        return self.color.withAlphaComponent(alpha)
+    }
 }
 
 // MARK: - Pokemon Type Colors
@@ -60,44 +64,48 @@ enum PokemonTypeColor: String {
     var color: UIColor {
         switch self {
         case .normal:
-            return #colorLiteral(red: 0.7098076344, green: 0.7098010182, blue: 0.5342559814, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.7098076344, green: 0.7098010182, blue: 0.5342559814, alpha: 1)
         case .fighting:
-            return #colorLiteral(red: 0.7749266028, green: 0.1914702952, blue: 0.1603313088, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.7749266028, green: 0.1914702952, blue: 0.1603313088, alpha: 1)
         case .flying:
-            return #colorLiteral(red: 0.6947016716, green: 0.6209036708, blue: 0.9687926173, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6947016716, green: 0.6209036708, blue: 0.9687926173, alpha: 1)
         case .poison:
-            return #colorLiteral(red: 0.6381583214, green: 0.2543672621, blue: 0.6378104687, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6381583214, green: 0.2543672621, blue: 0.6378104687, alpha: 1)
         case .ground:
-            return #colorLiteral(red: 0.9105606079, green: 0.8121599555, blue: 0.5332868099, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.9105606079, green: 0.8121599555, blue: 0.5332868099, alpha: 1)
         case .rock:
-            return #colorLiteral(red: 0.6460644603, green: 0.5820371509, blue: 0.291392535, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6460644603, green: 0.5820371509, blue: 0.291392535, alpha: 1)
         case .bug:
-            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1)
         case .ghost:
-            return #colorLiteral(red: 0.4506624937, green: 0.3530937433, blue: 0.612631619, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.4506624937, green: 0.3530937433, blue: 0.612631619, alpha: 1)
         case .steel:
-            return #colorLiteral(red: 0.7411738038, green: 0.7411785722, blue: 0.8395575881, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.7411738038, green: 0.7411785722, blue: 0.8395575881, alpha: 1)
         case .fire:
-            return #colorLiteral(red: 0.968355, green: 0.5264238119, blue: 0.2172999084, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.968355, green: 0.5264238119, blue: 0.2172999084, alpha: 1)
         case .water:
-            return #colorLiteral(red: 0.4384691119, green: 0.592559576, blue: 0.9682577252, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.4384691119, green: 0.592559576, blue: 0.9682577252, alpha: 1)
         case .grass:
-            return #colorLiteral(red: 0.4770475626, green: 0.8002538085, blue: 0.3125849068, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.4770475626, green: 0.8002538085, blue: 0.3125849068, alpha: 1)
         case .electric:
-            return #colorLiteral(red: 1, green: 0.8737840056, blue: 0.3387050033, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 1, green: 0.8737840056, blue: 0.3387050033, alpha: 1)
         case .psychic:
-            return #colorLiteral(red: 1, green: 0.3958920836, blue: 0.5587875247, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 1, green: 0.3958920836, blue: 0.5587875247, alpha: 1)
         case .ice:
-            return #colorLiteral(red: 0.6108773351, green: 0.8697630167, blue: 0.8703106046, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6108773351, green: 0.8697630167, blue: 0.8703106046, alpha: 1)
         case .dragon:
-            return #colorLiteral(red: 0.4491026998, green: 0.2235376537, blue: 0.9983978868, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.4491026998, green: 0.2235376537, blue: 0.9983978868, alpha: 1)
         case .dark:
-            return #colorLiteral(red: 0.4506705999, green: 0.3530851305, blue: 0.2892486751, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.4506705999, green: 0.3530851305, blue: 0.2892486751, alpha: 1)
         case .fairy:
-            return #colorLiteral(red: 0.9926783442, green: 0.7304494977, blue: 0.9120352864, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.9926783442, green: 0.7304494977, blue: 0.9120352864, alpha: 1)
         case .stellar, .unknown:
-            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         }
+    }
+    
+    func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
+        return self.color.withAlphaComponent(alpha)
     }
 }
 
@@ -109,46 +117,10 @@ enum PokemonType: String {
         self = PokemonType(rawValue: type.lowercased()) ?? .unknown
     }
     
+    /// Returns the corresponding icon image for this Pokémon type.
+    /// Assumes asset catalog images are named by the type's rawValue.
     var icon: UIImage {
-        switch self {
-        case .normal:
-            return UIImage(imageLiteralResourceName: "normal")
-        case .fighting:
-            return UIImage(imageLiteralResourceName: "fighting")
-        case .flying:
-            return UIImage(imageLiteralResourceName: "flying")
-        case .poison:
-            return UIImage(imageLiteralResourceName: "poison")
-        case .ground:
-            return UIImage(imageLiteralResourceName: "ground")
-        case .rock:
-            return UIImage(imageLiteralResourceName: "rock")
-        case .bug:
-            return UIImage(imageLiteralResourceName: "bug")
-        case .ghost:
-            return UIImage(imageLiteralResourceName: "ghost")
-        case .steel:
-            return UIImage(imageLiteralResourceName: "steel")
-        case .fire:
-            return UIImage(imageLiteralResourceName: "fire")
-        case .water:
-            return UIImage(imageLiteralResourceName: "water")
-        case .grass:
-            return UIImage(imageLiteralResourceName: "grass")
-        case .electric:
-            return UIImage(imageLiteralResourceName: "electric")
-        case .psychic:
-            return UIImage(imageLiteralResourceName: "psychic")
-        case .ice:
-            return UIImage(imageLiteralResourceName: "ice")
-        case .dragon:
-            return UIImage(imageLiteralResourceName: "dragon")
-        case .dark:
-            return UIImage(imageLiteralResourceName: "dark")
-        case .fairy:
-            return UIImage(imageLiteralResourceName: "fairy")
-        case .stellar, .unknown:
-            return UIImage(imageLiteralResourceName: "normal")
-        }
+        // Attempt to load an image matching the type name; fallback to 'normal' if missing
+        return UIImage(named: self.rawValue) ?? UIImage(named: PokemonType.normal.rawValue)!
     }
 }

@@ -42,6 +42,6 @@ class PillCell: UICollectionViewCell {
     
     func configure(text: String, backgroundColor: PokemonTypeColor) {
         pillLabel.text = text
-        pillLabel.backgroundColor = backgroundColor.color
+        pillLabel.backgroundColor = backgroundColor.oxidized()
     }
 }

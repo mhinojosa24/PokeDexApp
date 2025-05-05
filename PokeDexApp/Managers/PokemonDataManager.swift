@@ -65,7 +65,7 @@ class PokemonDataManager {
     }
 
     /// Fetches a `PokemonDetailModel` object by its ID.
-    /// - Parameter id: The ID of the `PokemonDetailModel` to be fetched.
+    /// - Parameter pokedexNumber: The ID of the `PokemonDetailModel` to be fetched.
     /// - Returns: The `PokemonDetailModel` object if found, otherwise `nil`.
     func getPokemonDetail(by id: Int) throws -> PokemonDetailModel? {
         let fetchDescriptor = getFetchDescriptor(.byID(id))
