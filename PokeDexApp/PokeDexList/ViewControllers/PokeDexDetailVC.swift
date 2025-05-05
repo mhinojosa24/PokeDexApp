@@ -127,28 +127,30 @@ class PokeDexDetailVC: UIViewController {
     }
     
     // MARK: - Lifecycle
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupNavigationBar()
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        setupNavigationBar()
+        navigationController?.navigationBar.alpha = 0
+        setupNavigationBar()
         setupLayout()
         setupObservers()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        navigationController?.navigationBar.alpha = 1
+        setupNavigationBar()
     }
     
     // MARK: - Navigation Bar Configuration
     
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
-        navigationItem.largeTitleDisplayMode = .never
         configureNavigationBar(
             style: .transparent,
             tint: PokemonBackgroundColor.darkNavyBlue.color,
             hidesSeparator: true,
-            prefersLargeTitles: false
+            prefersLargeTitles: true
         )
         
         let leftBarButtonItemAction: Selector = #selector(didTapBackButton)

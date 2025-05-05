@@ -65,6 +65,8 @@ class PokeDexDetailCoordinator: Coordinator {
         let viewModel = PokeDexDetailVM(pokemonDetails)
         let pokeDexDetailVC = PokeDexDetailVC(viewModel: viewModel)
         pokeDexDetailVC.delegate = self
+        pokeDexDetailVC.navigationController?.navigationBar.isHidden = true
+
         navigationController.pushViewController(pokeDexDetailVC, animated: true)
     }
 }

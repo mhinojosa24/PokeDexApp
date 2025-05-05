@@ -69,10 +69,10 @@ class PokeDexListVC: UIViewController {
     
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
-        navigationController?.configure(
-            barAppearance: .opaque,
-            titleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1),
-            largeTitleColor: #colorLiteral(red: 0.2736880779, green: 0.3552958667, blue: 0.4221251607, alpha: 1),
+        configureNavigationBar(
+            style: .opaque,
+            tint: PokemonBackgroundColor.darkNavyBlue.color,
+            hidesSeparator: false,
             prefersLargeTitles: true,
             isTranslucent: true
         )
