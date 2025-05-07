@@ -10,15 +10,15 @@ struct PokemonDetailResponse: Decodable {
     let id: Int // Pokemon ID
     let name: String // Name of pokemon
     let abilities: [AbilityResponse]
-    var species: SpeciesResponse // Species info
     let sprites: SpriteResponse // Thumbnail image
     let stats: [StatResponse] // Stats info of pokemon
     let types: [PokemonTypeResponse] // Type of pokemon
     let weight: Int // Weight of pokemon
     let height: Int // Height of pokemon
+    let baseExperience: Int
+    var species: SpeciesResponse // Species info
     var weaknessTypes: [String]?
     var evolutionDetailChain: [ChainDetailResponse]?
-    let baseExperience: Int
     
     enum CodingKeys: String, CodingKey {
         case id, name, abilities, species, sprites, stats, types
@@ -95,7 +95,7 @@ struct ChainResponse: Decodable {
 }
 
 struct EvolutionDetailsResponse: Decodable {
-    let minLevel: Int
+    let minLevel: Int?
     
     enum CodingKeys: String, CodingKey {
         case minLevel = "min_level"
@@ -110,7 +110,7 @@ struct ChainSpeciesResponse: Decodable {
 struct ChainDetailResponse: Decodable {
     let id: Int
     let name: String
-    let minLevel: Int
+    let minLevel: Int?
     let artwork: String
 }
 
@@ -162,7 +162,7 @@ struct OfficialArtworkResponse: Decodable {
 
 // MARK: - Show Down Response
 struct ShowDownResponse: Decodable {
-    let frontDefault: String
+    let frontDefault: String?
     
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"

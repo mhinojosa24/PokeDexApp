@@ -138,8 +138,8 @@ class PokeDexDetailVC: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        navigationController?.navigationBar.alpha = 1
         setupNavigationBar()
+        navigationController?.navigationBar.alpha = 1
     }
     
     // MARK: - Navigation Bar Configuration
@@ -150,7 +150,7 @@ class PokeDexDetailVC: UIViewController {
             style: .transparent,
             tint: PokemonBackgroundColor.darkNavyBlue.color,
             hidesSeparator: true,
-            prefersLargeTitles: true
+            prefersLargeTitles: false
         )
         
         let leftBarButtonItemAction: Selector = #selector(didTapBackButton)

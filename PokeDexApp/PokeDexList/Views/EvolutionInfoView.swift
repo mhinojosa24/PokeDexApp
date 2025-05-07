@@ -37,7 +37,7 @@ class EvolutionInfoView: UIStackView {
     }
     
     private func configure() {
-        for evolution in model.evolutions {
+        for evolution in model.evolutions.sorted(by: { $0.level < $1.level }) {
             let contentStack = UIStackView()
             contentStack.axis = .vertical
             contentStack.alignment = .center
@@ -69,7 +69,6 @@ class EvolutionInfoView: UIStackView {
                 evolutionLevelSeparator.heightAnchor.constraint(equalToConstant: 100).isActive = true
                 addArrangedSubview(evolutionLevelSeparator)
             }
-            
             
             let thumbnail = CustomImageView(frame: .zero, imageURLString: evolution.thumbnail)
             thumbnail.translatesAutoresizingMaskIntoConstraints = false

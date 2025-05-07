@@ -12,8 +12,8 @@ class WrappingFlowLayout: UICollectionViewFlowLayout {
     override init() {
         super.init()
         scrollDirection = .vertical
-        minimumInteritemSpacing = 8
-        minimumLineSpacing = 8
+        minimumInteritemSpacing = 0
+        minimumLineSpacing = 0
         // Enable dynamic cell sizing
         estimatedItemSize = UICollectionViewFlowLayout.automaticSize
     }

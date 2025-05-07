@@ -23,7 +23,7 @@ class PokemonService {
     /// Fetches a list of Pokemons
     /// - Throws: An error if the URL is invalid or the network request fails.
     func fetchPokemons() async throws {
-        let url = try url(from: "https://pokeapi.co/api/v2/pokemon?offset=0&limit=1")
+        let url = try url(from: "https://pokeapi.co/api/v2/pokemon?offset=0&limit=1025")
         let response: Response = try await client.fetch(url: url, as: Response.self)
         try await fetchPokemonDetails(from: response)
     }
@@ -84,16 +84,15 @@ class PokemonService {
         let detailURL = try url(from: pokemon.url)
         var detail = try await client.fetch(url: detailURL, as: PokemonDetailResponse.self)
         
-        // Fetch species details and update the detail object
+        /// Fetch species details and update the detail object
         let speciesURL = try url(from: detail.species.url)
         let speciesDetail = try await client.fetch(url: speciesURL, as: SpeciesDetailResponse.self)
         
         let evolutionURL = try url(from: speciesDetail.evolutionChain.url)
         let evolution = try await client.fetch(url: evolutionURL, as: EvolutionResponse.self)
-        
         let evolutionChain = extractSpeciesChain(from: evolution.chain)
-        let evolutionDetailChain = try await fetchPokemonArtworks(for: evolutionChain).sorted { $0.minLevel > $1.minLevel }
         
+        let evolutionDetailChain = try await fetchPokemonArtworks(for: evolutionChain)
         let weaknesses = try await fetchWeaknesses(for: detail)
         detail.evolutionDetailChain = evolutionDetailChain
         detail.species.detail = speciesDetail

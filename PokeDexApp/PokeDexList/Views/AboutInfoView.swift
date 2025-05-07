@@ -22,6 +22,16 @@ class AboutInfoView: UIStackView {
         let weaknesses: [String]
     }
     
+    private lazy var weaknessCollectionView: IntrinsicSizeCollectionView = {
+        let collectionViewLayout = WrappingFlowLayout()
+        let collectionView = IntrinsicSizeCollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        collectionView.backgroundColor = .clear
+        collectionView.isScrollEnabled = false
+        collectionView.dataSource = self
+        collectionView.register(WeaknessTypeCell.self, forCellWithReuseIdentifier: WeaknessTypeCell.identifier)
+        return collectionView
+    }()
+    
     private var model: UIModel
     
     init(model: UIModel) {
@@ -46,6 +56,7 @@ class AboutInfoView: UIStackView {
             getTrainingSectionInfo(),
             getWeaknessesSectionInfo()
         ])
+        weaknessCollectionView.reloadData()
     }
     
     private func getPokeDexSectionInfo() -> UIStackView {
@@ -73,23 +84,9 @@ class AboutInfoView: UIStackView {
     
     private func getWeaknessesSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
-        let weaknessStackView = UIStackView()
-        weaknessStackView.axis = .horizontal
-        weaknessStackView.distribution = .fillEqually
-        weaknessStackView.alignment = .leading
-        weaknessStackView.spacing = 12
-        weaknessStackView.translatesAutoresizingMaskIntoConstraints = false
-        weaknessStackView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        model.weaknesses.forEach { type in
-            let image = PokemonType(rawValue: type)?.icon
-            let imageView = UIImageView(image: image)
-            imageView.contentMode = .scaleAspectFill
-            weaknessStackView.addArrangedSubview(imageView)
-        }
         sectionSV.addArrangedSubviews([
             getTitleLabelInfo(with: "Weaknesses", color: PokemonBackgroundColor(model.themeColor), fontWeight: .semiBold),
-            weaknessStackView,
-            UIView()
+            weaknessCollectionView
         ])
         return sectionSV
     }
@@ -123,3 +120,21 @@ class AboutInfoView: UIStackView {
         return titleLabel
     }
 }
+
+// MARK: - UICollectionViewDataSource for Weaknesses
+extension AboutInfoView: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return model.weaknesses.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeaknessTypeCell.identifier, for: indexPath) as? WeaknessTypeCell else {
+            return UICollectionViewCell()
+        }
+        
+        let weakness = model.weaknesses[indexPath.item]
+        cell.configure(type: weakness)
+        return cell
+    }
+}
+
