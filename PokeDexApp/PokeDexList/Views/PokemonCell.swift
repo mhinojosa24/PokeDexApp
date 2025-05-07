@@ -28,6 +28,7 @@ class PokemonCell: UICollectionViewCell {
         let imageView = CustomImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage(named: "silhouette")
         return imageView
     }()
     
@@ -69,7 +70,7 @@ class PokemonCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         // NOTE: Cancelling the task is important to avoid image flickering when reusing cells.
-        thumbnailImageView.image = UIImage(systemName: "photo.fill")
+        thumbnailImageView.image = UIImage(named: "silhouette")
         thumbnailImageView.currentTask?.cancel() // shout to josh for the tip
     }
     

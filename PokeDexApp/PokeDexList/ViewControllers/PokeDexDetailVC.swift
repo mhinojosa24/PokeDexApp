@@ -41,6 +41,7 @@ class PokeDexDetailVC: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.backgroundColor = .clear
+        imageView.image = UIImage(named: "silhouette")
         return imageView
     }()
     
@@ -260,26 +261,5 @@ class PokeDexDetailVC: UIViewController {
             statsInfoView.isHidden = statsInfoView.tag != selectedIndex
             evolutionInfoView.isHidden = evolutionInfoView.tag != selectedIndex
         }
-        
-//        for case let contentView in contentStackView.arrangedSubviews {
-//            contentView.isHidden = (contentView.tag != selectedIndex)
-//        }
-    }
-}
-
-extension PokeDexDetailVC: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        if scrollView.contentOffset.y < 0.0 {
-//            headerHeightConstraint?.constant = Constants.headerHeight - scrollView.contentOffset.y
-//        } else {
-//            let parallaxFactor: CGFloat = 0.25
-//            let offsetY = scrollView.contentOffset.y * parallaxFactor
-//            let minOffsetY: CGFloat = 8.0
-//            let availableOffset = min(offsetY, minOffsetY)
-//            let contentRectOffsetY = availableOffset / 210
-//            headerTopConstraint?.constant = view.frame.origin.y
-//            headerHeightConstraint?.constant = 210 - scrollView.contentOffset.y
-//            headerImageView.layer.contentsRect = CGRect(x: 0, y: -contentRectOffsetY, width: 1, height: 1)
-//        }
     }
 }
