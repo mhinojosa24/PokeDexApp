@@ -68,9 +68,9 @@ extension UIViewController {
         appearance.backgroundColor = (style == .transparent || style == .opaque) ? .clear : background
         
         appearance.titleTextAttributes = [.foregroundColor: title,
-                                          .font: UIFont.preferredFont(forTextStyle: .headline)]
+                                          .font: UIFont(name: PoppinsFontWeight.semiBold.rawValue, size: 17) ?? .preferredFont(forTextStyle: .headline)]
         appearance.largeTitleTextAttributes = [.foregroundColor: largeTitle,
-                                               .font: UIFont.preferredFont(forTextStyle: .largeTitle)]
+                                               .font: UIFont(name: PoppinsFontWeight.semiBold.rawValue, size: 34) ?? .preferredFont(forTextStyle: .largeTitle)]
         
         if hidesSeparator || style == .transparent {
             appearance.shadowColor = .clear
