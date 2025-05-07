@@ -51,7 +51,7 @@ class AboutInfoView: UIStackView {
     
     private func configure() {
         addArrangedSubviews([
-            getTitleLabelInfo(with: model.description, color: .black, fontWeight: .light, fontSize: 16),
+            getTitleLabelInfo(with: model.description, color: .darkNavyBlue, fontWeight: .light, fontSize: 16),
             getPokeDexSectionInfo(),
             getTrainingSectionInfo(),
             getWeaknessesSectionInfo()
@@ -62,7 +62,7 @@ class AboutInfoView: UIStackView {
     private func getPokeDexSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
-            getTitleLabelInfo(with: "Pokédex Data", color: PokemonBackgroundColor(model.themeColor), fontWeight: .semiBold),
+            getTitleLabelInfo(with: "Pokédex Data", color: .darkNavyBlue, fontWeight: .semiBold),
             getSectionInfoWith(title: "Species", subtitle: model.species),
             getSectionInfoWith(title: "Height", subtitle: .init(describing: model.height)),
             getSectionInfoWith(title: "Weight", subtitle: .init(describing: model.weight)),
@@ -74,7 +74,7 @@ class AboutInfoView: UIStackView {
     private func getTrainingSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
-            getTitleLabelInfo(with: "Training", color: PokemonBackgroundColor(model.themeColor), fontWeight: .semiBold),
+            getTitleLabelInfo(with: "Training", color: .darkNavyBlue, fontWeight: .semiBold),
             getSectionInfoWith(title: "Catch Rate", subtitle: .init(describing: model.catchRate)),
             getSectionInfoWith(title: "Base Exp", subtitle: .init(describing: model.baseExperience)),
             getSectionInfoWith(title: "Growth Rate", subtitle: model.growthRateDescription.lowercasedThenCapitalizedSentences().removingNewlinesAndFormFeeds())
@@ -85,7 +85,7 @@ class AboutInfoView: UIStackView {
     private func getWeaknessesSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
-            getTitleLabelInfo(with: "Weaknesses", color: PokemonBackgroundColor(model.themeColor), fontWeight: .semiBold),
+            getTitleLabelInfo(with: "Weaknesses", color: .darkNavyBlue, fontWeight: .semiBold),
             weaknessCollectionView
         ])
         return sectionSV
@@ -98,8 +98,8 @@ class AboutInfoView: UIStackView {
         stackView.distribution = .fill
         stackView.spacing = 35
         stackView.addArrangedSubviews([
-            getTitleLabelInfo(with: title, color: .black, fontWeight: .regular, fontSize: 16),
-            getTitleLabelInfo(with: subtitle, color: .black, fontWeight: .light, fontSize: 16)
+            getTitleLabelInfo(with: title, color: .gray, fontWeight: .regular, fontSize: 16),
+            getTitleLabelInfo(with: subtitle, color: .darkNavyBlue, fontWeight: .light, fontSize: 16)
         ])
         return stackView
     }

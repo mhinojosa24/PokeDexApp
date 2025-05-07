@@ -71,7 +71,7 @@ class PokeDexDetailVC: UIViewController {
     }()
     
     private lazy var aboutLabel: PDLabel = {
-        let label = PDLabel(text: "About", textColor: .white, fontWeight: .semiBold, fontSize: 16, backgroundColor: .clear)
+        let label = PDLabel(text: "About", textColor: .darkNavyBlue, fontWeight: .semiBold, fontSize: 16, backgroundColor: .clear)
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -79,7 +79,7 @@ class PokeDexDetailVC: UIViewController {
     
     private lazy var statsLabel: PDLabel = {
         let label = PDLabel(text: "Stats", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
-        label.textColor = .gray
+        label.textColor = .lightGray
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -87,7 +87,7 @@ class PokeDexDetailVC: UIViewController {
     
     private lazy var evolutionLabel: PDLabel = {
         let label = PDLabel(text: "Evolution", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
-        label.textColor = .gray
+        label.textColor = .lightGray
         label.numberOfLines = 0
         label.textAlignment = .center
         return label
@@ -171,7 +171,7 @@ class PokeDexDetailVC: UIViewController {
     
     private func setupLayout() {
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
-        aboutLabel.textColor = PokemonBackgroundColor(viewModel.pokemonDetails.themeColor).color
+        aboutLabel.textColor = PokemonBackgroundColor.darkNavyBlue.color
         thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
         aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
         statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
@@ -259,7 +259,7 @@ class PokeDexDetailVC: UIViewController {
         let selectedIndex = label.tag
         for case let itemLabel as PDLabel in segmentStackView.subviews {
             let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
-            itemLabel.textColor = doesSelectedIndexMatch ? PokemonBackgroundColor(viewModel.pokemonDetails.themeColor).color : .gray
+            itemLabel.textColor = doesSelectedIndexMatch ? PokemonBackgroundColor.darkNavyBlue.color : .lightGray
             itemLabel.setPoppinsFont(weight: doesSelectedIndexMatch ? .semiBold : .medium, size: 16)
             aboutInfoView.isHidden = aboutInfoView.tag != selectedIndex
             statsInfoView.isHidden = statsInfoView.tag != selectedIndex

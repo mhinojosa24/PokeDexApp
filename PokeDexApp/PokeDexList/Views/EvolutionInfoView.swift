@@ -57,7 +57,7 @@ class EvolutionInfoView: UIStackView {
                 topSpacer.widthAnchor.constraint(equalToConstant: 2).isActive = true
                 topSpacer.backgroundColor = UIColor.lightGray
                 
-                let pokemonLvlLabel = PDLabel(text: "Lv. \(evolution.level)", textColor: .black, fontWeight: .light, fontSize: 14)
+                let pokemonLvlLabel = PDLabel(text: "Lv. \(evolution.level)", textColor: .darkNavyBlue, fontWeight: .light, fontSize: 14)
                 
                 let bottomSpacer = UIView()
                 bottomSpacer.translatesAutoresizingMaskIntoConstraints = false
@@ -78,9 +78,9 @@ class EvolutionInfoView: UIStackView {
             thumbnail.widthAnchor.constraint(equalToConstant: 96).isActive = true
             
             let formattedNumber = String(format: "%03d", evolution.pokedexNumber)
-            let pokemonIdLabel = PDLabel(text: formattedNumber, textColor: .black, fontWeight: .light, fontSize: 14)
+            let pokemonIdLabel = PDLabel(text: formattedNumber, textColor: .darkNavyBlue, fontWeight: .light, fontSize: 14)
             
-            let pokemonNameLabel = PDLabel(text: evolution.name.capitalized, textColor: PokemonBackgroundColor(model.themeColor), fontWeight: .semiBold, fontSize: 18)
+            let pokemonNameLabel = PDLabel(text: evolution.name.capitalized, textColor: .darkNavyBlue, fontWeight: .semiBold, fontSize: 18)
             
             contentStack.addArrangedSubviews([thumbnail, pokemonIdLabel, pokemonNameLabel])
             addArrangedSubview(contentStack)
