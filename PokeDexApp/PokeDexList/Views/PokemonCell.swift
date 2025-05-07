@@ -103,6 +103,6 @@ class PokemonCell: UICollectionViewCell {
         nameLabel.text = model.name.capitalized
         let formattedNumber = String(format: "%03d", model.pokedexNumber)
         numberLabel.text = formattedNumber
-        contentView.backgroundColor = model.colorType.color.withAlphaComponent(0.45)
+        contentView.backgroundColor = model.colorType.oxidized(0.45)
     }
 }

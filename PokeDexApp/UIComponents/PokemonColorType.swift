@@ -37,11 +37,11 @@ enum PokemonBackgroundColor: String {
         case .red:
             return #colorLiteral(red: 1, green: 0.4556620121, blue: 0, alpha: 1)
         case .white:
-            return #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
+            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1)
         case .yellow:
             return #colorLiteral(red: 0.9750881791, green: 0.813549459, blue: 0.189127773, alpha: 1)
         case .unknown:
-            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1).withAlphaComponent(0.65)
+            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         }
     }
     
