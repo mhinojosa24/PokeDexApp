@@ -42,7 +42,7 @@ class CustomImageView: UIImageView {
     @MainActor
     private func update() async {
         guard let urlString = imageURLString, let url = URL(string: urlString) else {
-            self.image = UIImage(systemName: "photo.fill")
+            self.image = UIImage(named: "silhouette")
             return
         }
         
@@ -50,7 +50,7 @@ class CustomImageView: UIImageView {
             do {
                 self.image = try await ImageCacheManager.shared.load(url)
             } catch {
-                self.image = UIImage(systemName: "photo.fill")
+                self.image = UIImage(named: "silhouette")
             }
         }
     }

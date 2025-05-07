@@ -28,7 +28,6 @@ class PokemonCell: UICollectionViewCell {
         let imageView = CustomImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.image = UIImage(named: "silhouette")
         return imageView
     }()
     
