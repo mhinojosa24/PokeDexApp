@@ -53,35 +53,43 @@ struct SpeciesDetailResponse: Decodable {
     }
 }
 
+// MARK: - Genera Detail Response
 struct GeneraDetailResponse: Decodable {
     let genus: String
     let language: LanguageResponse
 }
 
+// MARK: - Language Response
 struct LanguageResponse: Decodable {
     let name: String
 }
 
+// MARK: - Growth Rate Response
 struct GrowthRateResponse: Decodable {
     let name: String
 }
 
+// MARK: - Ability Response
 struct AbilityResponse: Decodable {
     let ability: AbilityDetailResponse
 }
 
+// MARK: - Ability Detail Response
 struct AbilityDetailResponse: Decodable {
     let name: String
 }
 
+// MARK: - Evolution Chain Response
 struct EvolutionChainResponse: Decodable {
     let url: String
 }
 
+// MARK: - Evolution Response
 struct EvolutionResponse: Decodable {
     let chain: ChainResponse
 }
 
+// MARK: - Chain Response
 struct ChainResponse: Decodable {
     let evolutionDetails: [EvolutionDetailsResponse]
     let species: ChainSpeciesResponse
@@ -94,6 +102,7 @@ struct ChainResponse: Decodable {
     }
 }
 
+// MARK: - Evolution Details Response
 struct EvolutionDetailsResponse: Decodable {
     let minLevel: Int?
     
@@ -102,11 +111,13 @@ struct EvolutionDetailsResponse: Decodable {
     }
 }
 
+// MARK: - Chain Species Response
 struct ChainSpeciesResponse: Decodable {
     let name: String
     let url: String
 }
 
+// MARK: - Chain Detail Response
 struct ChainDetailResponse: Decodable {
     let id: Int
     let name: String

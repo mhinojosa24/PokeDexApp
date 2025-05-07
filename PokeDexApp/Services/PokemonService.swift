@@ -130,6 +130,11 @@ class PokemonService {
         return results
     }
     
+    /// Safely converts a string into a `URL` instance.
+    ///
+    /// - Parameter string: A valid URL string to be converted.
+    /// - Throws: `URLError(.badURL)` if the string cannot be converted to a valid `URL`.
+    /// - Returns: A `URL` object initialized with the provided string.
     fileprivate func url(from string: String) throws -> URL {
         guard let url = URL(string: string) else { throw URLError(.badURL) }
         return url

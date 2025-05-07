@@ -7,16 +7,25 @@
 
 import UIKit
 
+/// A vertical stack view that displays a Pokémon's evolution chain.
+///
+/// Each evolution stage includes:
+/// - A vertical line + label showing the level at which the evolution occurs
+/// - The Pokémon's image, Pokédex number, and name
+///
+/// The view is built dynamically from a sorted list of evolution data.
 class EvolutionInfoView: UIStackView {
+    /// A view model representing the evolution data for the Pokémon.
     struct UIModel {
+        /// Represents a single evolution stage.
         struct EvolutionChain {
-            let pokedexNumber: Int
-            let name: String
-            let thumbnail: String
-            let level: Int
+            let pokedexNumber: Int       // National Dex number
+            let name: String             // Name of the Pokémon
+            let thumbnail: String        // URL string for the thumbnail image
+            let level: Int               // Level at which evolution occurs (0 = base form)
         }
-        let themeColor: String
-        let evolutions: [EvolutionChain]
+        let themeColor: String           // Color used for theming (currently unused)
+        let evolutions: [EvolutionChain] // List of all evolution stages
     }
     
     private var model: UIModel
@@ -36,6 +45,11 @@ class EvolutionInfoView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// Builds and lays out the evolution views based on the sorted evolution data.
+    ///
+    /// For each evolution stage:
+    /// - If it's not the base form (level > 0), adds a vertical separator with the evolution level.
+    /// - Adds an image, Pokédex number, and name label in a vertically stacked view.
     private func configure() {
         for evolution in model.evolutions.sorted(by: { $0.level < $1.level }) {
             let contentStack = UIStackView()

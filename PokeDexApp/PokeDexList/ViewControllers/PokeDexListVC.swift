@@ -7,6 +7,14 @@
 
 import UIKit
 
+/// The main list screen for the PokéDex app, displaying a searchable, scrollable
+/// collection of Pokémon in a two-column grid layout.
+///
+/// This view controller:
+/// - Initializes with a `PokemonVM` view model
+/// - Uses a `UICollectionViewDiffableDataSource` for efficient UI updates
+/// - Supports search through a custom `UISearchController`
+/// - Notifies its delegate when a Pokémon is selected
 class PokeDexListVC: UIViewController {
     lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewLayout())
@@ -67,6 +75,7 @@ class PokeDexListVC: UIViewController {
         populateCollectionView()
     }
     
+    /// Configures the navigation bar appearance, large title, and search bar.
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         configureNavigationBar(
@@ -85,6 +94,7 @@ class PokeDexListVC: UIViewController {
         navigationItem.largeTitleDisplayMode = .always
     }
     
+    /// Lays out the collection view and pins it to the view edges with padding.
     private func setupLayouts() {
         view.addSubview(collectionView)
         collectionView.constrain([
@@ -95,6 +105,7 @@ class PokeDexListVC: UIViewController {
         ])
     }
     
+    /// Configures the diffable data source for the collection view.
     private func setupObservers() {
         dataSource = PokeDexDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, model in
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.identifier, for: indexPath) as? PokemonCell else { return UICollectionViewCell() }
@@ -103,6 +114,7 @@ class PokeDexListVC: UIViewController {
         })
     }
     
+    /// Subscribes to view model publishers for UI updates (to be deprecated if using async data).
     private func setupPublishers() {
         viewModel.publisher = { [weak self] pokemons in
             guard let self = self else { return }
@@ -116,6 +128,7 @@ class PokeDexListVC: UIViewController {
     }
     
     
+    /// Applies a diffable snapshot to update visible Pokémon list.
     private func applySnapshot(with pokemons: [PokemonCell.UIModel]) {
         guard dataSource != nil else { return }
         
@@ -129,6 +142,7 @@ class PokeDexListVC: UIViewController {
         }
     }
     
+    /// Applies a filtered snapshot when the user searches for a Pokémon.
     private func applyFilter(with pokemons: [PokemonCell.UIModel]) {
         guard dataSource != nil else { return }
         
@@ -142,6 +156,7 @@ class PokeDexListVC: UIViewController {
         
     }
     
+    /// Triggers initial population of the Pokémon list from local or remote storage.
     private func populateCollectionView() {
         Task {
             do {
@@ -152,6 +167,7 @@ class PokeDexListVC: UIViewController {
         }
     }
     
+    /// Returns a compositional layout with 2 columns of Pokémon cards.
     private func configureCollectionViewLayout() -> UICollectionViewCompositionalLayout {
         // 1 item per row
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
@@ -169,6 +185,7 @@ class PokeDexListVC: UIViewController {
 
 
 extension PokeDexListVC: UICollectionViewDelegate {
+    /// Handles selection of a Pokémon cell and informs the delegate with its detailed info.
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let item = dataSource.itemIdentifier(for: indexPath) {
             Task {
@@ -185,6 +202,7 @@ extension PokeDexListVC: UICollectionViewDelegate {
 
 
 extension PokeDexListVC: UISearchResultsUpdating {
+    /// Filters Pokémon based on the text input in the search bar.
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = searchController.searchBar.text else { return }
         viewModel.filterPokemon(by: text)

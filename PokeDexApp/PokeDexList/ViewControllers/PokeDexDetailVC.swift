@@ -7,19 +7,26 @@
 
 import UIKit
 
-
+/// A view controller that displays detailed information about a selected Pokémon,
+/// including its About, Stats, and Evolution sections. It uses a scrollable layout
+/// and segmented labels to switch between content views.
+///
+/// This screen is backed by a `PokeDexDetailVM` view model and communicates
+/// back to a delegate when the back button is tapped.
 class PokeDexDetailVC: UIViewController {
     struct Constants {
         static fileprivate let headerHeight: CGFloat = 210
     }
     // MARK: - Subviews
     
+    /// Scrollable container for all child views
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     
+    /// Rounded container holding the content stack view
     private lazy var modalView: UIView = {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
@@ -29,6 +36,7 @@ class PokeDexDetailVC: UIViewController {
         return view
     }()
     
+    /// Decorative background image (Pokéball icon)
     private lazy var backgroundThumbnail: UIImageView = {
         let imageView = UIImageView(image: .init(named: "pokeball"))
         imageView.contentMode = .scaleAspectFit
@@ -36,6 +44,7 @@ class PokeDexDetailVC: UIViewController {
         return imageView
     }()
     
+    /// Main Pokémon image
     private lazy var thumbnail: CustomImageView = {
         let imageView = CustomImageView()
         imageView.contentMode = .scaleAspectFit
@@ -45,6 +54,7 @@ class PokeDexDetailVC: UIViewController {
         return imageView
     }()
     
+    /// Vertical stack containing About, Stats, and Evolution info views
     private lazy var contentStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -56,6 +66,7 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Segment View
     
+    /// Horizontal stack for switching between About, Stats, and Evolution views
     private lazy var segmentStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [aboutLabel, statsLabel, evolutionLabel])
         stackView.axis = .horizontal
@@ -70,6 +81,7 @@ class PokeDexDetailVC: UIViewController {
         return stackView
     }()
     
+    /// Label for About section (default selected)
     private lazy var aboutLabel: PDLabel = {
         let label = PDLabel(text: "About", textColor: .darkNavyBlue, fontWeight: .semiBold, fontSize: 16, backgroundColor: .clear)
         label.numberOfLines = 0
@@ -77,6 +89,7 @@ class PokeDexDetailVC: UIViewController {
         return label
     }()
     
+    /// Label for Stats section
     private lazy var statsLabel: PDLabel = {
         let label = PDLabel(text: "Stats", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
         label.textColor = .lightGray
@@ -85,6 +98,7 @@ class PokeDexDetailVC: UIViewController {
         return label
     }()
     
+    /// Label for Evolution section
     private lazy var evolutionLabel: PDLabel = {
         let label = PDLabel(text: "Evolution", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
         label.textColor = .lightGray
@@ -131,6 +145,7 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Lifecycle
     
+    /// Called after the controller's view is loaded into memory. Sets up the nav bar, layout, and observers.
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.alpha = 0
@@ -139,6 +154,7 @@ class PokeDexDetailVC: UIViewController {
         setupObservers()
     }
     
+    /// Ensures nav bar transparency is removed on appearance.
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         setupNavigationBar()
@@ -147,6 +163,7 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Navigation Bar Configuration
     
+    /// Configures the navigation bar with a custom back button and transparent style.
     private func setupNavigationBar() {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         configureNavigationBar(
@@ -169,6 +186,7 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Auto Layout Configuration
     
+    /// Sets up layout constraints and populates content stack with the proper view models.
     private func setupLayout() {
         scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
         aboutLabel.textColor = PokemonBackgroundColor.darkNavyBlue.color
@@ -243,6 +261,7 @@ class PokeDexDetailVC: UIViewController {
         ])
     }
     
+    /// Adds gesture recognizer for segment switching.
     private func setupObservers() {
         let tapGesture = UIGestureRecognizer(target: self, action: #selector(didTapSegmentItem))
         aboutLabel.addGestureRecognizer(tapGesture)
@@ -250,10 +269,12 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Actions
     
+    /// Handles back button tap and notifies the coordinator.
     @objc func didTapBackButton() {
         delegate?.didTapBackButton()
     }
     
+    /// Handles tap on segment labels to switch content views.
     @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
         guard let label = sender.view as? PDLabel else { return }
         let selectedIndex = label.tag

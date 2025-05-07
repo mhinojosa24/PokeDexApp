@@ -82,7 +82,6 @@ class PokemonCell: UICollectionViewCell {
         layer.masksToBounds = true
         contentView.addSubview(stackView)
         stackView.addSubview(thumbnailImageView)
-        // Stack View
         stackView.constrain([
             .top(targetAnchor: contentView.topAnchor, constant: 12),
             .leading(targetAnchor: contentView.leadingAnchor),
@@ -90,7 +89,6 @@ class PokemonCell: UICollectionViewCell {
             .bottom(targetAnchor: contentView.bottomAnchor, constant: 10)
         ])
         
-        // Thumbnail Image View
         thumbnailImageView.constrain([
             .heightMultiplier(targetAnchor: stackView.heightAnchor, multiplier: 0.75),
             .widthMultiplier(targetAnchor: stackView.widthAnchor, multiplier: 0.75)

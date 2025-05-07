@@ -7,18 +7,28 @@
 
 import UIKit
 
-
+/// A vertical stack view that displays Pokémon base stat information, including
+/// base values, min/max estimations, and a progress bar visualization.
+/// 
+/// This view is initialized with a `UIModel`, which provides both a theme color
+/// and a list of stats. The view will include:
+/// - A section title
+/// - A list of horizontal rows (each showing one stat’s name, value, bar, min, and max)
+/// - A total row that sums all base stats.
+///
+/// - Note: Progress bars are scaled using a max base stat of 255 to maintain proportionality.
 class StatsInfoView: UIStackView {
 
+    /// A UI model representing the visual configuration of stat data.
     struct UIModel {
         struct Stat {
-            let name: String
-            let baseValue: Int
-            let minValue: Int
-            let maxValue: Int
+            let name: String          // The name of the stat (e.g. "HP", "Attack").
+            let baseValue: Int        // The base stat value from the API.
+            let minValue: Int         // Calculated minimum stat value at level 100.
+            let maxValue: Int         // Calculated maximum stat value at level 100.
         }
-        let themeColor: String
-        let stats: [Stat]
+        let themeColor: String       // Used to theme the progress bars.
+        let stats: [Stat]            // Collection of stat rows to be displayed.
     }
 
     private var model: UIModel
@@ -35,6 +45,7 @@ class StatsInfoView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    /// Assembles the UI by stacking each stat row, along with a summary row and title.
     private func setupStats() {
         let container = UIStackView()
         container.axis = .vertical
@@ -86,6 +97,11 @@ class StatsInfoView: UIStackView {
         ])
     }
 
+    /// Creates a single horizontal row showing one stat’s name, base value, a progress bar,
+    /// and min/max values.
+    ///
+    /// - Parameter stat: The stat model for the row.
+    /// - Returns: A configured UIView representing a stat line.
     private func createStatRow(stat: UIModel.Stat) -> UIView {
         let container = UIStackView()
         container.axis = .horizontal

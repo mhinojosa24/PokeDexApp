@@ -8,18 +8,24 @@
 import UIKit
 
 
+/// A vertically stacked view that presents structured information about a Pokémon,
+/// including its description, Pokédex data, training details, and weaknesses.
+///
+/// This view is designed to be used inside a scrollable context and adapts
+/// dynamically to the data provided through the `UIModel`.
 class AboutInfoView: UIStackView {
+    /// A view model that holds all the data required to configure an `AboutInfoView`.
     struct UIModel {
-        let description: String
-        let themeColor: String
-        let species: String
-        let height: String
-        let weight: String
-        let abilities: [String]
-        let catchRate: Int
-        let baseExperience: Int
-        let growthRateDescription: String
-        let weaknesses: [String]
+        let description: String               // Short description or flavor text
+        let themeColor: String                // Optional color theme identifier
+        let species: String                   // Pokémon species name
+        let height: String                    // Formatted height string
+        let weight: String                    // Formatted weight string
+        let abilities: [String]               // List of ability names
+        let catchRate: Int                    // Catch rate value
+        let baseExperience: Int               // Base XP gained from defeating this Pokémon
+        let growthRateDescription: String     // Growth rate description
+        let weaknesses: [String]              // List of Pokémon type weaknesses
     }
     
     private lazy var weaknessCollectionView: IntrinsicSizeCollectionView = {
@@ -49,6 +55,8 @@ class AboutInfoView: UIStackView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    /// Configures the layout and content of the view using the provided model.
+    /// Adds title, Pokédex data, training section, and weaknesses collection.
     private func configure() {
         addArrangedSubviews([
             getTitleLabelInfo(with: model.description, color: .darkNavyBlue, fontWeight: .light, fontSize: 16),
@@ -59,6 +67,8 @@ class AboutInfoView: UIStackView {
         weaknessCollectionView.reloadData()
     }
     
+    /// Creates and returns a stack view containing Pokédex-related info
+    /// such as species, height, weight, and abilities.
     private func getPokeDexSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
@@ -71,6 +81,8 @@ class AboutInfoView: UIStackView {
         return sectionSV
     }
     
+    /// Creates and returns a stack view for training-related info
+    /// such as catch rate, base experience, and growth rate.
     private func getTrainingSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
@@ -82,6 +94,8 @@ class AboutInfoView: UIStackView {
         return sectionSV
     }
     
+    /// Creates and returns a stack view for displaying the Pokémon's weaknesses
+    /// using a custom, non-scrollable collection view.
     private func getWeaknessesSectionInfo() -> UIStackView {
         let sectionSV = getSectionSV()
         sectionSV.addArrangedSubviews([
@@ -91,6 +105,13 @@ class AboutInfoView: UIStackView {
         return sectionSV
     }
     
+    /// Creates a horizontal stack view that displays a title on the left
+    /// and its corresponding value on the right.
+    ///
+    /// - Parameters:
+    ///   - title: The label for the stat or descriptor (e.g. "Height").
+    ///   - subtitle: The value associated with the title (e.g. "0.7 m").
+    /// - Returns: A configured horizontal `UIStackView` containing the title and value.
     private func getSectionInfoWith(title: String, subtitle: String) -> UIStackView {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -104,6 +125,9 @@ class AboutInfoView: UIStackView {
         return stackView
     }
     
+    /// Creates and returns a vertical stack view preconfigured with spacing, axis, and alignment
+    /// used to layout a group of section rows in the About screen.
+    /// - Returns: A vertical `UIStackView` with default layout configuration.
     private func getSectionSV() -> UIStackView {
         let sectionSV = UIStackView()
         sectionSV.axis = .vertical
@@ -113,6 +137,15 @@ class AboutInfoView: UIStackView {
         return sectionSV
     }
     
+    /// Creates and returns a custom `PDLabel` configured with the provided text, color, font weight,
+    /// and font size. The label supports multiple lines and left-aligned text.
+    ///
+    /// - Parameters:
+    ///   - text: The string to display.
+    ///   - color: The text color using app-specific color styling.
+    ///   - fontWeight: The font weight using the `PoppinsFontWeight` enum.
+    ///   - fontSize: The font size (default is 18).
+    /// - Returns: A configured `PDLabel`.
     private func getTitleLabelInfo(with text: String, color: PokemonBackgroundColor, fontWeight: PoppinsFontWeight, fontSize: CGFloat = 18) -> PDLabel {
         let titleLabel: PDLabel = .init(text: text, textColor: color, fontWeight: fontWeight, fontSize: fontSize)
         titleLabel.numberOfLines = .zero
@@ -123,10 +156,12 @@ class AboutInfoView: UIStackView {
 
 // MARK: - UICollectionViewDataSource for Weaknesses
 extension AboutInfoView: UICollectionViewDataSource {
+    /// Returns the number of weakness items to display in the collection view.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return model.weaknesses.count
     }
     
+    /// Dequeues and configures a `WeaknessTypeCell` for each weakness type.
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeaknessTypeCell.identifier, for: indexPath) as? WeaknessTypeCell else {
             return UICollectionViewCell()
@@ -137,4 +172,3 @@ extension AboutInfoView: UICollectionViewDataSource {
         return cell
     }
 }
-

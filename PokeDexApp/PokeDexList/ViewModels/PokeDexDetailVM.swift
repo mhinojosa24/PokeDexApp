@@ -10,10 +10,17 @@ import Foundation
 protocol PokemonDetailVM {
     func getAboutInfoUIModel() -> AboutInfoView.UIModel
     func getStatsInfoUIModel() -> StatsInfoView.UIModel
-//    func getEvolutionUIModel() -> [String]
+    func getEvolutionInfoUIModel() -> EvolutionInfoView.UIModel
 }
     
-
+/// A view model responsible for transforming Pokémon detail data into UI-ready models
+/// for display in the `PokeDexDetailVC`. It prepares information for the About,
+/// Stats, and Evolution sections using preloaded detail responses.
+///
+/// This view model encapsulates logic for:
+/// - Building formatted strings for the About view (e.g., height, weight)
+/// - Calculating stat ranges for the Stats view
+/// - Mapping evolution chain responses to displayable stages
 final class PokeDexDetailVM: PokemonDetailVM {
     
     var pokemonDetails: PokemonDetailModel

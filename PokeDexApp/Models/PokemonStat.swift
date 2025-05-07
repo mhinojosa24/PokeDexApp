@@ -7,16 +7,26 @@
 
 import Foundation
 
-/// Encapsulates each Pokémon stat’s key, display name, and min/max calculation logic.
+/// Represents the six core Pokémon stats, each associated with a display name
+/// and a method to calculate its minimum and maximum possible values at level 100.
+///
+/// This enum supports stat-specific logic by abstracting min/max calculations
+/// based on base stats, IVs, EVs, nature modifiers, and item bonuses.
 enum PokemonStat: String, CaseIterable {
+    /// Hit Points (HP) stat.
     case hp = "hp"
+    /// Physical Attack stat.
     case attack = "attack"
+    /// Physical Defense stat.
     case defense = "defense"
+    /// Special Attack stat.
     case specialAttack = "special-attack"
+    /// Special Defense stat.
     case specialDefense = "special-defense"
+    /// Speed stat.
     case speed = "speed"
 
-    /// User-facing label for the stat.
+    /// Returns a human-readable display name for each stat.
     var displayName: String {
         switch self {
         case .hp: return "HP"
@@ -28,7 +38,10 @@ enum PokemonStat: String, CaseIterable {
         }
     }
 
-    /// Returns the minimum and maximum values for a given base stat.
+    /// Calculates the minimum and maximum possible value for the given base stat.
+    ///
+    /// - Parameter base: The base stat value from the API.
+    /// - Returns: A tuple containing the min and max stat at level 100.
     func calculateMinMax(base: Int) -> (min: Int, max: Int) {
         switch self {
         case .hp:
@@ -49,6 +62,7 @@ enum PokemonStat: String, CaseIterable {
 
     // MARK: - Individual Stat Helpers
 
+    /// Calculates min/max HP using base stat, IVs, EVs, and level 100.
     private func hpMinMax(base: Int, level: Int = 100) -> (min: Int, max: Int) {
         func baseCalc(iv: Int, ev: Int) -> Int {
             let evComponent = ev / 4
@@ -60,6 +74,7 @@ enum PokemonStat: String, CaseIterable {
         )
     }
 
+    /// Calculates min/max Attack with IV/EV range and nature modifiers.
     private func attackMinMax(base: Int, level: Int = 100) -> (min: Int, max: Int) {
         func baseCalc(iv: Int, ev: Int) -> Int {
             let evComponent = ev / 4
@@ -73,6 +88,7 @@ enum PokemonStat: String, CaseIterable {
         )
     }
 
+    /// Calculates min/max Defense with IV/EV range and nature modifiers.
     private func defenseMinMax(base: Int, level: Int = 100) -> (min: Int, max: Int) {
         func baseCalc(iv: Int, ev: Int) -> Int {
             let evComponent = ev / 4
@@ -86,6 +102,7 @@ enum PokemonStat: String, CaseIterable {
         )
     }
 
+    /// Calculates min/max Special Attack with nature modifiers.
     private func specialAttackMinMax(base: Int, level: Int = 100) -> (min: Int, max: Int) {
         func baseCalc(iv: Int, ev: Int) -> Int {
             let evComponent = ev / 4
@@ -99,6 +116,7 @@ enum PokemonStat: String, CaseIterable {
         )
     }
 
+    /// Calculates min/max Special Defense considering nature and item bonuses.
     private func specialDefenseMinMax(
         base: Int,
         iv: Int = 31,
@@ -115,6 +133,7 @@ enum PokemonStat: String, CaseIterable {
         return (min: minValue, max: Int(boosted) + itemBonus)
     }
 
+    /// Calculates min/max Speed with nature modifiers at level 100.
     private func speedMinMax(
         base: Int,
         iv: Int = 31,

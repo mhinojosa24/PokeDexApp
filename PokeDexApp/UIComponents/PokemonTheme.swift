@@ -9,6 +9,9 @@ import UIKit
 
 // MARK: - Pokemon Background Colors
 
+/// Represents background color themes associated with Pokémon UI elements,
+/// such as card backgrounds or headers. These are mapped by string identifiers
+/// and converted into corresponding `UIColor` values.
 enum PokemonBackgroundColor: String {
     case black, darkNavyBlue, blue, brown, gray, green, pink, purple, red, white, yellow, unknown
     
@@ -16,6 +19,8 @@ enum PokemonBackgroundColor: String {
         self = PokemonBackgroundColor(rawValue: type.lowercased()) ?? .unknown
     }
 
+    /// Returns the `UIColor` representation of the background color type.
+    /// Defaults to `.unknown` gray color if an unknown type is provided.
     var color: UIColor {
         switch self {
         case .black:
@@ -45,6 +50,10 @@ enum PokemonBackgroundColor: String {
         }
     }
     
+    /// Returns a semi-transparent version of the base color with the specified alpha.
+    ///
+    /// - Parameter alpha: A `CGFloat` between 0 and 1 indicating the opacity.
+    /// - Returns: The color with the applied alpha value.
     func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
         return self.color.withAlphaComponent(alpha)
     }
@@ -52,6 +61,9 @@ enum PokemonBackgroundColor: String {
 
 // MARK: - Pokemon Type Colors
 
+/// Represents foreground color themes for Pokémon types (e.g., fire, water).
+/// These are used for type indicators, labels, and badges. Each case maps
+/// to a unique `UIColor` and supports a fallback for unknown types.
 enum PokemonTypeColor: String {
     case normal, fighting, flying, poison, ground, rock, bug, ghost, steel
     case fire, water, grass, electric, psychic, ice, dragon, dark, fairy, stellar, unknown
@@ -61,6 +73,8 @@ enum PokemonTypeColor: String {
         self = PokemonTypeColor(rawValue: type.lowercased()) ?? .unknown
     }
 
+    /// Returns the `UIColor` representation of the Pokémon type.
+    /// Unknown or unrecognized types return a neutral gray color.
     var color: UIColor {
         switch self {
         case .normal:
@@ -104,11 +118,20 @@ enum PokemonTypeColor: String {
         }
     }
     
+    /// Returns a translucent version of the type color for use in backgrounds or overlays.
+    ///
+    /// - Parameter alpha: The opacity level to apply (default: 0.35).
+    /// - Returns: The color with the specified alpha component.
     func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
         return self.color.withAlphaComponent(alpha)
     }
 }
 
+/// Represents known Pokémon types (e.g., fire, water, grass) and provides
+/// a convenient way to map string input to type enums.
+///
+/// This enum also exposes icons corresponding to each type,
+/// assuming assets are named after the raw type strings.
 enum PokemonType: String {
     case normal, fighting, flying, poison, ground, rock, bug, ghost, steel
     case fire, water, grass, electric, psychic, ice, dragon, dark, fairy, stellar, unknown
@@ -117,8 +140,8 @@ enum PokemonType: String {
         self = PokemonType(rawValue: type.lowercased()) ?? .unknown
     }
     
-    /// Returns the corresponding icon image for this Pokémon type.
-    /// Assumes asset catalog images are named by the type's rawValue.
+    /// Returns the associated icon image for the Pokémon type.
+    /// Falls back to the 'normal' type icon if the specified image is not found.
     var icon: UIImage {
         // Attempt to load an image matching the type name; fallback to 'normal' if missing
         return UIImage(named: self.rawValue) ?? UIImage(named: PokemonType.normal.rawValue)!
