@@ -90,7 +90,7 @@ class PokeDexListVC: UIViewController {
         
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        navigationItem.title = "PokéDex"
+        navigationItem.title = "PokéVault"
         navigationItem.largeTitleDisplayMode = .always
     }
     
