@@ -1,6 +1,6 @@
 //
 //  PillLabel.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 4/9/25.
 //

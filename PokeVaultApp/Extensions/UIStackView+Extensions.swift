@@ -1,6 +1,6 @@
 //
 //  UIStackView+Extensions.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 4/25/25.
 //

@@ -1,6 +1,6 @@
 //
 //  PokeDexDetailCoordinator.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 4/15/25.
 //
@@ -20,7 +20,7 @@ protocol PokeDexDetailDelegate: AnyObject {
     func didTapBackButton()
 }
 
-// MARK: - PokeDexDetailCoordinator
+// MARK: - PokeVaultDetailCoordinator
 
 /**
  The PokeDexDetailCoordinator is responsible for managing the navigation flow

@@ -1,6 +1,6 @@
 //
 //  Section.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 3/26/25.
 //

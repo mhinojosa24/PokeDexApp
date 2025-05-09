@@ -1,6 +1,6 @@
 //
 //  WeaknessTypeCell.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 5/7/25.
 //

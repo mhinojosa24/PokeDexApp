@@ -1,6 +1,6 @@
 //
 //  ImageCacheManager.swift
-//  PokeDexApp
+//  PokeVault
 //
 //  Created by Maximo Hinojosa on 3/26/25.
 //
@@ -34,7 +34,7 @@ final class ImageCacheManager {
     private let client: APIClient
     private let cacheExpiryInterval: TimeInterval = 86400 // 24 hours in seconds
     private var cacheTimeStamps: [NSString: Date]
-    private let cacheQueue = DispatchQueue(label: "com.pokedexapp.imagecache", attributes: .concurrent)
+    private let cacheQueue = DispatchQueue(label: "com.pokevault.imagecache", attributes: .concurrent)
 
     
     private init(client: APIClient, cache: NSCache<NSString, UIImage> = NSCache<NSString, UIImage>()) {
