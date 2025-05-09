@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "AFCF0DB4-017F-4B48-A34B-38F82AAC8BAF",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PokeVault.xcodeproj",
+        "identifier" : "C7A5B7152D933C8F0049AD92",
+        "name" : "PokeVaultUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PokeVault.xcodeproj",
+        "identifier" : "C7A5B70B2D933C8F0049AD92",
+        "name" : "PokeVaultTests"
+      }
+    }
+  ],
+  "version" : 1
+}

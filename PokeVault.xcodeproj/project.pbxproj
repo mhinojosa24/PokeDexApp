@@ -30,7 +30,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C7EB52372DCD7A9100FA3539 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */ = {
+		C7D07A412DCD956300B11E02 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -43,7 +43,7 @@
 		C7A5B6F82D933C8E0049AD92 /* PokeVaultApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C7EB52372DCD7A9100FA3539 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */,
+				C7D07A412DCD956300B11E02 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */,
 			);
 			path = PokeVaultApp;
 			sourceTree = "<group>";
@@ -295,7 +295,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PokeVaultApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "PokéVault";
+				INFOPLIST_KEY_CFBundleDisplayName = PokeVault;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -328,7 +328,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PokeVaultApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "PokéVault";
+				INFOPLIST_KEY_CFBundleDisplayName = PokeVault;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
