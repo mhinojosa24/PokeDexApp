@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		C7948E912D9F24A6002EF117 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C7948E902D9F24A6002EF117 /* SDWebImage */; };
-		C7948E932D9F24A6002EF117 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C7948E922D9F24A6002EF117 /* SDWebImageMapKit */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		C7A5B70D2D933C8F0049AD92 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,38 +24,40 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		C7A5B6F62D933C8E0049AD92 /* PokeDexApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeDexApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7A5B70C2D933C8F0049AD92 /* PokeDexAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokeDexAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7A5B7162D933C8F0049AD92 /* PokeDexAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokeDexAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A5B6F62D933C8E0049AD92 /* PokeVault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeVault.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A5B70C2D933C8F0049AD92 /* PokeVaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokeVaultTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7A5B7162D933C8F0049AD92 /* PokeVaultUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PokeVaultUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C7A5B71E2D933C8F0049AD92 /* Exceptions for "PokeDexApp" folder in "PokeDexApp" target */ = {
+		C7EB52372DCD7A9100FA3539 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = C7A5B6F52D933C8E0049AD92 /* PokeDexApp */;
+			target = C7A5B6F52D933C8E0049AD92 /* PokeVault */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		C7A5B6F82D933C8E0049AD92 /* PokeDexApp */ = {
+		C7A5B6F82D933C8E0049AD92 /* PokeVaultApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				C7A5B71E2D933C8F0049AD92 /* Exceptions for "PokeDexApp" folder in "PokeDexApp" target */,
+				C7EB52372DCD7A9100FA3539 /* Exceptions for "PokeVaultApp" folder in "PokeVault" target */,
 			);
-			path = PokeDexApp;
+			path = PokeVaultApp;
 			sourceTree = "<group>";
 		};
 		C7A5B70F2D933C8F0049AD92 /* PokeDexAppTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PokeDexAppTests;
+			name = PokeDexAppTests;
+			path = PokeVaultTests;
 			sourceTree = "<group>";
 		};
 		C7A5B7192D933C8F0049AD92 /* PokeDexAppUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PokeDexAppUITests;
+			name = PokeDexAppUITests;
+			path = PokeVaultUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -70,8 +67,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7948E932D9F24A6002EF117 /* SDWebImageMapKit in Frameworks */,
-				C7948E912D9F24A6002EF117 /* SDWebImage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +90,7 @@
 		C7A5B6ED2D933C8E0049AD92 = {
 			isa = PBXGroup;
 			children = (
-				C7A5B6F82D933C8E0049AD92 /* PokeDexApp */,
+				C7A5B6F82D933C8E0049AD92 /* PokeVaultApp */,
 				C7A5B70F2D933C8F0049AD92 /* PokeDexAppTests */,
 				C7A5B7192D933C8F0049AD92 /* PokeDexAppUITests */,
 				C7A5B6F72D933C8E0049AD92 /* Products */,
@@ -105,9 +100,9 @@
 		C7A5B6F72D933C8E0049AD92 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				C7A5B6F62D933C8E0049AD92 /* PokeDexApp.app */,
-				C7A5B70C2D933C8F0049AD92 /* PokeDexAppTests.xctest */,
-				C7A5B7162D933C8F0049AD92 /* PokeDexAppUITests.xctest */,
+				C7A5B6F62D933C8E0049AD92 /* PokeVault.app */,
+				C7A5B70C2D933C8F0049AD92 /* PokeVaultTests.xctest */,
+				C7A5B7162D933C8F0049AD92 /* PokeVaultUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,9 +110,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		C7A5B6F52D933C8E0049AD92 /* PokeDexApp */ = {
+		C7A5B6F52D933C8E0049AD92 /* PokeVault */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C7A5B71F2D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexApp" */;
+			buildConfigurationList = C7A5B71F2D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVault" */;
 			buildPhases = (
 				C7A5B6F22D933C8E0049AD92 /* Sources */,
 				C7A5B6F32D933C8E0049AD92 /* Frameworks */,
@@ -128,20 +123,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				C7A5B6F82D933C8E0049AD92 /* PokeDexApp */,
+				C7A5B6F82D933C8E0049AD92 /* PokeVaultApp */,
 			);
-			name = PokeDexApp;
+			name = PokeVault;
 			packageProductDependencies = (
-				C7948E902D9F24A6002EF117 /* SDWebImage */,
-				C7948E922D9F24A6002EF117 /* SDWebImageMapKit */,
 			);
 			productName = PokeDexApp;
-			productReference = C7A5B6F62D933C8E0049AD92 /* PokeDexApp.app */;
+			productReference = C7A5B6F62D933C8E0049AD92 /* PokeVault.app */;
 			productType = "com.apple.product-type.application";
 		};
-		C7A5B70B2D933C8F0049AD92 /* PokeDexAppTests */ = {
+		C7A5B70B2D933C8F0049AD92 /* PokeVaultTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C7A5B7242D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexAppTests" */;
+			buildConfigurationList = C7A5B7242D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVaultTests" */;
 			buildPhases = (
 				C7A5B7082D933C8F0049AD92 /* Sources */,
 				C7A5B7092D933C8F0049AD92 /* Frameworks */,
@@ -155,16 +148,16 @@
 			fileSystemSynchronizedGroups = (
 				C7A5B70F2D933C8F0049AD92 /* PokeDexAppTests */,
 			);
-			name = PokeDexAppTests;
+			name = PokeVaultTests;
 			packageProductDependencies = (
 			);
 			productName = PokeDexAppTests;
-			productReference = C7A5B70C2D933C8F0049AD92 /* PokeDexAppTests.xctest */;
+			productReference = C7A5B70C2D933C8F0049AD92 /* PokeVaultTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		C7A5B7152D933C8F0049AD92 /* PokeDexAppUITests */ = {
+		C7A5B7152D933C8F0049AD92 /* PokeVaultUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C7A5B7272D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexAppUITests" */;
+			buildConfigurationList = C7A5B7272D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVaultUITests" */;
 			buildPhases = (
 				C7A5B7122D933C8F0049AD92 /* Sources */,
 				C7A5B7132D933C8F0049AD92 /* Frameworks */,
@@ -178,11 +171,11 @@
 			fileSystemSynchronizedGroups = (
 				C7A5B7192D933C8F0049AD92 /* PokeDexAppUITests */,
 			);
-			name = PokeDexAppUITests;
+			name = PokeVaultUITests;
 			packageProductDependencies = (
 			);
 			productName = PokeDexAppUITests;
-			productReference = C7A5B7162D933C8F0049AD92 /* PokeDexAppUITests.xctest */;
+			productReference = C7A5B7162D933C8F0049AD92 /* PokeVaultUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -208,7 +201,7 @@
 					};
 				};
 			};
-			buildConfigurationList = C7A5B6F12D933C8E0049AD92 /* Build configuration list for PBXProject "PokeDexApp" */;
+			buildConfigurationList = C7A5B6F12D933C8E0049AD92 /* Build configuration list for PBXProject "PokeVault" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -218,16 +211,15 @@
 			mainGroup = C7A5B6ED2D933C8E0049AD92;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C7948E8F2D9F24A6002EF117 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C7A5B6F72D933C8E0049AD92 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				C7A5B6F52D933C8E0049AD92 /* PokeDexApp */,
-				C7A5B70B2D933C8F0049AD92 /* PokeDexAppTests */,
-				C7A5B7152D933C8F0049AD92 /* PokeDexAppUITests */,
+				C7A5B6F52D933C8E0049AD92 /* PokeVault */,
+				C7A5B70B2D933C8F0049AD92 /* PokeVaultTests */,
+				C7A5B7152D933C8F0049AD92 /* PokeVaultUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -283,12 +275,12 @@
 /* Begin PBXTargetDependency section */
 		C7A5B70E2D933C8F0049AD92 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C7A5B6F52D933C8E0049AD92 /* PokeDexApp */;
+			target = C7A5B6F52D933C8E0049AD92 /* PokeVault */;
 			targetProxy = C7A5B70D2D933C8F0049AD92 /* PBXContainerItemProxy */;
 		};
 		C7A5B7182D933C8F0049AD92 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C7A5B6F52D933C8E0049AD92 /* PokeDexApp */;
+			target = C7A5B6F52D933C8E0049AD92 /* PokeVault */;
 			targetProxy = C7A5B7172D933C8F0049AD92 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -302,10 +294,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PokeDexApp/Info.plist;
+				INFOPLIST_FILE = PokeVaultApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "PokéVault";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -335,10 +327,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PokeDexApp/Info.plist;
+				INFOPLIST_FILE = PokeVaultApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "PokéVault";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -495,7 +487,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PokeDexApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PokeDexApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PokeVault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PokeVault";
 			};
 			name = Debug;
 		};
@@ -513,7 +505,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PokeDexApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PokeDexApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PokeVault.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PokeVault";
 			};
 			name = Release;
 		};
@@ -552,7 +544,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		C7A5B6F12D933C8E0049AD92 /* Build configuration list for PBXProject "PokeDexApp" */ = {
+		C7A5B6F12D933C8E0049AD92 /* Build configuration list for PBXProject "PokeVault" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7A5B7222D933C8F0049AD92 /* Debug */,
@@ -561,7 +553,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C7A5B71F2D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexApp" */ = {
+		C7A5B71F2D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVault" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7A5B7202D933C8F0049AD92 /* Debug */,
@@ -570,7 +562,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C7A5B7242D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexAppTests" */ = {
+		C7A5B7242D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVaultTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7A5B7252D933C8F0049AD92 /* Debug */,
@@ -579,7 +571,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C7A5B7272D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeDexAppUITests" */ = {
+		C7A5B7272D933C8F0049AD92 /* Build configuration list for PBXNativeTarget "PokeVaultUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7A5B7282D933C8F0049AD92 /* Debug */,
@@ -589,30 +581,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		C7948E8F2D9F24A6002EF117 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.21.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		C7948E902D9F24A6002EF117 /* SDWebImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7948E8F2D9F24A6002EF117 /* XCRemoteSwiftPackageReference "SDWebImage" */;
-			productName = SDWebImage;
-		};
-		C7948E922D9F24A6002EF117 /* SDWebImageMapKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C7948E8F2D9F24A6002EF117 /* XCRemoteSwiftPackageReference "SDWebImage" */;
-			productName = SDWebImageMapKit;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C7A5B6EE2D933C8E0049AD92 /* Project object */;
 }

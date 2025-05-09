@@ -16,9 +16,37 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "C7A5B6F52D933C8E0049AD92"
-               BuildableName = "PokeDexApp.app"
-               BlueprintName = "PokeDexApp"
-               ReferencedContainer = "container:PokeDexApp.xcodeproj">
+               BuildableName = "PokeVault.app"
+               BlueprintName = "PokeVault"
+               ReferencedContainer = "container:PokeVault.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C7A5B70B2D933C8F0049AD92"
+               BuildableName = "PokeVaultTests.xctest"
+               BlueprintName = "PokeVaultTests"
+               ReferencedContainer = "container:PokeVault.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "C7A5B7152D933C8F0049AD92"
+               BuildableName = "PokeVaultUITests.xctest"
+               BlueprintName = "PokeVaultUITests"
+               ReferencedContainer = "container:PokeVault.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,30 +57,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
-      <Testables>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C7A5B70B2D933C8F0049AD92"
-               BuildableName = "PokeDexAppTests.xctest"
-               BlueprintName = "PokeDexAppTests"
-               ReferencedContainer = "container:PokeDexApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C7A5B7152D933C8F0049AD92"
-               BuildableName = "PokeDexAppUITests.xctest"
-               BlueprintName = "PokeDexAppUITests"
-               ReferencedContainer = "container:PokeDexApp.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -69,9 +73,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C7A5B6F52D933C8E0049AD92"
-            BuildableName = "PokeDexApp.app"
-            BlueprintName = "PokeDexApp"
-            ReferencedContainer = "container:PokeDexApp.xcodeproj">
+            BuildableName = "PokeVault.app"
+            BlueprintName = "PokeVault"
+            ReferencedContainer = "container:PokeVault.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -86,9 +90,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "C7A5B6F52D933C8E0049AD92"
-            BuildableName = "PokeDexApp.app"
-            BlueprintName = "PokeDexApp"
-            ReferencedContainer = "container:PokeDexApp.xcodeproj">
+            BuildableName = "PokeVault.app"
+            BlueprintName = "PokeVault"
+            ReferencedContainer = "container:PokeVault.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

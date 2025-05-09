@@ -1,13 +1,13 @@
 //
-//  PokeDexAppUITestsLaunchTests.swift
-//  PokeDexAppUITests
+//  PokeVaultUITestsLaunchTests.swift
+//  PokeVaultUITests
 //
 //  Created by Maximo Hinojosa on 3/25/25.
 //
 
 import XCTest
 
-final class PokeDexAppUITestsLaunchTests: XCTestCase {
+final class PokeVaultUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

@@ -4,29 +4,15 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>PokeDexApp.xcscheme_^#shared#^_</key>
+		<key>PokeVault.xcscheme_^#shared#^_</key>
 		<dict>
+			<key>isShown</key>
+			<true/>
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
-	<dict>
-		<key>C7A5B6F52D933C8E0049AD92</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C7A5B70B2D933C8F0049AD92</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>C7A5B7152D933C8F0049AD92</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-	</dict>
+	<dict/>
 </dict>
 </plist>
