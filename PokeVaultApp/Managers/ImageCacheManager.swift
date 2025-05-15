@@ -74,6 +74,10 @@ final class ImageCacheManager {
         }
     }
     
+    func image(for url: URL) async -> UIImage? {
+        await getCachedImage(forKey: url.absoluteString as NSString)
+    }
+    
     /// Retrieves an image from the cache if available and not expired.
     /// - Parameter key: The key associated with the cached image.
     /// - Returns: The cached `UIImage` if available and valid, otherwise `nil`.

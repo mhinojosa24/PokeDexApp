@@ -28,8 +28,14 @@ final class ShimmerPlaceholderView: UIView {
 
     required init?(coder: NSCoder) { fatalError() }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradient.frame = bounds
+    }
+
     func startShimmer() {
         isHidden = false
+        gradient.removeAllAnimations()
         gradient.frame = bounds
         gradient.colors = [UIColor(white: 0.85, alpha: 1.0).cgColor,
                            UIColor(white: 0.35, alpha: 0.35).cgColor,
@@ -37,6 +43,7 @@ final class ShimmerPlaceholderView: UIView {
         gradient.locations = [0.0, 0.5, 1.5]
         gradient.startPoint = CGPoint(x: 0, y: 0)
         gradient.endPoint = CGPoint(x: 1.1, y: 1.1)
+        layer.mask = gradient
         let animation = CABasicAnimation(keyPath: "locations")
         animation.fromValue = [-1, -0.5, 0]
         animation.toValue = [1, 1.5, 2]
