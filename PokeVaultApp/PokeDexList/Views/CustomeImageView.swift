@@ -11,6 +11,9 @@ import UIKit
 /// `CustomImageView` is a subclass of `UIImageView` that provides a convenient way to asynchronously load and cache images from a URL.
 /// It integrates with an `ImageCacheManager` to efficiently manage image downloads and caching, reducing network usage and improving performance.
 class CustomImageView: UIImageView {
+    /// Set this to true to simulate shimmer animation for 20 seconds (for testing shimmer effect).
+    var simulateShimmerOnly: Bool = false
+    
     var imageURLString: String? {
         didSet {
             // Check if the new URL is different from the old URL to avoid redundant image loading.
@@ -25,9 +28,16 @@ class CustomImageView: UIImageView {
     
     var currentTask: Task<Void, Never>?
     
+    private let shimmerView = ShimmerPlaceholderView()
+    
+    private var gradientLayer: CAGradientLayer?
+
     init(frame: CGRect = .zero, imageURLString: String? = nil) {
         self.imageURLString = imageURLString
         super.init(frame: frame)
+        addSubview(shimmerView)
+        shimmerView.frame = bounds
+        shimmerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         Task {
             await update()
         }
@@ -41,8 +51,10 @@ class CustomImageView: UIImageView {
     /// If the `imageURL` is `nil` or the image fails to load, no image is set.
     @MainActor
     private func update() async {
+        shimmerView.startShimmer()
         guard let urlString = imageURLString, let url = URL(string: urlString) else {
             self.image = UIImage(named: "silhouette")
+            shimmerView.stopShimmer()
             return
         }
         
@@ -52,6 +64,7 @@ class CustomImageView: UIImageView {
             } catch {
                 self.image = UIImage(named: "silhouette")
             }
+            shimmerView.stopShimmer()
         }
     }
 }

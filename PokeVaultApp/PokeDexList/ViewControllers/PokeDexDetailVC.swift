@@ -50,7 +50,7 @@ class PokeDexDetailVC: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.backgroundColor = .clear
-        imageView.image = UIImage(named: "silhouette")
+//        imageView.image = UIImage(named: "silhouette")
         return imageView
     }()
     
