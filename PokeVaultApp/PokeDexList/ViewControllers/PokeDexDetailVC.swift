@@ -36,14 +36,6 @@ class PokeDexDetailVC: UIViewController {
         return view
     }()
     
-    /// Decorative background image (Pokéball icon)
-    private lazy var backgroundThumbnail: UIImageView = {
-        let imageView = UIImageView(image: .init(named: "pokeball"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = .lightGray
-        return imageView
-    }()
-    
     /// Main Pokémon image
     private lazy var thumbnail: CustomImageView = {
         let imageView = CustomImageView()
@@ -168,7 +160,7 @@ class PokeDexDetailVC: UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
         configureNavigationBar(
             style: .transparent,
-            tint: PokemonBackgroundColor.darkNavyBlue.color,
+            tint: .white,
             hidesSeparator: true,
             prefersLargeTitles: false
         )
@@ -178,7 +170,7 @@ class PokeDexDetailVC: UIViewController {
                                                 style: .plain,
                                                 target: self,
                                                 action: leftBarButtonItemAction)
-        leftBarButtonItem.tintColor = PokemonBackgroundColor.darkNavyBlue.color
+        leftBarButtonItem.tintColor = .white
         
         navigationItem.leftBarButtonItem = leftBarButtonItem
         navigationItem.backButtonDisplayMode = .minimal
@@ -188,8 +180,14 @@ class PokeDexDetailVC: UIViewController {
     
     /// Sets up layout constraints and populates content stack with the proper view models.
     private func setupLayout() {
-        scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.color.withAlphaComponent(0.45)
-        aboutLabel.textColor = PokemonBackgroundColor.darkNavyBlue.color
+        scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.oxidized(0.45)
+        scrollView.layer.masksToBounds = false
+        scrollView.layer.shadowColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.oxidized(0.85).cgColor
+        scrollView.layer.shadowOffset = .zero
+        scrollView.layer.shadowRadius = 8
+        scrollView.layer.shadowOpacity = 1
+        
+        aboutLabel.textColor = .white
         thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
         aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
         statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
@@ -210,7 +208,7 @@ class PokeDexDetailVC: UIViewController {
         evolutionInfoView.isHidden = true
         
         modalView.addSubview(contentStackView)
-        [backgroundThumbnail, thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
+        [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
         scrollView.addSubview(modalView)
         view.addSubview(scrollView)
         
@@ -220,13 +218,6 @@ class PokeDexDetailVC: UIViewController {
             .leading(targetAnchor: view.leadingAnchor),
             .trailing(targetAnchor: view.trailingAnchor),
             .bottom(targetAnchor: view.bottomAnchor)
-        ])
-        
-        /// Background Thumbnail Image View
-        backgroundThumbnail.constrain([
-            .top(targetAnchor: scrollView.topAnchor),
-            .trailing(targetAnchor: scrollView.trailingAnchor, constant: 8),
-            .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
         ])
         
         /// Image View
@@ -280,7 +271,7 @@ class PokeDexDetailVC: UIViewController {
         let selectedIndex = label.tag
         for case let itemLabel as PDLabel in segmentStackView.subviews {
             let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
-            itemLabel.textColor = doesSelectedIndexMatch ? PokemonBackgroundColor.darkNavyBlue.color : .lightGray
+            itemLabel.textColor = doesSelectedIndexMatch ? .white : .lightGray
             itemLabel.setPoppinsFont(weight: doesSelectedIndexMatch ? .semiBold : .medium, size: 16)
             aboutInfoView.isHidden = aboutInfoView.tag != selectedIndex
             statsInfoView.isHidden = statsInfoView.tag != selectedIndex

@@ -15,7 +15,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash" translatesAutoresizingMaskIntoConstraints="NO" id="4sJ-x9-TAp">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splashIcon" translatesAutoresizingMaskIntoConstraints="NO" id="4sJ-x9-TAp">
                                 <rect key="frame" x="76.666666666666686" y="306" width="240" height="240"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="240" id="1EQ-WJ-Wg1"/>
@@ -24,7 +24,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.97647058959999999" green="0.87450981139999995" blue="0.66274511810000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.98645061249999999" green="0.98988968129999999" blue="0.99311524630000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="4sJ-x9-TAp" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="INy-ba-tPm"/>
                             <constraint firstItem="4sJ-x9-TAp" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="lW5-Rb-Ggk"/>
@@ -37,6 +37,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="splash" width="1024" height="1536"/>
+        <image name="splashIcon" width="1024" height="1536"/>
     </resources>
 </document>

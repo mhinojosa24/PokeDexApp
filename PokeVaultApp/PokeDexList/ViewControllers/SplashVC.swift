@@ -21,8 +21,8 @@ class SplashVC: UIViewController {
     /// color and informs the delegate that the splash screen has completed its load.
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.8696708083, blue: 0.6288548112, alpha: 1)
-        guard let image = UIImage(named: "splash") else { return }
+        view.backgroundColor = PokemonBackgroundColor.icyWhite.color
+        guard let image = UIImage(named: "splashIcon") else { return }
         let imageView = UIImageView(image: image)
         imageView.contentMode = .scaleAspectFill
         

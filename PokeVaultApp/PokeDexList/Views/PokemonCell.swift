@@ -34,7 +34,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 15, weight: .bold)
-        label.textColor = PokemonBackgroundColor.darkNavyBlue.color
+        label.textColor = .white
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -43,7 +43,7 @@ class PokemonCell: UICollectionViewCell {
     lazy var numberLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = PokemonBackgroundColor.darkNavyBlue.color
+        label.textColor = .white
         label.textAlignment = .center
         label.numberOfLines = 0
         return label
@@ -77,8 +77,6 @@ class PokemonCell: UICollectionViewCell {
     }
     
     private func setupLayouts() {
-        layer.cornerRadius = 15
-        layer.masksToBounds = true
         contentView.addSubview(stackView)
         stackView.addSubview(thumbnailImageView)
         stackView.constrain([
@@ -100,5 +98,11 @@ class PokemonCell: UICollectionViewCell {
         let formattedNumber = String(format: "%03d", model.pokedexNumber)
         numberLabel.text = formattedNumber
         contentView.backgroundColor = model.colorType.oxidized(0.45)
+        contentView.layer.cornerRadius = 15
+        contentView.layer.masksToBounds = false
+        contentView.layer.shadowColor = model.colorType.oxidized(0.85).cgColor
+        contentView.layer.shadowOffset = .zero
+        contentView.layer.shadowRadius = 8
+        contentView.layer.shadowOpacity = 1
     }
 }

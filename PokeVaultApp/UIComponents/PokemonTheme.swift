@@ -13,7 +13,7 @@ import UIKit
 /// such as card backgrounds or headers. These are mapped by string identifiers
 /// and converted into corresponding `UIColor` values.
 enum PokemonBackgroundColor: String {
-    case black, darkNavyBlue, blue, brown, gray, green, pink, purple, red, white, yellow, unknown
+    case black, darkNavyBlue, blue, brown, gray, green, pink, purple, red, white, yellow, softBeige, icyWhite, unknown
     
     init(_ type: String) {
         self = PokemonBackgroundColor(rawValue: type.lowercased()) ?? .unknown
@@ -45,6 +45,10 @@ enum PokemonBackgroundColor: String {
             return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1)
         case .yellow:
             return #colorLiteral(red: 0.9750881791, green: 0.813549459, blue: 0.189127773, alpha: 1)
+        case .softBeige:
+            return #colorLiteral(red: 0.9895073771, green: 0.9597759843, blue: 0.9040811658, alpha: 1)
+        case .icyWhite:
+            return #colorLiteral(red: 0.9856421351, green: 0.9900587201, blue: 0.9898915887, alpha: 1)
         case .unknown:
             return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         }

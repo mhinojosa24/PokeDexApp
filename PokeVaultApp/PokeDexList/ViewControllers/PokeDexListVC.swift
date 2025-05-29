@@ -21,7 +21,7 @@ class PokeDexListVC: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.backgroundColor = .clear
-        
+        collectionView.indicatorStyle = .black
         collectionView.delegate = self
         collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.identifier)
         return collectionView
@@ -77,7 +77,7 @@ class PokeDexListVC: UIViewController {
     
     /// Configures the navigation bar appearance, large title, and search bar.
     private func setupNavigationBar() {
-        view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
+        view.backgroundColor = PokemonBackgroundColor.icyWhite.color
         configureNavigationBar(
             style: .opaque,
             title: PokemonBackgroundColor.darkNavyBlue.color,
@@ -99,9 +99,9 @@ class PokeDexListVC: UIViewController {
         view.addSubview(collectionView)
         collectionView.constrain([
             .top(targetAnchor: view.topAnchor),
-            .leading(targetAnchor: view.leadingAnchor, constant: 17),
-            .trailing(targetAnchor: view.trailingAnchor, constant: 17),
-            .bottom(targetAnchor: view.bottomAnchor, constant: 0)
+            .leading(targetAnchor: view.leadingAnchor),
+            .trailing(targetAnchor: view.trailingAnchor),
+            .bottom(targetAnchor: view.bottomAnchor)
         ])
     }
     
@@ -179,6 +179,7 @@ class PokeDexListVC: UIViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
         // Section
         let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         return UICollectionViewCompositionalLayout(section: section)
     }
 }
