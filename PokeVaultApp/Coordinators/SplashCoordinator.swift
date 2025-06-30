@@ -36,7 +36,7 @@ class SplashCoordinator: Coordinator {
     var navigationController: UINavigationController
     
     /// A shared instance of PokemonDataManager used to check or manipulate stored Pokémon details.
-    let dataManager = PokemonDataManager.shared
+    private let dataManager: PokemonDataManager
     
     /// A weak reference to an object that conforms to SplashDelegate.
     /// This delegate is notified when the splash loading is complete.
@@ -46,8 +46,9 @@ class SplashCoordinator: Coordinator {
      Initializes a new instance of `SplashCoordinator` with the specified navigation controller.
      - Parameter navigationController: The navigation controller used for pushing and presenting view controllers in the splash flow.
      */
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, dataManager: PokemonDataManager) {
         self.navigationController = navigationController
+        self.dataManager = dataManager
     }
     
     /**
@@ -68,7 +69,7 @@ class SplashCoordinator: Coordinator {
      or after a network fetch is completed.
      */
     private func showPokeDexList() {
-        let pokeDexCoordinator = PokeDexCoordinator(navigationController: navigationController)
+        let pokeDexCoordinator = PokeDexCoordinator(navigationController: navigationController, dataManager: dataManager)
         childCoordinators.append(pokeDexCoordinator)
         pokeDexCoordinator.start()
     }
@@ -88,18 +89,18 @@ extension SplashCoordinator: SplashDelegate {
      - Note: The optional `dataManager.clearPokeDexInventory()` can be used during testing to simulate an empty store.
      */
     func didLoadSplash() {
-        if dataManager.hasStoredItems() {
-            showPokeDexList()
-        } else {
-            Task {
-                do {
-                    let client = NetworkClient()
-                    let service = PokemonService(client: client)
-                    try await service.fetchPokemons()
+        Task {
+            do {
+                if try await !dataManager.isInventoryEmpty() {
                     showPokeDexList()
-                } catch {
-                    print(error.localizedDescription)
+                } else {
+                    let client = NetworkClient()
+                    let service = PokemonService(client: client, dataManager: dataManager)
+                    try await service.fetchAndSaveAllPokemonsDetails()
+                    showPokeDexList()
                 }
+            } catch {
+                print("Error fetching Pokémon data: ", error)
             }
         }
     }

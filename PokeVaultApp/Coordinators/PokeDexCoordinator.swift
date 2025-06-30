@@ -16,6 +16,7 @@ import UIKit
  
  - Note: This protocol is constrained to class types by conforming to `AnyObject` so that delegate references can be marked as weak.
  */
+@MainActor
 protocol PokeDexDelegate: AnyObject {
     func didSelectPokemon(_ pokemonDetails: PokemonDetailModel)
 }
@@ -31,14 +32,17 @@ class PokeDexCoordinator: Coordinator {
     /// The navigation controller used for presenting the PokeDex screens.
     var navigationController: UINavigationController
     
+    private let dataManager: PokemonDataManager
+    
     /// A delegate conforming to `ChildCoordinatorDelegate` which is notified when this coordinator finishes its flow.
     weak var delegate: ChildCoordinatorDelegate?
     
     /// Initializes a new instance of `PokeDexCoordinator` with the given navigation controller.
     /// - Parameter navigationController: The navigation controller used for navigation.
     /// - Note: You can also pass additional configuration such as a PokeDex inventory if needed.
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, dataManager: PokemonDataManager) {
         self.navigationController = navigationController
+        self.dataManager = dataManager
     }
     
     /// Starts the PokeDex flow by initializing the PokeDex list view controller and setting it
@@ -46,7 +50,7 @@ class PokeDexCoordinator: Coordinator {
     func start() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let viewModel = PokeDexListVM()
+            let viewModel = PokeDexListVM(dataManager: dataManager)
             let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
             pokeDexListVC.delegate = self
             self.navigationController.viewControllers = self.navigationController.viewControllers.filter { !($0 is SplashVC) }
