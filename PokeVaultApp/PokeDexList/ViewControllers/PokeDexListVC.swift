@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 /// The main list screen for the PokéDex app, displaying a searchable, scrollable
 /// collection of Pokémon in a two-column grid layout.
@@ -16,39 +17,10 @@ import UIKit
 /// - Supports search through a custom `UISearchController`
 /// - Notifies its delegate when a Pokémon is selected
 class PokeDexListVC: UIViewController {
-    lazy var collectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: configureCollectionViewLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        collectionView.backgroundColor = .clear
-        collectionView.indicatorStyle = .black
-        collectionView.delegate = self
-        collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.identifier)
-        return collectionView
-    }()
-    
-    lazy var searchController: UISearchController = {
-        let searchVC = UISearchController(searchResultsController: nil)
-        searchVC.searchResultsUpdater = self
-        searchVC.obscuresBackgroundDuringPresentation = false
-        searchVC.searchBar.overrideUserInterfaceStyle = .light
-        searchVC.searchBar.searchBarStyle = .prominent
-        searchVC.searchBar.placeholder = "Name or number"
-        searchVC.searchBar.tintColor = PokemonBackgroundColor.darkNavyBlue.color
-        searchVC.searchBar.searchTextField.layer.cornerRadius = 16
-        searchVC.searchBar.searchTextField.clipsToBounds = true
-        searchVC.searchBar.searchTextField.font = UIFont.systemFont(ofSize: 16)
-
-        // Style the left image view (magnifying glass)
-        if let leftImageView = searchVC.searchBar.searchTextField.leftView as? UIImageView {
-            leftImageView.tintColor = PokemonBackgroundColor.darkNavyBlue.color
-        }
-        return searchVC
-    }()
-    
     private var viewModel: PokemonVM
-    private var dataSource: PokeDexDiffableDataSource!
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
+    private var listView: PokeDexListView = .init()
+    private lazy var dataSource: PokeDexListDataSource = .init(collectionView: listView.collectionView)
+    private var cancellables = Set<AnyCancellable>()
     
     weak var delegate: PokeDexDelegate?
     
@@ -66,12 +38,16 @@ class PokeDexListVC: UIViewController {
         setupNavigationBar()
     }
     
+    override func loadView() {
+        super.loadView()
+        view = listView
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        setupLayouts()
+        listView.collectionView.delegate = self
         setupPublishers()
-        setupObservers()
         populateCollectionView()
     }
     
@@ -88,72 +64,42 @@ class PokeDexListVC: UIViewController {
             isTranslucent: true
         )
         
-        navigationItem.searchController = searchController
+        navigationItem.searchController = listView.searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         navigationItem.title = "PokéVault"
         navigationItem.largeTitleDisplayMode = .always
     }
     
-    /// Lays out the collection view and pins it to the view edges with padding.
-    private func setupLayouts() {
-        view.addSubview(collectionView)
-        collectionView.constrain([
-            .top(targetAnchor: view.topAnchor),
-            .leading(targetAnchor: view.leadingAnchor),
-            .trailing(targetAnchor: view.trailingAnchor),
-            .bottom(targetAnchor: view.bottomAnchor)
-        ])
-    }
-    
-    /// Configures the diffable data source for the collection view.
-    private func setupObservers() {
-        dataSource = PokeDexDiffableDataSource(collectionView: collectionView, cellProvider: { collectionView, indexPath, model in
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PokemonCell.identifier, for: indexPath) as? PokemonCell else { return UICollectionViewCell() }
-            cell.configure(with: model)
-            return cell
-        })
-    }
-    
     /// Subscribes to view model publishers for UI updates (to be deprecated if using async data).
     private func setupPublishers() {
-        viewModel.publisher = { [weak self] pokemons in
-            guard let self = self else { return }
-            self.applySnapshot(with: pokemons)
-        }
-        
-        viewModel.filterPublisher = { [weak self] pokemons in
-            guard let self = self else { return }
-            self.applyFilter(with: pokemons)
-        }
-    }
-    
-    
-    /// Applies a diffable snapshot to update visible Pokémon list.
-    private func applySnapshot(with pokemons: [PokemonCell.UIModel]) {
-        guard dataSource != nil else { return }
-        
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            if self.snapshot.sectionIdentifiers.isEmpty {
-                self.snapshot.appendSections([.main])
+        viewModel.inventoryPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] inventory in
+                guard let self = self else { return }
+                self.dataSource.apply(inventory)
             }
-            self.snapshot.appendItems(pokemons, toSection: .main)
-            self.dataSource.apply(self.snapshot, animatingDifferences: true)
-        }
-    }
-    
-    /// Applies a filtered snapshot when the user searches for a Pokémon.
-    private func applyFilter(with pokemons: [PokemonCell.UIModel]) {
-        guard dataSource != nil else { return }
+            .store(in: &cancellables)
         
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            var newSnapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
-            newSnapshot.appendSections([.main])
-            newSnapshot.appendItems(pokemons, toSection: .main)
-            self.dataSource.apply(newSnapshot, animatingDifferences: true)
-        }
+        let textField = listView.searchController.searchBar.searchTextField
+        let searchTextPublisher = NotificationCenter.default.publisher(for: UITextField.textDidChangeNotification, object: textField)
+            .compactMap { ($0.object as? UITextField)?.text }
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .removeDuplicates()
         
+        viewModel.inventoryPublisher
+            .combineLatest(searchTextPublisher.prepend(""))
+            .map { items, query -> [PokemonCell.UIModel] in
+                guard !query.isEmpty else { return items }
+                return items.filter { $0.name.lowercased().hasPrefix(query.lowercased())
+                    || String($0.pokedexNumber).hasPrefix(query)
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] filtered in
+                guard let self = self else { return }
+                self.dataSource.applyFilter(filtered)
+            }
+            .store(in: &cancellables)
     }
     
     /// Triggers initial population of the Pokémon list from local or remote storage.
@@ -166,46 +112,26 @@ class PokeDexListVC: UIViewController {
             }
         }
     }
-    
-    /// Returns a compositional layout with 2 columns of Pokémon cards.
-    private func configureCollectionViewLayout() -> UICollectionViewCompositionalLayout {
-        // 1 item per row
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        // Add padding
-        item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
-        // 2 columns
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1.35/5)) // 2/7
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, repeatingSubitem: item, count: 2)
-        // Section
-        let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
-        return UICollectionViewCompositionalLayout(section: section)
-    }
 }
 
 
 extension PokeDexListVC: UICollectionViewDelegate {
     /// Handles selection of a Pokémon cell and informs the delegate with its detailed info.
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let item = dataSource.itemIdentifier(for: indexPath) {
-            Task {
+        if let item = dataSource.dataSource.itemIdentifier(for: indexPath) {
+            Task.detached(priority: .userInitiated) { [weak self] in
+                guard let self = self else { return }
                 do {
-                    guard let pokemonDetail = try await viewModel.getPokemonInfo(by: item.pokedexNumber) else { return }
-                    delegate?.didSelectPokemon(pokemonDetail)
+                    if let details = try await self.viewModel.getPokemonDetails(by: item.pokedexNumber) {
+                        await MainActor.run {
+                            self.delegate?.didSelectPokemon(details)
+                        }
+                    }
                 } catch {
-                    print(error.localizedDescription)
+                    print("Detail fetch error", error)
                 }
             }
         }
     }
 }
 
-
-extension PokeDexListVC: UISearchResultsUpdating {
-    /// Filters Pokémon based on the text input in the search bar.
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let text = searchController.searchBar.text else { return }
-        viewModel.filterPokemon(by: text)
-    }
-}

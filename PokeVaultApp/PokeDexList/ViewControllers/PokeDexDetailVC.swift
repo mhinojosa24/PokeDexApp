@@ -14,117 +14,9 @@ import UIKit
 /// This screen is backed by a `PokeDexDetailVM` view model and communicates
 /// back to a delegate when the back button is tapped.
 class PokeDexDetailVC: UIViewController {
-    struct Constants {
-        static fileprivate let headerHeight: CGFloat = 210
-    }
-    // MARK: - Subviews
-    
-    /// Scrollable container for all child views
-    private lazy var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.alwaysBounceVertical = true
-        return scrollView
-    }()
-    
-    /// Rounded container holding the content stack view
-    private lazy var modalView: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
-        view.layer.cornerRadius = 32
-        view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        view.clipsToBounds = true
-        return view
-    }()
-    
-    /// Main Pokémon image
-    private lazy var thumbnail: CustomImageView = {
-        let imageView = CustomImageView()
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = .clear
-//        imageView.image = UIImage(named: "silhouette")
-        return imageView
-    }()
-    
-    /// Vertical stack containing About, Stats, and Evolution info views
-    private lazy var contentStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.alignment = .fill
-        stack.backgroundColor = .clear
-        return stack
-    }()
-    
-    // MARK: - Segment View
-    
-    /// Horizontal stack for switching between About, Stats, and Evolution views
-    private lazy var segmentStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [aboutLabel, statsLabel, evolutionLabel])
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.alignment = .center
-        stackView.spacing = 10
-        stackView.subviews.enumerated().forEach({ index, view in
-            view.tag = index
-            view.isUserInteractionEnabled = true
-            view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapSegmentItem)))
-        })
-        return stackView
-    }()
-    
-    /// Label for About section (default selected)
-    private lazy var aboutLabel: PDLabel = {
-        let label = PDLabel(text: "About", textColor: .darkNavyBlue, fontWeight: .semiBold, fontSize: 16, backgroundColor: .clear)
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
-    
-    /// Label for Stats section
-    private lazy var statsLabel: PDLabel = {
-        let label = PDLabel(text: "Stats", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
-        label.textColor = .lightGray
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
-    
-    /// Label for Evolution section
-    private lazy var evolutionLabel: PDLabel = {
-        let label = PDLabel(text: "Evolution", fontWeight: .medium, fontSize: 16, backgroundColor: .clear)
-        label.textColor = .lightGray
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        return label
-    }()
-    
-    // MARK: - About View
-    
-    private lazy var aboutInfoView: UIStackView = {
-        let stack = UIStackView()
-        return stack
-    }()
-    
-    // MARK: - Stats View
-    
-    private lazy var statsInfoView: UIStackView = {
-        let stack = UIStackView()
-        return stack
-    }()
-    
-    // MARK: - Evolution View
-    
-    private lazy var evolutionInfoView: UIStackView = {
-        let stack = UIStackView()
-        return stack
-    }()
-    
-    // MARK: - Variables & Attributes
-    
-    private let viewModel: PokeDexDetailVM
-    
     weak var delegate: PokeDexDetailDelegate?
+    private let viewModel: PokeDexDetailVM
+    private let detailView = PokeDexDetailView()
     
     init(viewModel: PokeDexDetailVM) {
         self.viewModel = viewModel
@@ -137,12 +29,21 @@ class PokeDexDetailVC: UIViewController {
     
     // MARK: - Lifecycle
     
+    override func loadView() {
+        super.loadView()
+        view = detailView
+    }
+    
     /// Called after the controller's view is loaded into memory. Sets up the nav bar, layout, and observers.
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.alpha = 0
         setupNavigationBar()
-        setupLayout()
+        detailView.configure(with: viewModel.pokemonDetails)
+        let aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
+        let statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
+        let evolutionInfoView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
+        detailView.injectInfoViews(about: aboutInfoView, stats: statsInfoView, evolution: evolutionInfoView)
         setupObservers()
     }
     
@@ -176,86 +77,13 @@ class PokeDexDetailVC: UIViewController {
         navigationItem.backButtonDisplayMode = .minimal
     }
     
-    // MARK: - Auto Layout Configuration
-    
-    /// Sets up layout constraints and populates content stack with the proper view models.
-    private func setupLayout() {
-        scrollView.backgroundColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.oxidized(0.45)
-        scrollView.layer.masksToBounds = false
-        scrollView.layer.shadowColor = PokemonBackgroundColor(rawValue: viewModel.pokemonDetails.themeColor)?.oxidized(0.85).cgColor
-        scrollView.layer.shadowOffset = .zero
-        scrollView.layer.shadowRadius = 8
-        scrollView.layer.shadowOpacity = 1
-        
-        aboutLabel.textColor = .white
-        thumbnail.imageURLString = viewModel.pokemonDetails.sprite.artwork
-        aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
-        statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
-        evolutionInfoView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
-        
-        aboutInfoView.tag = 0
-        statsInfoView.tag = 1
-        evolutionInfoView.tag = 2
-        
-        /// Adding subviews
-        contentStackView.addArrangedSubviews([
-            aboutInfoView,
-            statsInfoView,
-            evolutionInfoView
-        ])
-        
-        statsInfoView.isHidden = true
-        evolutionInfoView.isHidden = true
-        
-        modalView.addSubview(contentStackView)
-        [thumbnail, segmentStackView, modalView].forEach({ scrollView.addSubview($0) })
-        scrollView.addSubview(modalView)
-        view.addSubview(scrollView)
-        
-        /// Scroll View
-        scrollView.constrain([
-            .top(targetAnchor: view.topAnchor),
-            .leading(targetAnchor: view.leadingAnchor),
-            .trailing(targetAnchor: view.trailingAnchor),
-            .bottom(targetAnchor: view.bottomAnchor)
-        ])
-        
-        /// Image View
-        thumbnail.constrain([
-            .top(targetAnchor: scrollView.topAnchor, constant: 0),
-            .centerX(targetAnchor: scrollView.centerXAnchor),
-            .heightMultiplier(targetAnchor: view.heightAnchor, multiplier: 0.20)
-        ])
-        
-        /// Segment Stack View
-        segmentStackView.constrain([
-            .top(targetAnchor: thumbnail.bottomAnchor),
-            .leading(targetAnchor: scrollView.safeAreaLayoutGuide.leadingAnchor),
-            .trailing(targetAnchor: scrollView.safeAreaLayoutGuide.trailingAnchor),
-            .height(50)
-        ])
-        
-        /// Container View
-        modalView.constrain([
-            .top(targetAnchor: segmentStackView.bottomAnchor),
-            .leading(targetAnchor: segmentStackView.leadingAnchor),
-            .trailing(targetAnchor: segmentStackView.trailingAnchor),
-            .bottom(targetAnchor: view.bottomAnchor)
-        ])
-        
-        /// Content Stack View
-        contentStackView.constrain([
-            .top(targetAnchor: modalView.topAnchor, constant: 24),
-            .leading(targetAnchor: modalView.leadingAnchor, constant: 24),
-            .trailing(targetAnchor: modalView.trailingAnchor, constant: 24),
-            .bottom(targetAnchor: scrollView.bottomAnchor)
-        ])
-    }
-    
     /// Adds gesture recognizer for segment switching.
     private func setupObservers() {
-        let tapGesture = UIGestureRecognizer(target: self, action: #selector(didTapSegmentItem))
-        aboutLabel.addGestureRecognizer(tapGesture)
+        detailView.segmentStackView.subviews.enumerated().forEach { index, view in
+            view.tag = index
+            view.isUserInteractionEnabled = true
+            view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapSegmentItem)))
+        }
     }
     
     // MARK: - Actions
@@ -269,13 +97,13 @@ class PokeDexDetailVC: UIViewController {
     @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
         guard let label = sender.view as? PDLabel else { return }
         let selectedIndex = label.tag
-        for case let itemLabel as PDLabel in segmentStackView.subviews {
+        for case let itemLabel as PDLabel in detailView.segmentStackView.subviews {
             let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
             itemLabel.textColor = doesSelectedIndexMatch ? .white : .lightGray
             itemLabel.setPoppinsFont(weight: doesSelectedIndexMatch ? .semiBold : .medium, size: 16)
-            aboutInfoView.isHidden = aboutInfoView.tag != selectedIndex
-            statsInfoView.isHidden = statsInfoView.tag != selectedIndex
-            evolutionInfoView.isHidden = evolutionInfoView.tag != selectedIndex
+            detailView.aboutInfoView.isHidden = detailView.aboutInfoView.tag != selectedIndex
+            detailView.statsInfoView.isHidden = detailView.statsInfoView.tag != selectedIndex
+            detailView.evolutionInfoView.isHidden = detailView.evolutionInfoView.tag != selectedIndex
         }
     }
 }
