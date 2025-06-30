@@ -8,7 +8,7 @@
 import SwiftData
 
 @Model
-class PokemonDetailModel {
+final class PokemonDetailModel: Sendable {
     @Attribute(.unique) var id: Int
     var name: String
     var abilities: [AbilityModel]
