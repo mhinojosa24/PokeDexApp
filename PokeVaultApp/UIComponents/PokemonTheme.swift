@@ -26,7 +26,7 @@ enum PokemonBackgroundColor: String {
         case .black:
             return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         case .darkNavyBlue:
-            return #colorLiteral(red: 0.297126472, green: 0.3140752614, blue: 0.5818428397, alpha: 1)
+            return #colorLiteral(red: 0.2980392157, green: 0.3137254902, blue: 0.5803921569, alpha: 1)
         case .blue:
             return #colorLiteral(red: 0.3905215859, green: 0.5775662065, blue: 0.9194149375, alpha: 1)
         case .brown:
@@ -48,7 +48,7 @@ enum PokemonBackgroundColor: String {
         case .softBeige:
             return #colorLiteral(red: 0.9895073771, green: 0.9597759843, blue: 0.9040811658, alpha: 1)
         case .icyWhite:
-            return #colorLiteral(red: 0.9856421351, green: 0.9900587201, blue: 0.9898915887, alpha: 1)
+            return #colorLiteral(red: 0.9843137255, green: 0.9882352941, blue: 0.9882352941, alpha: 1)
         case .unknown:
             return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         }
