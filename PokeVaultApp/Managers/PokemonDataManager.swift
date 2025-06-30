@@ -8,141 +8,43 @@
 import Foundation
 import SwiftData
 
-/// `PokemonDataManager` is a singleton class responsible for managing Pokemon data.
-/// It provides methods to save, fetch, and clear `PokemonDetailModel` objects.
+/// `PokemonDataManager` manages Pokemon data persistence and retrieval.
+/// It interacts with a `DataActorProtocol` for thread-safe data operations.
 class PokemonDataManager {
-    enum FetchDescriptorType {
-        case all
-        case limit(Int)
-        case byID(Int)
-        
-        func fetchDescriptor() -> FetchDescriptor<PokemonDetailModel> {
-                switch self {
-                case .all:
-                    return FetchDescriptor<PokemonDetailModel>(
-                        predicate: nil,
-                        sortBy: [SortDescriptor(\.id, order: .forward)]
-                    )
-                case .limit(let limit):
-                    var fetchDescriptor = FetchDescriptor<PokemonDetailModel>(predicate: nil, sortBy: [])
-                    fetchDescriptor.fetchLimit = limit
-                    return fetchDescriptor
-                case .byID(let id):
-                    return FetchDescriptor<PokemonDetailModel>(
-                        predicate: #Predicate { $0.id == id },
-                        sortBy: []
-                    )
-            }
-        }
+    private let dataStore: DataActorProtocol
+
+    /// Initializes a new instance of `PokemonDataManager` with the given actor.
+    /// - Parameter dataActor: The data actor conforming to `DataActorProtocol`.
+    init(dataStoreActor: DataActorProtocol) {
+        self.dataStore = dataStoreActor
+    }
+
+    /// Saves a `PokemonDetailResponse` to the data store.
+    /// If a Pokemon with the same ID already exists, it updates the existing record.
+    /// - Parameter detail: The `PokemonDetailResponse` to be saved.
+    func savePokemonDetail(_ detail: PokemonDetailResponse) async throws {
+        let modelDetail = PokemonDetailMapper.map(detail)
+        try await dataStore.save(modelDetail)
     }
     
-    static let shared = PokemonDataManager(context: DataContext())
-    private let context: DataContextProtocol
-
-    /// Initializes a new instance of `PokemonDataManager` with the given context.
-    /// - Parameter context: The data context conforming to `DataContextProtocol`.
-    init(context: DataContextProtocol) {
-        self.context = context
-    }
-
-    /// Saves a `PokemonDetail` object to the data context.
-    /// - Parameter detail: The `PokemonDetail` object to be saved.
-    func savePokemonDetail(_ detail: PokemonDetailResponse) {
-        let modelDetail = pokemonDetailModelFactory(pokemonDetail: detail)
-        let fetchDescriptor = getFetchDescriptor(.byID(detail.id))
-        
-        do {
-            let existingItems = try context.fetch(fetchDescriptor)
-            if let existingItem = existingItems.first {
-                existingItem.update(modelDetail)
-            } else {
-                try context.insert(modelDetail)
-            }
-        } catch {
-            print("Failed to save PokemonDetail")
-            print("Error: \(error.localizedDescription)")
-        }
-    }
-
-    /// Fetches a `PokemonDetailModel` object by its ID.
-    /// - Parameter pokedexNumber: The ID of the `PokemonDetailModel` to be fetched.
-    /// - Returns: The `PokemonDetailModel` object if found, otherwise `nil`.
-    func getPokemonDetail(by id: Int) throws -> PokemonDetailModel? {
-        let fetchDescriptor = getFetchDescriptor(.byID(id))
-        return try context.fetch(fetchDescriptor).first
-    }
-
-    /// Fetches all `PokemonDetailModel` objects.
+    /// Fetches all `PokemonDetailModel` objects from the data store.
     /// - Returns: An array of `PokemonDetailModel` objects.
-    func getAllPokemonDetails() throws -> [PokemonDetailModel] {
-        let fetchDescriptor = getFetchDescriptor(.all)
-        return try context.fetch(fetchDescriptor)
+    func fetchAllPokemonDetails() async throws -> [PokemonDetailModel] {
+        return try await dataStore.fetchAll()
+    }
+
+    func fetchPokemonDetail(byID id: Int) async throws -> PokemonDetailModel? {
+        return try await dataStore.fetch(byID: id)
     }
 
     /// Clears all `PokemonDetailModel` objects from the data context.
-    func clearPokeDexInventory() {
-        do {
-            try context.deleteAll()
-        } catch {
-            print("error: \(error.localizedDescription)")
-        }
-    }
-    
-    /// Converts a `PokemonDetail` object to a `PokemonDetailModel` object.
-    /// - Parameter pokemonDetail: The `PokemonDetail` object to be converted.
-    /// - Returns: The corresponding `PokemonDetailModel` object.
-    func pokemonDetailModelFactory(pokemonDetail: PokemonDetailResponse) -> PokemonDetailModel {
-        let officialArtwork = pokemonDetail.sprites.other?.officialArtwork.frontDefault ?? ""
-        let showdownGifURL = pokemonDetail.sprites.other?.showdown?.frontDefault ?? ""
-        let themeColor = pokemonDetail.species.detail?.color.name ?? ""
-        let flavorDescription = pokemonDetail.species.detail?.flavorTextEntries?.first(where: { $0.version.name == "ruby" })?.flavorText ?? ""
-        let sprite = SpriteModel(officialArtwork: officialArtwork,
-                                 showdownGifURL: showdownGifURL)
-        
-        let stats = pokemonDetail.stats.map { StatModel(name: $0.stat.name,
-                                                        baseStat: $0.baseStat,
-                                                        effort: $0.effort)
-        }
-        
-        let types = pokemonDetail.types.compactMap { TypeModel(name: $0.type.name) }
-        let weaknesses = pokemonDetail.weaknessTypes?.compactMap { TypeModel(name: $0) } ?? []
-        let evolution = pokemonDetail.evolutionDetailChain?.compactMap { EvolutionModel(id: $0.id, name: $0.name, level: $0.minLevel ?? .zero, artwork: $0.artwork) } ?? []
-        let catchRate = pokemonDetail.species.detail?.captureRate ?? 0
-        let growthRate = pokemonDetail.species.detail?.growthRate.name ?? ""
-        let abilities = pokemonDetail.abilities.map({ AbilityModel(name: $0.ability.name) })
-        let species = pokemonDetail.species.detail?.genera.first(where: { $0.language.name == "en" })?.genus ?? ""
-        
-        return PokemonDetailModel(id: pokemonDetail.id,
-                                  name: pokemonDetail.name,
-                                  abilities: abilities,
-                                  species: species,
-                                  sprite: sprite,
-                                  themeColor: themeColor,
-                                  flavorDescription: flavorDescription,
-                                  stats: stats,
-                                  types: types,
-                                  weaknesses: weaknesses,
-                                  evolution: evolution,
-                                  height: pokemonDetail.height,
-                                  weight: pokemonDetail.weight,
-                                  catchRate: catchRate,
-                                  baseExperience: pokemonDetail.baseExperience,
-                                  growthRate: growthRate)
+    func clearInventory() async throws {
+        try await dataStore.clearAll()
     }
     
     /// Checks if the context container has any stored objects.
     /// - Returns: `true` if the context container has stored objects, otherwise `false`.
-    func hasStoredItems() -> Bool {
-        let fetchDescriptor = getFetchDescriptor(.limit(1))
-        do {
-            return try !context.fetch(fetchDescriptor).isEmpty
-        } catch {
-            print("Failed to fetch PokemonDetails: \(error)")
-            return false
-        }
-    }
-    
-    fileprivate func getFetchDescriptor(_ type: FetchDescriptorType) -> FetchDescriptor<PokemonDetailModel> {
-        return type.fetchDescriptor()
+    func isInventoryEmpty() async throws -> Bool {
+        return try await dataStore.isEmpty()
     }
 }
