@@ -24,7 +24,6 @@ struct Endpoint {
 extension Endpoint {
     static func allPokemons(limit: Int = 1025) -> Endpoint {
         .init(path: "pokemon", queryItems: [
-            .init(name: "offset", value: "0"),
             .init(name: "limit", value: "\(limit)")
         ])
     }

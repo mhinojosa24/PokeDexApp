@@ -66,11 +66,8 @@ class PokemonService {
                 group.addTask { [weak self] in
                     guard let self = self else { return [] }
                     do {
-                        let typeURL = try self.url(from: pokemonType.type.url)
-                        let typeDetail = try await self.client.fetch(
-                            url: typeURL,
-                            as: TypeDetailResponse.self
-                        )
+                        let typeURL = Endpoint.type(idOrName: pokemonType.type.name).url
+                        let typeDetail = try await self.client.fetch(url: typeURL, as: TypeDetailResponse.self)
                         return typeDetail.damageRelations.doubleDamageFrom.compactMap { $0.name }
                     } catch {
                         print("Failed to fetch weaknesses for \(pokemonType.type.name): \(error)")
@@ -88,11 +85,11 @@ class PokemonService {
     /// Fetches a Pokémon's detail along with its weaknesses.
     /// Call this method after you've fetched a Pokémon's detail.
     fileprivate func fetchPokemonDetailWithWeaknesses(for pokemon: PokemonResponse) async throws -> PokemonDetailResponse {
-        let detailURL = try url(from: pokemon.url)
+        let detailURL = Endpoint.pokemon(idOrName: pokemon.name).url
         var detail = try await client.fetch(url: detailURL, as: PokemonDetailResponse.self)
         
         /// Fetch species details and update the detail object
-        let speciesURL = try url(from: detail.species.url)
+        let speciesURL = Endpoint.pokemonSpecies(idOrName: detail.species.name).url
         async let speciesDetail = client.fetch(url: speciesURL, as: SpeciesDetailResponse.self)
         
         let detailSnapshot = detail
