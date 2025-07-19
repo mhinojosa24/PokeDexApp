@@ -12,16 +12,18 @@ import UIKit
 /// Coordinators are responsible for managing navigation flow and child coordinators.
 protocol Coordinator: AnyObject {
     /// An array to keep track of child coordinators.
-    var childCoordinators: [Coordinator] { get set }
+    var children: [Coordinator] { get set }
     
     /// The navigation controller used for navigation.
     var navigationController: UINavigationController { get set }
     
     /// Starts the coordinator.
     func start()
+    
+    func finish()
 }
 
 
 protocol ChildCoordinatorDelegate: AnyObject {
-    func childDidFinish(_ coordinator: Coordinator)
+    func didFinish(_ coordinator: Coordinator)
 }

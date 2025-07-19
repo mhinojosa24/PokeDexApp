@@ -6,11 +6,14 @@
 //
 
 import Combine
+import Foundation
 
 /// A protocol that defines the interface for a Pokémon view model responsible for
 /// fetching, filtering, and providing Pokémon list data for display.
 protocol PokemonVM {
     var inventoryPublisher: Published<[PokemonCell.UIModel]>.Publisher { get }
+    
+    var searchQuery: String { get set }
     
     /// Asynchronously populates the full Pokémon list and triggers the publisher.
     func populate() async throws
@@ -22,15 +25,30 @@ protocol PokemonVM {
 /// A view model responsible for managing the Pokémon list data,
 /// including retrieval, transformation into UI models, and filtering.
 class PokeDexListVM: PokemonVM, ObservableObject {
-    var inventoryPublisher: Published<[PokemonCell.UIModel]>.Publisher { $pokemonInventory }
-    private let dataManager: PokemonDataManager
+    var inventoryPublisher: Published<[PokemonCell.UIModel]>.Publisher { $filteredInventory }
     
-    /// Stores the list of Pokémon UI models and triggers the publisher when changed.
-    @Published private var pokemonInventory: [PokemonCell.UIModel] = .init()
-    private var filteredInventory: [PokemonCell.UIModel] = .init()
+    @Published var searchQuery: String = ""
+    private let dataManager: PokemonDataManager
+    @Published private var pokemonInventory = [PokemonCell.UIModel]()
+    @Published private var filteredInventory = [PokemonCell.UIModel]()
     
     init(dataManager: PokemonDataManager) {
         self.dataManager = dataManager
+        setupFiltering()
+    }
+    
+    private func setupFiltering() {
+        $pokemonInventory
+            .combineLatest($searchQuery)
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .map { items, query -> [PokemonCell.UIModel] in
+                guard !query.isEmpty else { return items }
+                return items.filter {
+                    $0.name.lowercased().hasPrefix(query.lowercased()) ||
+                    String($0.pokedexNumber).hasPrefix(query)
+                }
+            }
+            .assign(to: &$filteredInventory)
     }
     
     /// Fetches all stored Pokémon details, maps them into UI models,

@@ -37,12 +37,6 @@ final class PokeDexListDataSource {
     /// protocol methods behind the scenes. {Link: See also https://developer.apple.com/documentation/uikit/uicollectionviewdiffabledatasource-9tqpa}
     let dataSource: UICollectionViewDiffableDataSource<Section, PokemonCell.UIModel>
 
-    /// The internal snapshot representing the current state of the collection view's data.
-    ///
-    /// This snapshot is used to compute differences between updates and apply them
-    /// to the `dataSource` efficiently.
-    private var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
-
     // MARK: - Initialization
 
     /// Creates a new instance of `PokeDexListDataSource` associated with the specified collection view.
@@ -73,26 +67,10 @@ final class PokeDexListDataSource {
     /// - Parameter items: An array of `PokemonCell.UIModel` objects representing the data
     ///   to be displayed in the collection view.
     func apply(_ items: [PokemonCell.UIModel]) {
-        if snapshot.sectionIdentifiers.isEmpty {
-            snapshot.appendSections([.main])
-        }
+        var snapshot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
+        snapshot.appendSections([.main])
         snapshot.appendItems(items, toSection: .main)
         dataSource.apply(snapshot, animatingDifferences: true)
-    }
-
-    /// Applies a filtered set of items to the collection view's data source.
-    ///
-    /// This method is designed for applying filtering results. It creates a *new* snapshot
-    /// with the provided filtered items, effectively replacing the current content
-    /// of the collection view. The changes are applied with animated differences.
-    ///
-    /// - Parameter items: An array of `PokemonCell.UIModel` objects representing the
-    ///   filtered data to be displayed in the collection view.
-    func applyFilter(_ items: [PokemonCell.UIModel]) {
-        var newSnapShot = NSDiffableDataSourceSnapshot<Section, PokemonCell.UIModel>()
-        newSnapShot.appendSections([.main])
-        newSnapShot.appendItems(items, toSection: .main)
-        dataSource.apply(newSnapShot, animatingDifferences: true)
     }
 }
 

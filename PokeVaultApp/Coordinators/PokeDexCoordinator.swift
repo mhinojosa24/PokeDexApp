@@ -26,54 +26,37 @@ protocol PokeDexDelegate: AnyObject {
 /// `PokeDexCoordinator` is responsible for managing the navigation flow for the PokeDex feature.
 /// It initializes the view model and view controller for the PokeDex list and handles navigation.
 class PokeDexCoordinator: Coordinator {
-/// An array that holds child coordinators currently in use by the PokeDex flow.
-    var childCoordinators: [Coordinator] = []
-    
-    /// The navigation controller used for presenting the PokeDex screens.
+    var children: [Coordinator] = []
     var navigationController: UINavigationController
-    
     private let dataManager: PokemonDataManager
     
-    /// A delegate conforming to `ChildCoordinatorDelegate` which is notified when this coordinator finishes its flow.
-    weak var delegate: ChildCoordinatorDelegate?
-    
-    /// Initializes a new instance of `PokeDexCoordinator` with the given navigation controller.
-    /// - Parameter navigationController: The navigation controller used for navigation.
-    /// - Note: You can also pass additional configuration such as a PokeDex inventory if needed.
     init(navigationController: UINavigationController, dataManager: PokemonDataManager) {
         self.navigationController = navigationController
         self.dataManager = dataManager
     }
     
-    /// Starts the PokeDex flow by initializing the PokeDex list view controller and setting it
-    /// as the root view controller of the navigation stack (after filtering out the Splash screen, if any).
     func start() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            let viewModel = PokeDexListVM(dataManager: dataManager)
-            let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
-            pokeDexListVC.delegate = self
-            self.navigationController.viewControllers = self.navigationController.viewControllers.filter { !($0 is SplashVC) }
-            self.navigationController.setViewControllers([pokeDexListVC], animated: true)
-        }
+        let viewModel = PokeDexListVM(dataManager: dataManager)
+        let pokeDexListVC = PokeDexListVC(viewModel: viewModel)
+        pokeDexListVC.delegate = self
+        navigationController.pushViewController(pokeDexListVC, animated: true)
     }
     
-    /// Initiates the detail flow by creating a new PokeDexDetailCoordinator for the selected Pokemon,
-    /// setting its delegate to self, storing it in the childCoordinators array, and starting it.
-    /// - Parameter pokemonDetails: The details for the selected Pokemon.
-    func showDetails(with pokemonDetails: PokemonDetailModel) {
+    private func showDetails(with pokemonDetails: PokemonDetailModel) {
         let pokeDexDetailCoordinator = PokeDexDetailCoordinator(pokemonDetails: pokemonDetails, navigationController: navigationController)
-        pokeDexDetailCoordinator.delegate = self
-        childCoordinators.append(pokeDexDetailCoordinator)
+        pokeDexDetailCoordinator.childDelegate = self
+        children.append(pokeDexDetailCoordinator)
         pokeDexDetailCoordinator.start()
+    }
+    
+    func finish() {
+    
     }
 }
 
 // MARK: - PokeDexDelegate
 
 extension PokeDexCoordinator: PokeDexDelegate {
-    /// Responds to the selection of a Pokemon by triggering the detail flow.
-    /// - Parameter pokemonDetails: The selected Pokemon's details.
     func didSelectPokemon(_ pokemonDetails: PokemonDetailModel) {
         showDetails(with: pokemonDetails)
     }
@@ -82,12 +65,8 @@ extension PokeDexCoordinator: PokeDexDelegate {
 // MARK: - ChildCoordinatorDelegate
 
 extension PokeDexCoordinator: ChildCoordinatorDelegate {
-    /// Notifies the parent coordinator that a child coordinator has finished its flow,
-    /// and removes it from the `childCoordinators` array.
-    /// - Parameter coordinator: The child coordinator that has completed its work.
-    func childDidFinish(_ coordinator: any Coordinator) {
-        if let index = childCoordinators.firstIndex(where: { $0 === coordinator }) {
-            childCoordinators.remove(at: index)
-        }
+    func didFinish(_ coordinator: Coordinator) {
+        children.removeAll { $0 === coordinator }
+        coordinator.finish()
     }
 }

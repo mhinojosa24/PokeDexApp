@@ -13,9 +13,6 @@ import UIKit
 ///
 /// Typically used in coordination-based navigation to control flow from the splash screen.
 class SplashVC: UIViewController {
-    /// A delegate that conforms to `SplashDelegate`, used to notify
-    /// when the splash screen has finished loading.
-    var delegate: SplashDelegate?
     
     /// Called after the view has been loaded into memory. Sets the background
     /// color and informs the delegate that the splash screen has completed its load.
@@ -33,7 +30,5 @@ class SplashVC: UIViewController {
             .centerX(targetAnchor: view.centerXAnchor),
             .centerY(targetAnchor: view.centerYAnchor)
         ])
-        
-        delegate?.didLoadSplash()
     }
 }

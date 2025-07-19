@@ -6,16 +6,29 @@
 //
 
 import UIKit
+import SwiftData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var appCoordinator: ApplicationCoordinator?
-
+    var sharedModelContainer: ModelContainer!
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        appCoordinator = ApplicationCoordinator(window: UIWindow(windowScene: windowScene))
+        do {
+            sharedModelContainer = try createSharedModelContainer()
+        } catch {
+            fatalError("Failed to set up shared ModelContainer: \(error)")
+        }
+        
+        appCoordinator = ApplicationCoordinator(window: UIWindow(windowScene: windowScene), sharedCoordinator: sharedModelContainer)
         appCoordinator?.start()
+    }
+    
+    func createSharedModelContainer(isInMemoryOnly: Bool = false) throws -> ModelContainer {
+        let schema = Schema([PokemonDetailModel.self])
+        let config = ModelConfiguration("PokemonVaultDataStore")
+        return try ModelContainer(for: schema, configurations: config)
     }
 }
 

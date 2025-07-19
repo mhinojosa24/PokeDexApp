@@ -44,7 +44,7 @@ class PokemonDataManager {
     
     /// Checks if the context container has any stored objects.
     /// - Returns: `true` if the context container has stored objects, otherwise `false`.
-    func isInventoryEmpty() async throws -> Bool {
+    func isPokemonDataStoreEmpty() async throws -> Bool {
         return try await dataStore.isEmpty()
     }
 }

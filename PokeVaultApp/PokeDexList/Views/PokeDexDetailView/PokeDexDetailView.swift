@@ -199,4 +199,15 @@ final class PokeDexDetailView: UIView {
         statsInfoView = stats
         evolutionInfoView = evolution
     }
+    
+    func selectSegment(at selectedIndex: Int) {
+        for case let itemLabel as PDLabel in segmentStackView.subviews {
+            let isSelected = itemLabel.tag == selectedIndex
+            itemLabel.textColor = isSelected ? .white : .lightGray
+            itemLabel.setPoppinsFont(weight: isSelected ? .semiBold : .medium, size: 16)
+        }
+        aboutInfoView.isHidden = aboutInfoView.tag != selectedIndex
+        statsInfoView.isHidden = statsInfoView.tag != selectedIndex
+        evolutionInfoView.isHidden = evolutionInfoView.tag != selectedIndex
+    }
 }

@@ -32,78 +32,49 @@ class PokeDexDetailVC: UIViewController {
     override func loadView() {
         super.loadView()
         view = detailView
+        
     }
     
     /// Called after the controller's view is loaded into memory. Sets up the nav bar, layout, and observers.
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationController?.navigationBar.alpha = 0
+        configureViews()
         setupNavigationBar()
+        setupGestureRecognizers()
+    }
+    
+    private func configureViews() {
         detailView.configure(with: viewModel.pokemonDetails)
         let aboutInfoView = AboutInfoView(model: viewModel.getAboutInfoUIModel())
         let statsInfoView = StatsInfoView(model: viewModel.getStatsInfoUIModel())
         let evolutionInfoView = EvolutionInfoView(model: viewModel.getEvolutionInfoUIModel())
         detailView.injectInfoViews(about: aboutInfoView, stats: statsInfoView, evolution: evolutionInfoView)
-        setupObservers()
-    }
-    
-    /// Ensures nav bar transparency is removed on appearance.
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        setupNavigationBar()
-        navigationController?.navigationBar.alpha = 1
     }
     
     // MARK: - Navigation Bar Configuration
     
     /// Configures the navigation bar with a custom back button and transparent style.
     private func setupNavigationBar() {
-        view.backgroundColor = #colorLiteral(red: 0.9553839564, green: 0.9852878451, blue: 0.9847680926, alpha: 1)
-        configureNavigationBar(
-            style: .transparent,
-            tint: .white,
-            hidesSeparator: true,
-            prefersLargeTitles: false
-        )
-        
-        let leftBarButtonItemAction: Selector = #selector(didTapBackButton)
-        let leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left"),
-                                                style: .plain,
-                                                target: self,
-                                                action: leftBarButtonItemAction)
-        leftBarButtonItem.tintColor = .white
-        
-        navigationItem.leftBarButtonItem = leftBarButtonItem
-        navigationItem.backButtonDisplayMode = .minimal
+        view.backgroundColor = PokemonBackgroundColor.icyWhite.color
+        navigationItem.largeTitleDisplayMode = .never
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.tintColor = .white
     }
     
     /// Adds gesture recognizer for segment switching.
-    private func setupObservers() {
-        detailView.segmentStackView.subviews.enumerated().forEach { index, view in
-            view.tag = index
+    private func setupGestureRecognizers() {
+        detailView.segmentStackView.subviews.forEach { view in
             view.isUserInteractionEnabled = true
-            view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapSegmentItem)))
+            view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapSegment)))
         }
-    }
-    
-    // MARK: - Actions
-    
-    /// Handles back button tap and notifies the coordinator.
-    @objc func didTapBackButton() {
-        delegate?.didTapBackButton()
     }
     
     /// Handles tap on segment labels to switch content views.
-    @objc func didTapSegmentItem(_ sender: UITapGestureRecognizer) {
-        guard let label = sender.view as? PDLabel else { return }
-        let selectedIndex = label.tag
-        for case let itemLabel as PDLabel in detailView.segmentStackView.subviews {
-            let doesSelectedIndexMatch = itemLabel.tag == selectedIndex
-            itemLabel.textColor = doesSelectedIndexMatch ? .white : .lightGray
-            itemLabel.setPoppinsFont(weight: doesSelectedIndexMatch ? .semiBold : .medium, size: 16)
-            detailView.aboutInfoView.isHidden = detailView.aboutInfoView.tag != selectedIndex
-            detailView.statsInfoView.isHidden = detailView.statsInfoView.tag != selectedIndex
-            detailView.evolutionInfoView.isHidden = detailView.evolutionInfoView.tag != selectedIndex
-        }
+    @objc func didTapSegment(_ sender: UITapGestureRecognizer) {
+        guard let selectedTag = sender.view?.tag else { return }
+        detailView.selectSegment(at: selectedTag)
     }
 }

@@ -7,6 +7,12 @@
 
 import UIKit
 
+
+// MARK: - PokeDexDetailCoordinator
+protocol PokeDexDetailCoordinatorDelegate: AnyObject {
+    func pokeDexDetailCoordinatorDidFinish(_ coordinator: PokeDexDetailCoordinator)
+}
+
 // MARK: - PokeDexDetailDelegate
 
 /**
@@ -32,7 +38,7 @@ protocol PokeDexDetailDelegate: AnyObject {
  */
 class PokeDexDetailCoordinator: Coordinator {
     /// An array that holds any child coordinators. This is used for managing subordinate flows.
-    var childCoordinators: [Coordinator] = []
+    var children: [Coordinator] = []
     
     /// The navigation controller used for managing the navigation stack.
     var navigationController: UINavigationController
@@ -41,7 +47,7 @@ class PokeDexDetailCoordinator: Coordinator {
     var pokemonDetails: PokemonDetailModel
     
     /// A delegate that conforms to ChildCoordinatorDelegate. This is notified when this coordinator finishes its flow.
-    weak var delegate: ChildCoordinatorDelegate?
+    weak var childDelegate: ChildCoordinatorDelegate?
     
     /**
      Initializes a new instance of PokeDexDetailCoordinator.
@@ -65,9 +71,11 @@ class PokeDexDetailCoordinator: Coordinator {
         let viewModel = PokeDexDetailVM(pokemonDetails)
         let pokeDexDetailVC = PokeDexDetailVC(viewModel: viewModel)
         pokeDexDetailVC.delegate = self
-        pokeDexDetailVC.navigationController?.navigationBar.isHidden = true
-
         navigationController.pushViewController(pokeDexDetailVC, animated: true)
+    }
+    
+    func finish() {
+        
     }
 }
 
@@ -85,6 +93,6 @@ extension PokeDexDetailCoordinator: PokeDexDetailDelegate {
         navigationController.popViewController(animated: true)
         
         // Notify the parent coordinator (which conforms to ChildCoordinatorDelegate)
-        delegate?.childDidFinish(self)
+        childDelegate?.didFinish(self)
     }
 }
