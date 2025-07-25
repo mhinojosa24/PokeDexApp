@@ -32,7 +32,6 @@ class PokeDexDetailVC: UIViewController {
     override func loadView() {
         super.loadView()
         view = detailView
-        
     }
     
     /// Called after the controller's view is loaded into memory. Sets up the nav bar, layout, and observers.

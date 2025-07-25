@@ -51,7 +51,13 @@ class EvolutionInfoView: UIStackView {
     /// - If it's not the base form (level > 0), adds a vertical separator with the evolution level.
     /// - Adds an image, Pokédex number, and name label in a vertically stacked view.
     private func configure() {
-        for evolution in model.evolutions.sorted(by: { $0.level < $1.level }) {
+        for evolution in model.evolutions.sorted(by: { lhs, rhs in
+            if lhs.level != rhs.level {
+                return lhs.level < rhs.level
+            } else {
+                return lhs.pokedexNumber < rhs.pokedexNumber
+            }
+        }) {
             let contentStack = UIStackView()
             contentStack.axis = .vertical
             contentStack.alignment = .center
