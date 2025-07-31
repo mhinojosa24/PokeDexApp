@@ -18,7 +18,7 @@ final class PokemonDetailModel: Sendable {
     var flavorDescription: String
     var stats: [StatModel]
     var types: [TypeModel]
-    var weaknesses: [TypeModel]
+    var weaknesses: [WeaknessTypeModel]
     var evolution: [EvolutionModel]
     var height: Int
     var weight: Int
@@ -35,7 +35,7 @@ final class PokemonDetailModel: Sendable {
          flavorDescription: String,
          stats: [StatModel],
          types: [TypeModel],
-         weaknesses: [TypeModel],
+         weaknesses: [WeaknessTypeModel],
          evolution: [EvolutionModel],
          height: Int,
          weight: Int,
@@ -114,6 +114,17 @@ class StatModel {
 
 @Model
 class TypeModel {
+    var slot: Int = 0
+    var name: String
+    
+    init(slot: Int = 0, name: String) {
+        self.slot = slot
+        self.name = name
+    }
+}
+
+@Model
+class WeaknessTypeModel {
     var name: String
     
     init(name: String) {

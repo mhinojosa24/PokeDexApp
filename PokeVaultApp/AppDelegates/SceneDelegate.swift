@@ -26,9 +26,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func createSharedModelContainer(isInMemoryOnly: Bool = false) throws -> ModelContainer {
-        let schema = Schema([PokemonDetailModel.self])
-        let config = ModelConfiguration("PokemonVaultDataStore")
-        return try ModelContainer(for: schema, configurations: config)
+        let schema = Schema([
+            PokemonDetailModel.self
+        ])
+        
+        let configuration = ModelConfiguration(
+            "PokemonVaultDataStore",
+            schema: schema,
+            isStoredInMemoryOnly: isInMemoryOnly
+        )
+        
+        return try ModelContainer(
+            for: schema,
+            migrationPlan: MigrationPlan.self,
+            configurations: configuration
+        )
     }
 }
 

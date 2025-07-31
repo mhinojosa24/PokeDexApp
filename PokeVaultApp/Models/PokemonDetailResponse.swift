@@ -182,6 +182,7 @@ struct ShowDownResponse: Decodable {
 
 // MARK: - Pokemon Type Response
 struct PokemonTypeResponse: Decodable {
+    var slot: Int
     var type: TypeResponse
 }
 

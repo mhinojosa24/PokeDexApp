@@ -22,8 +22,8 @@ struct PokemonDetailMapper {
         let themeColor = pokemonDetailResponse.species.detail?.color.name ?? ""
         let flavorDescription = pokemonDetailResponse.species.detail?.flavorTextEntries?.first(where: { $0.version.name == "ruby" })?.flavorText ?? ""
         let stats = pokemonDetailResponse.stats.map { StatModel(name: $0.stat.name, baseStat: $0.baseStat, effort: $0.effort) }
-        let types = pokemonDetailResponse.types.compactMap { TypeModel(name: $0.type.name) }
-        let weaknesses = pokemonDetailResponse.weaknessTypes?.compactMap { TypeModel(name: $0) } ?? []
+        let types = pokemonDetailResponse.types.compactMap { TypeModel(slot: $0.slot, name: $0.type.name) }
+        let weaknesses = pokemonDetailResponse.weaknessTypes?.compactMap { WeaknessTypeModel(name: $0) } ?? []
         let evolution = pokemonDetailResponse.evolutionDetailChain?.compactMap { EvolutionModel(id: $0.id, name: $0.name, level: $0.minLevel ?? .zero, artwork: $0.artwork) } ?? []
         let catchRate = pokemonDetailResponse.species.detail?.captureRate ?? 0
         let growthRate = pokemonDetailResponse.species.detail?.growthRate.name ?? ""

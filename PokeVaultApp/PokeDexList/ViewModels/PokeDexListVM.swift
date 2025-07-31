@@ -57,10 +57,18 @@ class PokeDexListVM: PokemonVM, ObservableObject {
         do {
             let inventory: [PokemonDetailModel] = try await dataManager.fetchAllPokemonDetails()
             pokemonInventory = inventory.compactMap {
-                PokemonCell.UIModel(thumbnail: $0.sprite.artwork,
+                var colorType: PVPokemonType
+                $0.types.sort(by: { $0.slot < $1.slot }) // TODO: remove hot fix
+                colorType = .init($0.types.first?.name ?? "")
+                if $0.types.count == 2 {
+                    if $0.types.contains(where: { $0.name == "normal" }) {
+                        colorType = .init($0.types[1].name)
+                    }
+                }
+                return PokemonCell.UIModel(thumbnail: $0.sprite.artwork,
                                     name: $0.name,
                                     pokedexNumber: $0.id,
-                                    colorType: .init($0.themeColor)
+                                    colorType: colorType
                 )
             }
         } catch {

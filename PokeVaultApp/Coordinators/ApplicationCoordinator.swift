@@ -38,10 +38,19 @@ class ApplicationCoordinator: Coordinator {
     
     private func decideInitialFlow() async {
         do {
-            let hasLocalData = try await dataManager.isPokemonDataStoreEmpty() == false
-            if hasLocalData {
-                showMainFlow()
+            let isStorePopulated = try await !dataManager.isPokemonDataStoreEmpty()
+            if isStorePopulated {
+                // Data exists. But is it up-to-date?
+                let storedVersion = UserDefaults.standard.integer(forKey: "storedDataVersion")
+                if storedVersion < LATEST_DATA_VERSION {
+                    print("Data is stale. Triggering background refresh.")
+                    showSplashFlow()
+                } else {
+                    print("Data is current. Showing main flow.")
+                    showMainFlow()
+                }
             } else {
+                print("No local data found. Showing splash flow.")
                 showSplashFlow()
             }
         } catch {
@@ -66,6 +75,7 @@ class ApplicationCoordinator: Coordinator {
     private func showSplashFlow() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            UserDefaults.standard.set(LATEST_DATA_VERSION, forKey: "storedDataVersion")
             let pokemonService = PokemonService(client: NetworkClient(), dataManager: dataManager)
             let splashCoordinator = SplashCoordinator(window: window, navigationController: navigationController, dataManager: dataManager, pokemonService: pokemonService)
             children.append(splashCoordinator)
