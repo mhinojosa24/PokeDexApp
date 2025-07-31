@@ -13,7 +13,7 @@ class PokemonCell: UICollectionViewCell {
         let thumbnail: String
         let name: String
         let pokedexNumber: Int
-        let colorType: PokemonBackgroundColor
+        let colorType: PVPokemonType
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(pokedexNumber)
@@ -97,12 +97,12 @@ class PokemonCell: UICollectionViewCell {
         nameLabel.text = model.name.capitalized
         let formattedNumber = String(format: "%03d", model.pokedexNumber)
         numberLabel.text = formattedNumber
-        contentView.backgroundColor = model.colorType.oxidized(0.45)
+        contentView.backgroundColor = model.colorType.color
         contentView.layer.cornerRadius = 15
         contentView.layer.masksToBounds = false
-        contentView.layer.shadowColor = model.colorType.oxidized(0.85).cgColor
+        contentView.layer.shadowColor = model.colorType.color.withAlphaComponent(0.45).cgColor //85
         contentView.layer.shadowOffset = .zero
         contentView.layer.shadowRadius = 8
-        contentView.layer.shadowOpacity = 1
+        contentView.layer.shadowOpacity = 0.85
     }
 }

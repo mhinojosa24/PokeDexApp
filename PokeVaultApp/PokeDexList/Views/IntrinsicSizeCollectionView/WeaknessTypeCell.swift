@@ -38,6 +38,6 @@ class WeaknessTypeCell: UICollectionViewCell {
     }
     
     func configure(type: String) {
-        imageView.image = PokemonType(type).icon
+        imageView.image = PVPokemonType(type).icon
     }
 }

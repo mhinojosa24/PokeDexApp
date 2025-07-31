@@ -14,13 +14,13 @@ struct UIComponentFactory {
         searchVC.searchBar.overrideUserInterfaceStyle = .light
         searchVC.searchBar.searchBarStyle = .prominent
         searchVC.searchBar.placeholder = "Name or number"
-        searchVC.searchBar.tintColor = PokemonBackgroundColor.darkNavyBlue.color
+        searchVC.searchBar.tintColor = PVColor.darkNavyBlue.color
         searchVC.searchBar.searchTextField.backgroundColor = UIColor.lightGray.withAlphaComponent(0.01)
         searchVC.searchBar.searchTextField.layer.cornerRadius = 10
         searchVC.searchBar.searchTextField.clipsToBounds = true
         searchVC.searchBar.searchTextField.font = UIFont.init(name: PoppinsFontWeight.light.rawValue, size: 16)
         if let leftImageView = searchVC.searchBar.searchTextField.leftView as? UIImageView {
-            leftImageView.tintColor = PokemonBackgroundColor.darkNavyBlue.color
+            leftImageView.tintColor = PVColor.darkNavyBlue.color
         }
         return searchVC
     }
@@ -32,11 +32,11 @@ struct UIComponentFactory {
         appearance.shadowImage = nil
         appearance.backgroundEffect = UIBlurEffect(style: .light)
         appearance.titleTextAttributes = [
-            .foregroundColor: PokemonBackgroundColor.darkNavyBlue.color,
+            .foregroundColor: PVColor.darkNavyBlue.color,
             .font: UIFont(name: PoppinsFontWeight.semiBold.rawValue, size: 17)!
         ]
         appearance.largeTitleTextAttributes = [
-            .foregroundColor: PokemonBackgroundColor.darkNavyBlue.color,
+            .foregroundColor: PVColor.darkNavyBlue.color,
             .font: UIFont(name: PoppinsFontWeight.semiBold.rawValue, size: 34)!
         ]
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)

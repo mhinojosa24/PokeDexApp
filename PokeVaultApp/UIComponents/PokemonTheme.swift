@@ -12,142 +12,138 @@ import UIKit
 /// Represents background color themes associated with Pokémon UI elements,
 /// such as card backgrounds or headers. These are mapped by string identifiers
 /// and converted into corresponding `UIColor` values.
-enum PokemonBackgroundColor: String {
-    case black, darkNavyBlue, blue, brown, gray, green, pink, purple, red, white, yellow, softBeige, icyWhite, unknown
-    
-    init(_ type: String) {
-        self = PokemonBackgroundColor(rawValue: type.lowercased()) ?? .unknown
-    }
+enum PVColor: String {
+    case black, gray, darkNavyBlue, softBeige, icyWhite
 
     /// Returns the `UIColor` representation of the background color type.
     /// Defaults to `.unknown` gray color if an unknown type is provided.
     var color: UIColor {
         switch self {
         case .black:
-            return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        case .darkNavyBlue:
-            return #colorLiteral(red: 0.2980392157, green: 0.3137254902, blue: 0.5803921569, alpha: 1)
-        case .blue:
-            return #colorLiteral(red: 0.3905215859, green: 0.5775662065, blue: 0.9194149375, alpha: 1)
-        case .brown:
-            return #colorLiteral(red: 0.5743098855, green: 0.3714034557, blue: 0.1913413107, alpha: 1)
+            return .black
         case .gray:
             return #colorLiteral(red: 0.7158644795, green: 0.7258198261, blue: 0.8154850602, alpha: 1)
-        case .green:
-            return #colorLiteral(red: 0.4553773403, green: 0.7966255546, blue: 0.280756712, alpha: 1)
-        case .pink:
-            return #colorLiteral(red: 0.9829356074, green: 0.3329133987, blue: 0.5193170905, alpha: 1)
-        case .purple:
-            return #colorLiteral(red: 0.4401388168, green: 0.3330246806, blue: 0.6093851924, alpha: 1)
-        case .red:
-            return #colorLiteral(red: 1, green: 0.4556620121, blue: 0, alpha: 1)
-        case .white:
-            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1)
-        case .yellow:
-            return #colorLiteral(red: 0.9750881791, green: 0.813549459, blue: 0.189127773, alpha: 1)
+        case .darkNavyBlue:
+            return #colorLiteral(red: 0.2980392157, green: 0.3137254902, blue: 0.5803921569, alpha: 1)
         case .softBeige:
             return #colorLiteral(red: 0.9895073771, green: 0.9597759843, blue: 0.9040811658, alpha: 1)
         case .icyWhite:
             return #colorLiteral(red: 0.9843137255, green: 0.9882352941, blue: 0.9882352941, alpha: 1)
-        case .unknown:
-            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
         }
-    }
-    
-    /// Returns a semi-transparent version of the base color with the specified alpha.
-    ///
-    /// - Parameter alpha: A `CGFloat` between 0 and 1 indicating the opacity.
-    /// - Returns: The color with the applied alpha value.
-    func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
-        return self.color.withAlphaComponent(alpha)
     }
 }
 
-// MARK: - Pokemon Type Colors
-
-/// Represents foreground color themes for Pokémon types (e.g., fire, water).
-/// These are used for type indicators, labels, and badges. Each case maps
-/// to a unique `UIColor` and supports a fallback for unknown types.
-enum PokemonTypeColor: String {
-    case normal, fighting, flying, poison, ground, rock, bug, ghost, steel
-    case fire, water, grass, electric, psychic, ice, dragon, dark, fairy, stellar, unknown
-    
-    // Custom initializer that provides a default value if conversion fails
-    init(_ type: String) {
-        self = PokemonTypeColor(rawValue: type.lowercased()) ?? .unknown
-    }
-
-    /// Returns the `UIColor` representation of the Pokémon type.
-    /// Unknown or unrecognized types return a neutral gray color.
-    var color: UIColor {
-        switch self {
-        case .normal:
-            return #colorLiteral(red: 0.7098076344, green: 0.7098010182, blue: 0.5342559814, alpha: 1)
-        case .fighting:
-            return #colorLiteral(red: 0.7749266028, green: 0.1914702952, blue: 0.1603313088, alpha: 1)
-        case .flying:
-            return #colorLiteral(red: 0.6947016716, green: 0.6209036708, blue: 0.9687926173, alpha: 1)
-        case .poison:
-            return #colorLiteral(red: 0.6381583214, green: 0.2543672621, blue: 0.6378104687, alpha: 1)
-        case .ground:
-            return #colorLiteral(red: 0.9105606079, green: 0.8121599555, blue: 0.5332868099, alpha: 1)
-        case .rock:
-            return #colorLiteral(red: 0.6460644603, green: 0.5820371509, blue: 0.291392535, alpha: 1)
-        case .bug:
-            return #colorLiteral(red: 0.6544884443, green: 0.7196848392, blue: 0.135922581, alpha: 1)
-        case .ghost:
-            return #colorLiteral(red: 0.4506624937, green: 0.3530937433, blue: 0.612631619, alpha: 1)
-        case .steel:
-            return #colorLiteral(red: 0.7411738038, green: 0.7411785722, blue: 0.8395575881, alpha: 1)
-        case .fire:
-            return #colorLiteral(red: 0.968355, green: 0.5264238119, blue: 0.2172999084, alpha: 1)
-        case .water:
-            return #colorLiteral(red: 0.4384691119, green: 0.592559576, blue: 0.9682577252, alpha: 1)
-        case .grass:
-            return #colorLiteral(red: 0.4770475626, green: 0.8002538085, blue: 0.3125849068, alpha: 1)
-        case .electric:
-            return #colorLiteral(red: 1, green: 0.8737840056, blue: 0.3387050033, alpha: 1)
-        case .psychic:
-            return #colorLiteral(red: 1, green: 0.3958920836, blue: 0.5587875247, alpha: 1)
-        case .ice:
-            return #colorLiteral(red: 0.6108773351, green: 0.8697630167, blue: 0.8703106046, alpha: 1)
-        case .dragon:
-            return #colorLiteral(red: 0.4491026998, green: 0.2235376537, blue: 0.9983978868, alpha: 1)
-        case .dark:
-            return #colorLiteral(red: 0.4506705999, green: 0.3530851305, blue: 0.2892486751, alpha: 1)
-        case .fairy:
-            return #colorLiteral(red: 0.9926783442, green: 0.7304494977, blue: 0.9120352864, alpha: 1)
-        case .stellar, .unknown:
-            return #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        }
-    }
-    
-    /// Returns a translucent version of the type color for use in backgrounds or overlays.
-    ///
-    /// - Parameter alpha: The opacity level to apply (default: 0.35).
-    /// - Returns: The color with the specified alpha component.
-    func oxidized(_ alpha: CGFloat = 0.35) -> UIColor {
-        return self.color.withAlphaComponent(alpha)
-    }
-}
-
-/// Represents known Pokémon types (e.g., fire, water, grass) and provides
-/// a convenient way to map string input to type enums.
-///
-/// This enum also exposes icons corresponding to each type,
-/// assuming assets are named after the raw type strings.
-enum PokemonType: String {
+enum PVPokemonType: String {
     case normal, fighting, flying, poison, ground, rock, bug, ghost, steel
     case fire, water, grass, electric, psychic, ice, dragon, dark, fairy, stellar, unknown
     
     init(_ type: String) {
-        self = PokemonType(rawValue: type.lowercased()) ?? .unknown
+        self = PVPokemonType(rawValue: type.lowercased()) ?? .unknown
     }
     
     /// Returns the associated icon image for the Pokémon type.
     /// Falls back to the 'normal' type icon if the specified image is not found.
     var icon: UIImage {
-        // Attempt to load an image matching the type name; fallback to 'normal' if missing
-        return UIImage(named: self.rawValue) ?? UIImage(named: PokemonType.normal.rawValue)!
+        return UIImage(named: self.rawValue) ?? UIImage(named: PVPokemonType.normal.rawValue)!
+    }
+    
+    var tag: UIImage {
+        return UIImage(named: self.rawValue + "Tag") ?? UIImage(named: PVPokemonType.normal.rawValue + "Tag")!
+    }
+    
+    var color: UIColor {
+        switch self {
+        case .normal:
+            return .init(hex: "#9B9DA1") ?? .clear
+        case .fighting:
+            return .init(hex: "#C84E59") ?? .clear
+        case .flying:
+            return .init(hex: "#A0B3E4") ?? .clear
+        case .poison:
+            return .init(hex: "#AA67C8") ?? .clear
+        case .ground:
+            return .init(hex: "#CC895E") ?? .clear
+        case .rock:
+            return .init(hex: "#CCC192") ?? .clear
+        case .bug:
+            return .init(hex: "#A4C04B") ?? .clear
+        case .ghost:
+            return .init(hex: "#6A70BF") ?? .clear
+        case .steel:
+            return .init(hex: "#6594A2") ?? .clear
+        case .fire:
+            return .init(hex: "#ECA95F") ?? .clear
+        case .water:
+            return .init(hex: "#679CDA") ?? .clear
+        case .grass:
+            return .init(hex: "#76BC6C") ?? .clear
+        case .electric:
+            return .init(hex: "#E9D65C") ?? .clear
+        case .psychic:
+            return .init(hex: "#E8837E") ?? .clear
+        case .ice:
+            return .init(hex: "#92D2C9") ?? .clear
+        case .dragon:
+            return .init(hex: "#3271C1") ?? .clear
+        case .dark:
+            return .init(hex: "#5F606C") ?? .clear
+        case .fairy:
+            return .init(hex: "#E29BE2") ?? .clear
+        case .stellar, .unknown:
+            return .clear
+        }
+    }
+}
+
+
+extension UIColor {
+    /// Creates a UIColor object from a hexadecimal string.
+    ///
+    /// This initializer supports 6-digit (e.g., "RRGGBB") and 8-digit (e.g., "RRGGBBAA")
+    /// hex strings, with or without a leading "#".
+    ///
+    /// - Parameter hex: The hexadecimal color string.
+    /// - Returns: An initialized UIColor object, or `nil` if the string is invalid.
+    ///
+    /// ## Usage Example:
+    /// ```
+    /// let primaryColor = UIColor(hex: "#FF5733")
+    /// let translucentBlue = UIColor(hex: "007BFF80") // with 50% alpha
+    /// let invalidColor = UIColor(hex: "invalid") // returns nil
+    /// ```
+    public convenience init?(hex: String) {
+        // 1. Sanitize the hex string: remove leading "#" and trim whitespace.
+        var cleanString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        if cleanString.hasPrefix("#") {
+            cleanString.remove(at: cleanString.startIndex)
+        }
+
+        // 2. Check if the string has a valid length (6 for RGB, 8 for RGBA).
+        guard cleanString.count == 6 || cleanString.count == 8 else {
+            return nil
+        }
+
+        // 3. Scan the string to convert it to a 64-bit integer.
+        var rgbValue: UInt64 = 0
+        Scanner(string: cleanString).scanHexInt64(&rgbValue)
+
+        // 4. Extract the Red, Green, Blue, and Alpha components using bitwise operations.
+        let red, green, blue, alpha: CGFloat
+        if cleanString.count == 6 {
+            // For 6-digit hex (RRGGBB)
+            red = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
+            green = CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0
+            blue = CGFloat(rgbValue & 0x0000FF) / 255.0
+            alpha = 1.0
+        } else {
+            // For 8-digit hex (RRGGBBAA)
+            red = CGFloat((rgbValue & 0xFF000000) >> 24) / 255.0
+            green = CGFloat((rgbValue & 0x00FF0000) >> 16) / 255.0
+            blue = CGFloat((rgbValue & 0x0000FF00) >> 8) / 255.0
+            alpha = CGFloat(rgbValue & 0x000000FF) / 255.0
+        }
+
+        // 5. Initialize the UIColor with the calculated components.
+        self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
 }

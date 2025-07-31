@@ -117,8 +117,8 @@ class StatsInfoView: UIStackView {
         valueLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
 
         let progressBar = UIProgressView(progressViewStyle: .default)
-        progressBar.progressTintColor = PokemonBackgroundColor(model.themeColor).color
-        progressBar.trackTintColor = PokemonBackgroundColor(model.themeColor).oxidized()
+        progressBar.progressTintColor = PVPokemonType(model.themeColor).color
+        progressBar.trackTintColor = PVPokemonType(model.themeColor).color.withAlphaComponent(35)
         progressBar.setProgress(Float(stat.baseValue) / 255.0, animated: false)
 
         

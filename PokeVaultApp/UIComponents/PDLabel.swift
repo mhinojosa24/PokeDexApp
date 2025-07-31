@@ -28,7 +28,7 @@ class PDLabel: UILabel {
     ///   - fontSize: The size of the font.
     ///   - backgroundColor: The background color for the label.
     init(text: String? = nil,
-         textColor: PokemonBackgroundColor = .black,
+         textColor: PVColor = .black,
          fontWeight: PoppinsFontWeight = .regular,
          fontSize: CGFloat = 17,
          backgroundColor: UIColor = .clear) {

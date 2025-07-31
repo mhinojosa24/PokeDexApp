@@ -54,7 +54,7 @@ class PokeDexDetailVC: UIViewController {
     
     /// Configures the navigation bar with a custom back button and transparent style.
     private func setupNavigationBar() {
-        view.backgroundColor = PokemonBackgroundColor.icyWhite.color
+        view.backgroundColor = PVColor.icyWhite.color
         navigationItem.largeTitleDisplayMode = .never
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()

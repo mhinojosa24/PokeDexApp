@@ -56,7 +56,7 @@ class PokeDexListVC: UICollectionViewController {
     
     /// Configures collection view.
     private func configureCollectionView() {
-        collectionView.backgroundColor = PokemonBackgroundColor.icyWhite.color
+        collectionView.backgroundColor = PVColor.icyWhite.color
         collectionView.indicatorStyle = .black
         collectionView.register(PokemonCell.self, forCellWithReuseIdentifier: PokemonCell.identifier)
     }

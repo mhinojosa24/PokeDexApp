@@ -146,7 +146,7 @@ class AboutInfoView: UIStackView {
     ///   - fontWeight: The font weight using the `PoppinsFontWeight` enum.
     ///   - fontSize: The font size (default is 18).
     /// - Returns: A configured `PDLabel`.
-    private func getTitleLabelInfo(with text: String, color: PokemonBackgroundColor, fontWeight: PoppinsFontWeight, fontSize: CGFloat = 18) -> PDLabel {
+    private func getTitleLabelInfo(with text: String, color: PVColor, fontWeight: PoppinsFontWeight, fontSize: CGFloat = 18) -> PDLabel {
         let titleLabel: PDLabel = .init(text: text, textColor: color, fontWeight: fontWeight, fontSize: fontSize)
         titleLabel.numberOfLines = .zero
         titleLabel.textAlignment = .left

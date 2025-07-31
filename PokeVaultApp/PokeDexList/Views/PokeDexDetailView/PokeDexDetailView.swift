@@ -172,10 +172,10 @@ final class PokeDexDetailView: UIView {
     // MARK: - Configuration
     
     func configure(with pokemonDetails: PokemonDetailModel) {
-        backgroundColor = PokemonBackgroundColor(rawValue: pokemonDetails.themeColor)?.oxidized(0.45)
+        backgroundColor = PVPokemonType(rawValue: pokemonDetails.types.first?.name ?? "")?.color
         scrollView.backgroundColor = backgroundColor
         scrollView.layer.masksToBounds = false
-        scrollView.layer.shadowColor = PokemonBackgroundColor(rawValue: pokemonDetails.themeColor)?.oxidized(0.85).cgColor
+        scrollView.layer.shadowColor = PVColor(rawValue: pokemonDetails.themeColor)?.color.withAlphaComponent(0.85).cgColor
         scrollView.layer.shadowOffset = .zero
         scrollView.layer.shadowRadius = 8
         scrollView.layer.shadowOpacity = 1
